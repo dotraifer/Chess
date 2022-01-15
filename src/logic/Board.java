@@ -1,6 +1,9 @@
 package logic;
 
 import logic.Pieces.*;
+import logic.player.BlackPlayer;
+import logic.player.Player;
+import logic.player.WhitePlayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,11 +14,17 @@ public class Board {
     public Map<Integer, Piece> board_state = new HashMap<Integer, Piece>();
     private final List<Piece> whitePieces;
     private final List<Piece> blackPieces;
+    private Player whitePlayer;
+    private Player blackPlayer;
 
     public Board() {
         this.board_state = createNewBoard();
         this.whitePieces = getActivePieces(board_state, Color.White);
         this.blackPieces = getActivePieces(board_state, Color.Black);
+        List<Move> whiteLegalMoves = getAllLegalMoves(this.whitePieces);
+        List<Move> blackLegalMoves = getAllLegalMoves(this.blackPieces);
+        this.whitePlayer = new WhitePlayer(this, whiteLegalMoves, blackLegalMoves);
+        this.blackPlayer = new BlackPlayer(this, whiteLegalMoves, blackLegalMoves);
     }
 
     public List<Piece> getWhitePieces() {

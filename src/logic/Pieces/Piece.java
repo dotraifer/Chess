@@ -23,10 +23,7 @@ public abstract class Piece {
 
     @Override
     public String toString() {
-        return "Piece{" +
-                "position=" + position +
-                ", color=" + color + ", type =" + this.getClass() +
-                '}';
+        return " " + this.getClass();
     }
 
     public boolean isValidCoordinate(int coordinate) {
