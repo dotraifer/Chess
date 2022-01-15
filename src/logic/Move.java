@@ -12,4 +12,12 @@ public class Move {
         this.pieceMoved = pieceMoved;
         this.coordinateMovedTo = coordinateMovedTo;
     }
+
+    @Override
+    public String toString() {
+        return "Move{" +
+                ", pieceMoved=" + pieceMoved +
+                ", coordinateMovedTo=" + coordinateMovedTo +
+                '}';
+    }
 }

@@ -8,6 +8,11 @@ import java.util.List;
 
 public abstract class Piece {
     protected int position;
+
+    public Color getColor() {
+        return color;
+    }
+
     protected final Color color;
 
     public Piece(int position, final Color color) {
@@ -16,6 +21,13 @@ public abstract class Piece {
     }
     public abstract List<Move> getLegalMoves(Board board);
 
+    @Override
+    public String toString() {
+        return "Piece{" +
+                "position=" + position +
+                ", color=" + color + ", type =" + this.getClass() +
+                '}';
+    }
 
     public boolean isValidCoordinate(int coordinate) {
         return coordinate >= 0 && coordinate <= 63;
