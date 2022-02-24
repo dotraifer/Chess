@@ -55,6 +55,12 @@ public class Board {
         return activePieces;
     }
 
+
+    /**
+     * find all the possible moves for a given list of pieces
+     * @param Pieces the pieces we want to get all their legal moves
+     * @return all the possible moves for this group of pieces
+     */
     public List<Move> getAllLegalMoves(List<Piece> Pieces)
     {
         List<Move> possibleMoves = new ArrayList<>();
@@ -65,6 +71,10 @@ public class Board {
         return possibleMoves;
     }
 
+    /**
+     * create the stating board
+     * @return HashMap of the starting board
+     */
     public HashMap<Integer, Piece> createNewBoard()
     {
         HashMap<Integer, Piece> board_state = new HashMap<Integer, Piece>();

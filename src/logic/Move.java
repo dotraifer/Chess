@@ -13,11 +13,19 @@ public class Move {
         this.coordinateMovedTo = coordinateMovedTo;
     }
 
+    public int getCoordinateMovedTo() {
+        return coordinateMovedTo;
+    }
+
     @Override
     public String toString() {
         return "Move{" +
                 ", pieceMoved=" + pieceMoved +
                 ", coordinateMovedTo=" + coordinateMovedTo +
                 '}';
+    }
+
+    public Board executeMove() {
+        return null;
     }
 }

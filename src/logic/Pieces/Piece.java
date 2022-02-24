@@ -7,13 +7,17 @@ import logic.Move;
 import java.util.List;
 
 public abstract class Piece {
+    protected final Color color;
     protected int position;
 
     public Color getColor() {
         return color;
     }
 
-    protected final Color color;
+    public int getPosition() {
+        return position;
+    }
+
 
     public Piece(int position, final Color color) {
         this.position = position;
