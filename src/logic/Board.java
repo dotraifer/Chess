@@ -16,6 +16,7 @@ public class Board {
     private final List<Piece> blackPieces;
     private Player whitePlayer;
     private Player blackPlayer;
+    private Player turn;
 
     public Board() {
         this.board_state = createNewBoard();
@@ -25,6 +26,7 @@ public class Board {
         List<Move> blackLegalMoves = getAllLegalMoves(this.blackPieces);
         this.whitePlayer = new WhitePlayer(this, whiteLegalMoves, blackLegalMoves);
         this.blackPlayer = new BlackPlayer(this, whiteLegalMoves, blackLegalMoves);
+        this.turn = null;
     }
 
     public List<Piece> getWhitePieces() {
@@ -33,6 +35,21 @@ public class Board {
 
     public List<Piece> getBlackPieces() {
         return blackPieces;
+    }
+
+    public Player getOponnent()
+    {
+        if(this.turn.getClass() == WhitePlayer.class)
+            return this.blackPlayer;
+        return this.whitePlayer;
+    }
+
+    public Player getTurn() {
+        return turn;
+    }
+
+    public void setTurn(Player turn) {
+        this.turn = turn;
     }
 
     @Override

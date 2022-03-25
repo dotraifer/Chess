@@ -1,6 +1,7 @@
 package logic.player;
 
 import logic.Board;
+import logic.Color;
 import logic.Move;
 import logic.Pieces.Piece;
 
@@ -16,4 +17,11 @@ public class WhitePlayer extends Player{
     public List<Piece> getActivePieces() {
         return this.board.getWhitePieces();
     }
+
+    @Override
+    public Color getColor() {
+        return Color.White;
+    }
+
+
 }

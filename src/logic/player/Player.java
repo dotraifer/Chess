@@ -1,9 +1,6 @@
 package logic.player;
 
-import logic.Board;
-import logic.Move;
-import logic.MoveStatus;
-import logic.MoveTransition;
+import logic.*;
 import logic.Pieces.King;
 import logic.Pieces.Piece;
 
@@ -63,7 +60,7 @@ public abstract class Player {
         return !isInCheck() && !isCanEscape();
     }
 
-    // TODO : implement method that check if the king can escape - video 19
+    // TODO : implement method that check if the king can escape
     private boolean isCanEscape() {
         for (Move move : this.legalMoves){
             MoveTransition transition = makeMove(move);
@@ -78,10 +75,16 @@ public abstract class Player {
             return new MoveTransition(this.board, this.board, move, MoveStatus.UNDONE);
         }
         Board transitionBoard = move.executeMove();
-        return null;
+        List<Move> attacksOnKing = getAttacksOnBox(getKing().getPosition(), transitionBoard.getTurn().legalMoves);
+
+        if(!attacksOnKing.isEmpty())
+            return new MoveTransition(this.board, this.board, move, MoveStatus.LEFT_IN_CHECK);
+        return new MoveTransition(this.board, transitionBoard, move, MoveStatus.DONE);
     }
 
     private boolean isMoveLegal(Move move) {
         return this.legalMoves.contains(move);
     }
+
+    public abstract Color getColor();
 }

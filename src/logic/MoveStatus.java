@@ -1,5 +1,5 @@
 package logic;
 
 public enum MoveStatus {
-    DONE, UNDONE
+    DONE, UNDONE, LEFT_IN_CHECK
 }

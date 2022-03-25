@@ -26,6 +26,22 @@ public class Move {
     }
 
     public Board executeMove() {
-        return null;
+        Board new_board = new Board();
+        for(Piece piece : board.getTurn().getActivePieces())
+        {
+            // TODO : is override equals needed?
+            if(!pieceMoved.equals(piece))
+                new_board.board_state.put(piece.getPosition(), piece);
+        }
+        for(Piece piece : board.getOponnent().getActivePieces())
+        {
+            new_board.board_state.put(piece.getPosition(), piece);
+        }
+        // 22
+        new_board.board_state.put(pieceMoved.getPosition(), null);
+        new_board.board_state.put(this.coordinateMovedTo, pieceMoved);
+        pieceMoved.movePiece(this);
+        new_board.setTurn(board.getOponnent());
+        return new_board;
     }
 }

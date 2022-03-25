@@ -42,4 +42,9 @@ public abstract class Piece {
          */
         return board.board_state.get(coordinate) != null && board.board_state.get(coordinate).color == color;
     }
+
+    public void movePiece(Move move)
+    {
+        this.position = move.getCoordinateMovedTo();
+    }
 }
