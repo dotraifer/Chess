@@ -22,6 +22,8 @@ public class Program {
         {
             System.out.println(move.toString());
         }
+
+
         GameScreen gameScreen = new GameScreen();
 
     }
