@@ -14,7 +14,9 @@ public abstract class Move {
         this.pieceMoved = pieceMoved;
         this.coordinateMovedTo = coordinateMovedTo;
     }
-
+    public enum MoveStatus {
+        DONE, UNDONE, LEFT_IN_CHECK
+    }
     public int getCoordinateMovedTo() {
         return coordinateMovedTo;
     }

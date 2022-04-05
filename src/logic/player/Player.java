@@ -63,7 +63,7 @@ public abstract class Player {
     private boolean isCanEscape() {
         for (Move move : this.legalMoves){
             MoveTransition transition = makeMove(move);
-            if (transition.getMoveStatus() == MoveStatus.DONE)
+            if (transition.getMoveStatus() == Move.MoveStatus.DONE)
                 return true;
         }
         return false;
@@ -71,14 +71,14 @@ public abstract class Player {
 
     public MoveTransition makeMove(Move move) {
         if (!isMoveLegal(move)) {
-            return new MoveTransition(this.board, this.board, move, MoveStatus.UNDONE);
+            return new MoveTransition(this.board, this.board, move, Move.MoveStatus.UNDONE);
         }
         Board transitionBoard = move.executeMove();
         List<Move> attacksOnKing = getAttacksOnBox(getKing().getPosition(), transitionBoard.getTurn().legalMoves);
 
         if(!attacksOnKing.isEmpty())
-            return new MoveTransition(this.board, this.board, move, MoveStatus.LEFT_IN_CHECK);
-        return new MoveTransition(this.board, transitionBoard, move, MoveStatus.DONE);
+            return new MoveTransition(this.board, this.board, move, Move.MoveStatus.LEFT_IN_CHECK);
+        return new MoveTransition(this.board, transitionBoard, move, Move.MoveStatus.DONE);
     }
 
     private boolean isMoveLegal(Move move) {

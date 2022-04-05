@@ -2,7 +2,7 @@ package gui;
 
 import logic.Board;
 import logic.Move;
-import logic.MoveStatus;
+import logic.Move.MoveStatus;
 import logic.MoveTransition;
 import logic.Pieces.Piece;
 
