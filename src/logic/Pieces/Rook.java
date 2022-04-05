@@ -11,7 +11,7 @@ public class Rook extends Piece {
     final int[] move_mask = {1, 8, -8, 1};
 
     public Rook(int position, Color color) {
-        super(position, color);
+        super(position, color, true);
     }
     @Override
     public List<Move> getLegalMoves(Board board) {
@@ -28,11 +28,11 @@ public class Rook extends Piece {
                 {
                     if(board.board_state.get(possible_coordinate) == null)
                         // regular move
-                        legalMoves.add(new Move(board, this, possible_coordinate));
+                        legalMoves.add(new Move.MajorMove(board, this, possible_coordinate));
                     else if(!isFriendlyPieceOnCoordinate(board, possible_coordinate)) {
                         // attack move
                         // TODO check if eating move needed
-                        legalMoves.add(new Move(board, this, possible_coordinate));
+                        legalMoves.add(new Move.AttackMove(board, this, possible_coordinate, board.getPieceAtCoordinate(possible_coordinate)));
                         break;
                     }
                     else

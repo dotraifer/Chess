@@ -12,7 +12,7 @@ public class Pawn extends Piece {
     private boolean isFirstMove;
 
     public Pawn(int position, Color color) {
-        super(position, color);
+        super(position, color, true);
         this.isFirstMove = true;
     }
 
@@ -24,13 +24,13 @@ public class Pawn extends Piece {
             possible_coordinate = position + (mask * getDirection(color));
             if (isValidCoordinate(possible_coordinate)) {
                 if (mask == 8 && board.board_state.get(possible_coordinate) == null) {
-                    legalMoves.add(new Move(board, this, possible_coordinate));
+                    legalMoves.add(new Move.MajorMove(board, this, possible_coordinate));
                 }
                 else if (mask == 16 && board.board_state.get(possible_coordinate) == null && isFirstMove)
                 {
                     if(board.board_state.get(possible_coordinate + 8 * getDirection(color)) == null)
                     {
-                        legalMoves.add(new Move(board, this, possible_coordinate));
+                        legalMoves.add(new Move.MajorMove(board, this, possible_coordinate));
                         isFirstMove = false;
                     }
                 }
@@ -38,11 +38,11 @@ public class Pawn extends Piece {
                     break;
                 else if(mask == 7 && board.board_state.get(possible_coordinate) != null && !isFriendlyPieceOnCoordinate(board, possible_coordinate))
                 {
-                    legalMoves.add(new Move(board, this, possible_coordinate));
+                    legalMoves.add(new Move.MajorMove(board, this, possible_coordinate));
                 }
                 else if(mask == 9 && board.board_state.get(possible_coordinate) != null && !isFriendlyPieceOnCoordinate(board, possible_coordinate))
                 {
-                    legalMoves.add(new Move(board, this, possible_coordinate));
+                    legalMoves.add(new Move.MajorMove(board, this, possible_coordinate));
                 }
             }
         }

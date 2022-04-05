@@ -9,6 +9,7 @@ import java.util.List;
 public abstract class Piece {
     protected final Color color;
     protected int position;
+    protected boolean isFirstMove;
 
     public Color getColor() {
         return color;
@@ -18,10 +19,14 @@ public abstract class Piece {
         return position;
     }
 
+    public boolean isFirstMove() {
+        return isFirstMove;
+    }
 
-    public Piece(int position, final Color color) {
+    public Piece(int position, final Color color, boolean isFirstMove) {
         this.position = position;
         this.color = color;
+        this.isFirstMove = isFirstMove;
     }
     public abstract List<Move> getLegalMoves(Board board);
 

@@ -11,7 +11,7 @@ public class Bishop extends Piece {
     final int[] move_mask = {7, 9, -7, -9};
 
     public Bishop(int position, Color color) {
-        super(position, color);
+        super(position, color, true);
     }
 
     @Override
@@ -27,11 +27,11 @@ public class Bishop extends Piece {
                 if (isValidCoordinate(possible_coordinate)) {
                     if (board.board_state.get(possible_coordinate) == null)
                         // regular move
-                        legalMoves.add(new Move(board, this, possible_coordinate));
+                        legalMoves.add(new Move.MajorMove(board, this, possible_coordinate));
                     else if (!isFriendlyPieceOnCoordinate(board, possible_coordinate)) {
                         // attack move
                         // TODO check if eating move needed
-                        legalMoves.add(new Move(board, this, possible_coordinate));
+                        legalMoves.add(new Move.AttackMove(board, this, possible_coordinate, board.getPieceAtCoordinate(possible_coordinate)));
                         break;
                     } else
                         // if friendly on dest

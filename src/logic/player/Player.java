@@ -1,5 +1,7 @@
 package logic.player;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import logic.*;
 import logic.Pieces.King;
 import logic.Pieces.Piece;
@@ -15,17 +17,14 @@ public abstract class Player {
 
     public Player(Board board, List<Move> legalMoves, List<Move> enemyLegalMoves) {
         this.board = board;
-        this.legalMoves = legalMoves;
         this.king = getKing();
+        this.legalMoves = ImmutableList.copyOf(Iterables.concat(legalMoves, calculateCastles(legalMoves, enemyLegalMoves)));
         this.isInCheck = !getAttacksOnBox(king.getPosition(), enemyLegalMoves).isEmpty();
     }
+    protected abstract Piece getKing();
 
-    private Piece getKing() {
-        for (Piece piece : getActivePieces()) {
-            if(piece.getClass() == King.class)
-                return piece;
-        }
-        return null;
+    public List<Move> getLegalMoves() {
+        return legalMoves;
     }
 
     public abstract List<Piece> getActivePieces();
@@ -37,7 +36,7 @@ public abstract class Player {
      * @param moves list of moves to check
      * @return the possible attack moves to a box on the board
      */
-    private List<Move> getAttacksOnBox(int boxPos, List<Move> moves){
+    protected static List<Move> getAttacksOnBox(int boxPos, List<Move> moves){
         List<Move> attackMoves = new ArrayList<>();
         for (Move move : moves)
         {
@@ -70,7 +69,7 @@ public abstract class Player {
         return false;
     }
 
-    private MoveTransition makeMove(Move move) {
+    public MoveTransition makeMove(Move move) {
         if (!isMoveLegal(move)) {
             return new MoveTransition(this.board, this.board, move, MoveStatus.UNDONE);
         }
@@ -87,4 +86,6 @@ public abstract class Player {
     }
 
     public abstract Color getColor();
+
+    public abstract List<Move> calculateCastles(List<Move> playerLegals, List<Move> opponentLegals);
 }

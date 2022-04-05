@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Board {
-    public Map<Integer, Piece> board_state = new HashMap<Integer, Piece>();
+    public static Map<Integer, Piece> board_state = createNewBoard();
     private final List<Piece> whitePieces;
     private final List<Piece> blackPieces;
     private Player whitePlayer;
@@ -19,14 +19,14 @@ public class Board {
     private Player turn;
 
     public Board() {
-        this.board_state = createNewBoard();
         this.whitePieces = getActivePieces(board_state, Color.White);
         this.blackPieces = getActivePieces(board_state, Color.Black);
         List<Move> whiteLegalMoves = getAllLegalMoves(this.whitePieces);
+        System.out.println(whiteLegalMoves);
         List<Move> blackLegalMoves = getAllLegalMoves(this.blackPieces);
         this.whitePlayer = new WhitePlayer(this, whiteLegalMoves, blackLegalMoves);
         this.blackPlayer = new BlackPlayer(this, whiteLegalMoves, blackLegalMoves);
-        this.turn = null;
+        this.turn = getOponnent();
     }
 
     public List<Piece> getWhitePieces() {
@@ -39,6 +39,8 @@ public class Board {
 
     public Player getOponnent()
     {
+        if(this.turn == null)
+            return this.whitePlayer;
         if(this.turn.getClass() == WhitePlayer.class)
             return this.blackPlayer;
         return this.whitePlayer;
@@ -51,7 +53,12 @@ public class Board {
     public void setTurn(Player turn) {
         this.turn = turn;
     }
-
+    public Piece getPieceAtCoordinate(int coordinate)
+    {
+        if(board_state.containsKey(coordinate))
+            return board_state.get(coordinate);
+        return null;
+    }
     @Override
     public String toString() {
         return "Board{" +
@@ -92,7 +99,7 @@ public class Board {
      * create the stating board
      * @return HashMap of the starting board
      */
-    public HashMap<Integer, Piece> createNewBoard()
+    public static HashMap<Integer, Piece> createNewBoard()
     {
         HashMap<Integer, Piece> board_state = new HashMap<Integer, Piece>();
         // Black Layout
@@ -134,4 +141,5 @@ public class Board {
         board_state.put(63, new Rook(63, Color.White));
         return board_state;
     }
+
 }

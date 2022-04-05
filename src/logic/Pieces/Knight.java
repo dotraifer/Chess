@@ -11,7 +11,7 @@ public class Knight extends Piece {
     final int[] move_mask = {-17, -15, -10, -6, 17, 15, 10, 6};
 
     public Knight(int position, Color color) {
-        super(position, color);
+        super(position, color, true);
     }
 
     @Override
@@ -24,8 +24,11 @@ public class Knight extends Piece {
                 continue;
             possible_coordinate = mask + position;
             if (isValidCoordinate(possible_coordinate))
-                if (!isFriendlyPieceOnCoordinate(board, possible_coordinate)) {
-                    legalMoves.add(new Move(board, this, possible_coordinate));
+                if (board.board_state.get(possible_coordinate) == null)
+                    // regular move
+                    legalMoves.add(new Move.MajorMove(board, this, possible_coordinate));
+                else if (!isFriendlyPieceOnCoordinate(board, possible_coordinate)) {
+                    legalMoves.add(new Move.AttackMove(board, this, possible_coordinate, board.getPieceAtCoordinate(possible_coordinate)));
                 }
         }
         return legalMoves;
