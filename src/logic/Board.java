@@ -5,28 +5,26 @@ import logic.player.BlackPlayer;
 import logic.player.Player;
 import logic.player.WhitePlayer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.Collections;
 
 public class Board {
-    public static Map<Integer, Piece> board_state = createNewBoard();
+    public final Map<Integer, Piece> board_state;
     private final List<Piece> whitePieces;
     private final List<Piece> blackPieces;
-    private Player whitePlayer;
-    private Player blackPlayer;
+    private final Player whitePlayer;
+    private final Player blackPlayer;
     private Player turn;
 
-    public Board() {
-        this.whitePieces = getActivePieces(board_state, Color.White);
-        this.blackPieces = getActivePieces(board_state, Color.Black);
+    public Board(UserBuilder builder) {
+        this.board_state = Collections.unmodifiableMap(builder.boardConfig);
+        this.whitePieces = getActivePieces(builder.boardConfig, Color.White);
+        this.blackPieces = getActivePieces(builder.boardConfig, Color.Black);
         List<Move> whiteLegalMoves = getAllLegalMoves(this.whitePieces);
-        System.out.println(whiteLegalMoves);
         List<Move> blackLegalMoves = getAllLegalMoves(this.blackPieces);
         this.whitePlayer = new WhitePlayer(this, whiteLegalMoves, blackLegalMoves);
         this.blackPlayer = new BlackPlayer(this, whiteLegalMoves, blackLegalMoves);
-        this.turn = getOponnent();
+        this.turn = getPlayerForColor(builder.nextMoveMaker);
     }
 
     public List<Piece> getWhitePieces() {
@@ -36,9 +34,16 @@ public class Board {
     public List<Piece> getBlackPieces() {
         return blackPieces;
     }
-
+    public Player getPlayerForColor(Color color)
+    {
+        if(color == Color.White)
+            return this.whitePlayer;
+        else
+            return this.blackPlayer;
+    }
     public Player getOponnent()
     {
+        System.out.println(this.turn);
         if(this.turn == null)
             return this.whitePlayer;
         if(this.turn.getClass() == WhitePlayer.class)
@@ -99,47 +104,79 @@ public class Board {
      * create the stating board
      * @return HashMap of the starting board
      */
-    public static HashMap<Integer, Piece> createNewBoard()
+    public static UserBuilder createNewBoard()
     {
+        UserBuilder builder = new UserBuilder();
         HashMap<Integer, Piece> board_state = new HashMap<Integer, Piece>();
         // Black Layout
-        board_state.put(0, new Rook(0, Color.Black));
-        board_state.put(1, new Knight(1, Color.Black));
-        board_state.put(2, new Bishop(2, Color.Black));
-        board_state.put(3, new Queen(3, Color.Black));
-        board_state.put(4, new King(4, Color.Black));
-        board_state.put(5, new Bishop(5, Color.Black));
-        board_state.put(6, new Knight(6, Color.Black));
-        board_state.put(7, new Rook(7, Color.Black));
-        board_state.put(8, new Pawn(8, Color.Black));
-        board_state.put(9, new Pawn(9, Color.Black));
-        board_state.put(10, new Pawn(10, Color.Black));
-        board_state.put(11, new Pawn(11, Color.Black));
-        board_state.put(12, new Pawn(12, Color.Black));
-        board_state.put(13, new Pawn(13, Color.Black));
-        board_state.put(14, new Pawn(14, Color.Black));
-        board_state.put(15, new Pawn(15, Color.Black));
+        builder.setPiece(new Rook(0, Color.Black));
+        builder.setPiece(new Knight(1, Color.Black));
+        builder.setPiece(new Bishop(2, Color.Black));
+        builder.setPiece(new Queen(3, Color.Black));
+        builder.setPiece(new King(4, Color.Black));
+        builder.setPiece(new Bishop(5, Color.Black));
+        builder.setPiece(new Knight(6, Color.Black));
+        builder.setPiece(new Rook(7, Color.Black));
+        builder.setPiece(new Pawn(8, Color.Black));
+        builder.setPiece(new Pawn(9, Color.Black));
+        builder.setPiece(new Pawn(10, Color.Black));
+        builder.setPiece(new Pawn(11, Color.Black));
+        builder.setPiece(new Pawn(12, Color.Black));
+        builder.setPiece(new Pawn(13, Color.Black));
+        builder.setPiece(new Pawn(14, Color.Black));
+        builder.setPiece(new Pawn(15, Color.Black));
         // Empty boxes
         for (int i = 16; i < 48;i++)
-            board_state.put(i, null);
+            builder.boardConfig.put(i, null);
         // White Layout
-        board_state.put(48, new Pawn(48, Color.White));
-        board_state.put(49, new Pawn(49, Color.White));
-        board_state.put(50, new Pawn(50, Color.White));
-        board_state.put(51, new Pawn(51, Color.White));
-        board_state.put(52, new Pawn(52, Color.White));
-        board_state.put(53, new Pawn(53, Color.White));
-        board_state.put(54, new Pawn(54, Color.White));
-        board_state.put(55, new Pawn(55, Color.White));
-        board_state.put(56, new Rook(56, Color.White));
-        board_state.put(57, new Knight(57, Color.White));
-        board_state.put(58, new Bishop(58, Color.White));
-        board_state.put(59, new Queen(59, Color.White));
-        board_state.put(60, new King(60, Color.White));
-        board_state.put(61, new Bishop(61, Color.White));
-        board_state.put(62, new Knight(62, Color.White));
-        board_state.put(63, new Rook(63, Color.White));
-        return board_state;
+        builder.setPiece(new Pawn(48, Color.White));
+        builder.setPiece(new Pawn(49, Color.White));
+        builder.setPiece(new Pawn(50, Color.White));
+        builder.setPiece(new Pawn(51, Color.White));
+        builder.setPiece(new Pawn(52, Color.White));
+        builder.setPiece(new Pawn(53, Color.White));
+        builder.setPiece(new Pawn(54, Color.White));
+        builder.setPiece(new Pawn(55, Color.White));
+        builder.setPiece(new Rook(56, Color.White));
+        builder.setPiece(new Knight(57, Color.White));
+        builder.setPiece(new Bishop(58, Color.White));
+        builder.setPiece(new Queen(59, Color.White));
+        builder.setPiece(new King(60, Color.White));
+        builder.setPiece(new Bishop(61, Color.White));
+        builder.setPiece(new Knight(62, Color.White));
+        builder.setPiece(new Rook(63, Color.White));
+        builder.setMoveMaker(Color.White);
+        return builder;
+    }
+
+    public static class UserBuilder {
+
+        Map<Integer, Piece> boardConfig;
+        Color nextMoveMaker;
+        Move transitionMove;
+
+        public UserBuilder() {
+            this.boardConfig = new HashMap<>(32, 1.0f);
+        }
+
+        public UserBuilder setPiece(final Piece piece) {
+            this.boardConfig.put(piece.getPosition(), piece);
+            return this;
+        }
+
+        public UserBuilder setMoveMaker(final Color nextMoveMaker) {
+            this.nextMoveMaker = nextMoveMaker;
+            return this;
+        }
+
+        public UserBuilder setMoveTransition(final Move transitionMove) {
+            this.transitionMove = transitionMove;
+            return this;
+        }
+
+        public Board build() {
+            return new Board(this);
+        }
     }
 
 }

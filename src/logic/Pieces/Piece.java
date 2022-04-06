@@ -51,5 +51,6 @@ public abstract class Piece {
     public void movePiece(Move move)
     {
         this.position = move.getCoordinateMovedTo();
+        this.isFirstMove = false;
     }
 }

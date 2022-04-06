@@ -30,23 +30,14 @@ public abstract class Move {
     }
 
     public Board executeMove() {
-
-        for(Piece piece : board.getTurn().getActivePieces())
-        {
-            // TODO : is override equals needed?
-            if(!pieceMoved.equals(piece))
-                board.board_state.put(piece.getPosition(), piece);
-        }
-        for(Piece piece : board.getOponnent().getActivePieces())
-        {
-            board.board_state.put(piece.getPosition(), piece);
-        }
-        // 22
-        board.board_state.put(pieceMoved.getPosition(), null);
-        board.board_state.put(this.coordinateMovedTo, pieceMoved);
-        pieceMoved.movePiece(this);
-        board.setTurn(board.getOponnent());
-        return board;
+        final Board.UserBuilder builder = new Board.UserBuilder();
+        this.board.getTurn().getActivePieces().stream().filter(piece -> !this.pieceMoved.equals(piece)).forEach(builder::setPiece);
+        this.board.getOponnent().getActivePieces().forEach(builder::setPiece);
+        this.pieceMoved.movePiece(this);
+        builder.setPiece(pieceMoved);
+        builder.setMoveMaker(this.board.getOponnent().getColor());
+        builder.setMoveTransition(this);
+        return builder.build();
     }
     public static class MajorMove extends Move{
 
@@ -102,7 +93,7 @@ public abstract class Move {
             this.castleRookDest = castleRookDest;
         }
 
-        @Override
+        /**@Override
         public Board executeMove() {
             Board new_board = new Board();
             for(Piece piece : board.getTurn().getActivePieces())
@@ -124,6 +115,7 @@ public abstract class Move {
             new_board.setTurn(board.getOponnent());
             return new_board;
         }
+         **/
     }
 
     public static final class KingSideCastleMove extends CastleMove {

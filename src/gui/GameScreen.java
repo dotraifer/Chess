@@ -36,7 +36,7 @@ public class GameScreen {
 
     public GameScreen()
     {
-        this.board = new Board();
+        this.board = new Board(Board.createNewBoard());
 
         this.gameFrame = new JFrame("Chess");//creating instance of JFrame
         this.gameFrame.setLayout(new BorderLayout());
@@ -98,6 +98,8 @@ public class GameScreen {
                             System.out.println(pieceMoved);
                             if(pieceMoved == null)
                                 sourceTile = -1;
+                            else
+                                System.out.println(pieceMoved.isFirstMove());
                         }
                         else{
                             // second click

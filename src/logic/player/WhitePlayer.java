@@ -17,6 +17,7 @@ public class WhitePlayer extends Player{
         this.king = getKing();
     }
 
+
     @Override
     protected Piece getKing() {
         for (Piece piece : getActivePieces()) {
