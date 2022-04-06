@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Pawn extends Piece {
-    final int[] move_mask = {8, 16};
+    final int[] move_mask = {8, 16, 7 , 9};
     private boolean isFirstMove;
 
     public Pawn(int position, Color color) {
@@ -34,11 +34,11 @@ public class Pawn extends Piece {
                     break;
                 else if(mask == 7 && board.board_state.get(possible_coordinate) != null && !isFriendlyPieceOnCoordinate(board, possible_coordinate))
                 {
-                    legalMoves.add(new Move.MajorMove(board, this, possible_coordinate));
+                    legalMoves.add(new Move.PawnAttackMove(board, this, possible_coordinate, board.getPieceAtCoordinate(possible_coordinate)));
                 }
                 else if(mask == 9 && board.board_state.get(possible_coordinate) != null && !isFriendlyPieceOnCoordinate(board, possible_coordinate))
                 {
-                    legalMoves.add(new Move.MajorMove(board, this, possible_coordinate));
+                    legalMoves.add(new Move.PawnAttackMove(board, this, possible_coordinate, board.getPieceAtCoordinate(possible_coordinate)));
                 }
             }
         }

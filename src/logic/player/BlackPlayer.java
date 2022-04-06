@@ -44,7 +44,7 @@ public class BlackPlayer extends Player{
             {
                 Piece rook = this.board.getPieceAtCoordinate(7);
                 // if rook and first move
-                if(rook.getClass() == Rook.class && rook.isFirstMove())
+                if(rook != null && rook.getClass() == Rook.class && rook.isFirstMove())
                 {
                     // if tiles are not under attack
                     if(Player.getAttacksOnBox(5, opponentLegals).isEmpty()
@@ -59,7 +59,7 @@ public class BlackPlayer extends Player{
                     this.board.getPieceAtCoordinate(2) == null &&
                     this.board.getPieceAtCoordinate(3) == null)
             {
-                Piece rook = this.board.getPieceAtCoordinate(56);
+                Piece rook = this.board.getPieceAtCoordinate(0);
                 if(rook.getClass() == Rook.class && rook.isFirstMove()) {
                     if (Player.getAttacksOnBox(2, opponentLegals).isEmpty()
                             && Player.getAttacksOnBox(3, opponentLegals).isEmpty()) {

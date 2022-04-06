@@ -28,6 +28,11 @@ public abstract class Piece {
         this.color = color;
         this.isFirstMove = isFirstMove;
     }
+
+    public void setFirstMove(boolean firstMove) {
+        isFirstMove = firstMove;
+    }
+
     public abstract List<Move> getLegalMoves(Board board);
 
     @Override

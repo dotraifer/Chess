@@ -93,29 +93,25 @@ public abstract class Move {
             this.castleRookDest = castleRookDest;
         }
 
-        /**@Override
+        @Override
         public Board executeMove() {
-            Board new_board = new Board();
-            for(Piece piece : board.getTurn().getActivePieces())
-            {
-                // TODO : is override equals needed?
-                if(!pieceMoved.equals(piece))
-                    new_board.board_state.put(piece.getPosition(), piece);
+            final Board.UserBuilder builder = new Board.UserBuilder();
+            for (final Piece piece : this.board.getTurn().getActivePieces()) {
+                if (!this.pieceMoved.equals(piece) && !this.castleRook.equals(piece)) {
+                    builder.setPiece(piece);
+                }
             }
-            for(Piece piece : board.getOponnent().getActivePieces())
-            {
-                new_board.board_state.put(piece.getPosition(), piece);
-            }
-            // 22
-            new_board.board_state.put(pieceMoved.getPosition(), null);
-            new_board.board_state.put(coordinateMovedTo, pieceMoved);
-            new_board.board_state.put(castleRookStart, null);
-            new_board.board_state.put(castleRookDest, pieceMoved);
-            pieceMoved.movePiece(this);
-            new_board.setTurn(board.getOponnent());
-            return new_board;
+            this.board.getOponnent().getActivePieces().forEach(builder::setPiece);
+            this.pieceMoved.movePiece(this);
+            builder.setPiece(pieceMoved);
+            //calling movePiece here doesn't work, we need to explicitly create a new Rook
+            builder.setPiece(new Rook(this.castleRookDest, this.castleRook.getColor()));
+            builder.boardConfig.get(castleRookDest).setFirstMove(false);
+            builder.setMoveMaker(this.board.getOponnent().getColor());
+            builder.setMoveTransition(this);
+            return builder.build();
         }
-         **/
+
     }
 
     public static final class KingSideCastleMove extends CastleMove {

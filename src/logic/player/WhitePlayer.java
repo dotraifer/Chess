@@ -47,7 +47,7 @@ public class WhitePlayer extends Player{
             {
                 Piece rook = this.board.getPieceAtCoordinate(63);
                 // if rook and first move
-                if(rook.getClass() == Rook.class && rook.isFirstMove())
+                if(rook != null && rook.getClass() == Rook.class && rook.isFirstMove())
                 {
                     // if tiles are not under attack
                     if(Player.getAttacksOnBox(61, opponentLegals).isEmpty()
