@@ -24,13 +24,13 @@ public class Pawn extends Piece {
             possible_coordinate = position + (mask * getDirection(color));
             if (isValidCoordinate(possible_coordinate)) {
                 if (mask == 8 && board.board_state.get(possible_coordinate) == null) {
-                    legalMoves.add(new Move.MajorMove(board, this, possible_coordinate));
+                    legalMoves.add(new Move.PawnMove(board, this, possible_coordinate));
                 }
-                else if (mask == 16 && board.board_state.get(possible_coordinate * getDirection(color)) == null && isFirstMove)
+                else if (mask == 16 && board.board_state.get(possible_coordinate) == null && isFirstMove)
                 {
-                    legalMoves.add(new Move.MajorMove(board, this, possible_coordinate));
+                    legalMoves.add(new Move.PawnMove(board, this, possible_coordinate));
                 }
-                if(isFirstColumnExtremeCase(possible_coordinate, mask, color))
+                if(isFirstColumnExtremeCase(this.position, mask, color))
                     break;
                 else if(mask == 7 && board.board_state.get(possible_coordinate) != null && !isFriendlyPieceOnCoordinate(board, possible_coordinate))
                 {

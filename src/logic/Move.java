@@ -1,6 +1,7 @@
 package logic;
 
 import logic.Pieces.Piece;
+import logic.Pieces.Queen;
 import logic.Pieces.Rook;
 
 public abstract class Move {
@@ -58,12 +59,42 @@ public abstract class Move {
         public PawnMove(Board board, Piece pieceMoved, int coordinateMovedTo) {
             super(board, pieceMoved, coordinateMovedTo);
         }
+        @Override
+        public Board executeMove()
+        {
+            final Board.UserBuilder builder = new Board.UserBuilder();
+            this.board.getTurn().getActivePieces().stream().filter(piece -> !this.pieceMoved.equals(piece)).forEach(builder::setPiece);
+            this.board.getOponnent().getActivePieces().forEach(builder::setPiece);
+            this.pieceMoved.movePiece(this);
+            if(isLastRow(coordinateMovedTo, pieceMoved.getColor()))
+                builder.setPiece(new Queen(this.coordinateMovedTo, this.pieceMoved.getColor()));
+            else
+                builder.setPiece(pieceMoved);
+            builder.setMoveMaker(this.board.getOponnent().getColor());
+            builder.setMoveTransition(this);
+            return builder.build();
+        }
     }
 
     public static class PawnAttackMove extends AttackMove{
 
         public PawnAttackMove(Board board, Piece pieceMoved, int coordinateMovedTo, Piece attackedPiece) {
             super(board, pieceMoved, coordinateMovedTo,attackedPiece);
+        }
+        @Override
+        public Board executeMove()
+        {
+            final Board.UserBuilder builder = new Board.UserBuilder();
+            this.board.getTurn().getActivePieces().stream().filter(piece -> !this.pieceMoved.equals(piece)).forEach(builder::setPiece);
+            this.board.getOponnent().getActivePieces().forEach(builder::setPiece);
+            this.pieceMoved.movePiece(this);
+            if(isLastRow(coordinateMovedTo, pieceMoved.getColor()))
+                builder.setPiece(new Queen(this.coordinateMovedTo, this.pieceMoved.getColor()));
+            else
+                builder.setPiece(pieceMoved);
+            builder.setMoveMaker(this.board.getOponnent().getColor());
+            builder.setMoveTransition(this);
+            return builder.build();
         }
     }
     public static final class EnPassantPawnAttackMove extends PawnAttackMove{
@@ -152,7 +183,6 @@ public abstract class Move {
                                       final int currentCoordinate,
                                       final int destinationCoordinate) {
 
-            System.out.println(board.getTurn().getLegalMoves());
             for (final Move move : board.getTurn().getLegalMoves()) {
                 if (move.pieceMoved.getPosition() == currentCoordinate &&
                         move.getCoordinateMovedTo() == destinationCoordinate) {
@@ -161,6 +191,12 @@ public abstract class Move {
             }
             return invalidMove;
         }
+    }
+    public boolean isLastRow(int coordinate, Color color)
+    {
+        if(coordinate >= 0 && coordinate <= 7 && color == Color.White)
+            return true;
+        else return coordinate >= 56 && coordinate <= 63 && color == Color.Black;
     }
 
 

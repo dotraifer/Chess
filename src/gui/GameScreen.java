@@ -95,11 +95,8 @@ public class GameScreen {
                             // first click
                             sourceTile = tileCoordinate;
                             pieceMoved = board.getPieceAtCoordinate(sourceTile);
-                            System.out.println(pieceMoved);
                             if(pieceMoved == null)
                                 sourceTile = -1;
-                            else
-                                System.out.println(pieceMoved.isFirstMove());
                         }
                         else{
                             // second click

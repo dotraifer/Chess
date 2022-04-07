@@ -50,7 +50,7 @@ public abstract class Piece {
         return false if the coordinate in empty, or it has enemy piece on it,
         and true if there is friendly piece
          */
-        return board.board_state.get(coordinate) != null && board.board_state.get(coordinate).color == color;
+        return board.board_state.get(coordinate) != null && board.board_state.get(coordinate).color == this.color;
     }
 
     public void movePiece(Move move)

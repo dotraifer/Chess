@@ -77,7 +77,7 @@ public abstract class Player {
         List<Move> attacksOnKing = getAttacksOnBox(getKing().getPosition(), transitionBoard.getTurn().legalMoves);
 
         if(!attacksOnKing.isEmpty())
-            return new MoveTransition(this.board, this.board, move, Move.MoveStatus.LEFT_IN_CHECK);
+            return new MoveTransition(this.board, this.board, move, Move.MoveStatus.LEFT_IN_CHECK);;
         return new MoveTransition(this.board, transitionBoard, move, Move.MoveStatus.DONE);
     }
 
