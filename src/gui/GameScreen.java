@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import logic.player.AI.PositionEvaluation;
 
 import static javax.swing.SwingUtilities.isLeftMouseButton;
 
@@ -118,6 +119,7 @@ public class GameScreen {
                                 moveTransition = board.getTurn().makeMove(move);
                                 if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                                     board = moveTransition.getToBoard();
+                                    System.out.println(PositionEvaluation.evaluate(board));
                                     if(board.getTurn().isInCheckMate())
                                         gameOver(board.getOponnent().getColor());
                                 }

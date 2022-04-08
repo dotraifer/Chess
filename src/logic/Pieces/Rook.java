@@ -12,6 +12,7 @@ public class Rook extends Piece{
 
     public Rook(int position, Color color, boolean isFirstMove) {
         super(position, color, isFirstMove);
+        this.value = 5;
     }
     @Override
     public List<Move> getLegalMoves(Board board) {

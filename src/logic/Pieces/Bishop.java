@@ -12,6 +12,7 @@ public class Bishop extends Piece {
 
     public Bishop(int position, Color color, boolean isFirstMove) {
         super(position, color, isFirstMove);
+        this.value = 3;
     }
 
     @Override

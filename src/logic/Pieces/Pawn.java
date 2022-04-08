@@ -12,6 +12,7 @@ public class Pawn extends Piece {
 
     public Pawn(int position, Color color, boolean isFirstMove) {
         super(position, color, isFirstMove);
+        this.value = 1;
     }
 
     @Override

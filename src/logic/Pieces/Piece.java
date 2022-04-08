@@ -11,6 +11,7 @@ public abstract class Piece implements Cloneable {
     protected final Color color;
     protected int position;
     protected boolean isFirstMove;
+    public double value;
 
     public Color getColor() {
         return color;
@@ -28,6 +29,11 @@ public abstract class Piece implements Cloneable {
         this.position = position;
         this.color = color;
         this.isFirstMove = isFirstMove;
+        this.value = getValue();
+    }
+
+    public double getValue() {
+        return value;
     }
 
     public void setFirstMove(boolean firstMove) {

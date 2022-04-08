@@ -28,6 +28,11 @@ public class WhitePlayer extends Player{
     }
 
     @Override
+    public Player getRival() {
+        return board.getBlackPlayer();
+    }
+
+    @Override
     public List<Piece> getActivePieces() {
         return this.board.getWhitePieces();
     }

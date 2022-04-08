@@ -9,9 +9,9 @@ import java.util.List;
 
 public class Knight extends Piece {
     final int[] move_mask = {-17, -15, -10, -6, 17, 15, 10, 6};
-
     public Knight(int position, Color color, boolean isFirstMove) {
         super(position, color, isFirstMove);
+        this.value = 3;
     }
 
     @Override

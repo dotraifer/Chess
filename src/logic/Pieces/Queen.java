@@ -12,6 +12,7 @@ public class Queen extends Piece {
 
     public Queen(int position, Color color, boolean isFirstMove) {
         super(position, color, isFirstMove);
+        this.value = 9;
     }
 
     @Override

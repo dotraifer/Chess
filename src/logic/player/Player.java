@@ -22,6 +22,8 @@ public abstract class Player {
     }
     protected abstract Piece findKing(Board board);
 
+    public abstract Player getRival();
+
     public Piece getKing() {
         return king;
     }

@@ -1,6 +1,7 @@
 package logic;
 
 import logic.Pieces.*;
+import logic.player.AI.PositionEvaluation;
 import logic.player.BlackPlayer;
 import logic.player.Player;
 import logic.player.WhitePlayer;
@@ -25,6 +26,15 @@ public class Board {
         this.whitePlayer = new WhitePlayer(this, whiteLegalMoves, blackLegalMoves);
         this.blackPlayer = new BlackPlayer(this, whiteLegalMoves, blackLegalMoves);
         this.turn = getPlayerForColor(builder.nextMoveMaker);
+
+    }
+
+    public Player getWhitePlayer() {
+        return whitePlayer;
+    }
+
+    public Player getBlackPlayer() {
+        return blackPlayer;
     }
 
     public List<Piece> getWhitePieces() {
