@@ -16,9 +16,9 @@ public class BlackPlayer extends Player{
     }
 
     @Override
-    protected Piece getKing() {
-        for (Piece piece : getActivePieces()) {
-            if(piece.getClass() == King.class && piece.getColor() ==  Color.Black)
+    protected Piece findKing(Board board) {
+        for (Piece piece : board.getBlackPieces()) {
+            if(piece.getClass() == King.class)
                 return piece;
         }
         return null;

@@ -5,8 +5,9 @@ import logic.Color;
 import logic.Move;
 
 import java.util.List;
+import java.util.Objects;
 
-public abstract class Piece {
+public abstract class Piece implements Cloneable {
     protected final Color color;
     protected int position;
     protected boolean isFirstMove;
@@ -57,5 +58,28 @@ public abstract class Piece {
     {
         this.position = move.getCoordinateMovedTo();
         this.isFirstMove = false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Piece piece = (Piece) o;
+        return position == piece.position && isFirstMove == piece.isFirstMove && color == piece.color;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(color, position, isFirstMove);
+    }
+
+    @Override
+    public Piece clone() {
+        try {
+            // TODO: copy mutable state here, so the clone can't change the internals of the original
+            return (Piece) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

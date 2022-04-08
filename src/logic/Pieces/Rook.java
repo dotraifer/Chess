@@ -7,7 +7,7 @@ import logic.Move;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Rook extends Piece {
+public class Rook extends Piece{
     final int[] move_mask = {1, 8, -8, -1};
 
     public Rook(int position, Color color) {

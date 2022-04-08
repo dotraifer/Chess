@@ -43,7 +43,6 @@ public class Board {
     }
     public Player getOponnent()
     {
-        System.out.println(this.turn);
         if(this.turn == null)
             return this.whitePlayer;
         if(this.turn.getClass() == WhitePlayer.class)
@@ -156,7 +155,7 @@ public class Board {
         Move transitionMove;
 
         public UserBuilder() {
-            this.boardConfig = new HashMap<>(32, 1.0f);
+            this.boardConfig = new HashMap<>();
         }
 
         public UserBuilder setPiece(final Piece piece) {

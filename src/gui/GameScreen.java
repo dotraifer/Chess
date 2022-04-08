@@ -30,6 +30,7 @@ public class GameScreen {
     private final Color whiteTileColor = Color.decode("#FFFDD0");
     private final Color blackTileColor = Color.decode("#D2691E");
     private final Color greenTileColor = Color.decode("#00FF00");
+    private final Color redTileColor = Color.decode("#FF0000");
 
     private static int sourceTile = -1;
     private static int destTile = -1;
@@ -90,19 +91,15 @@ public class GameScreen {
             addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    System.out.println(board.board_state);
+                    MoveTransition moveTransition = null;
                     if(isLeftMouseButton(e))
                     {
                         if(sourceTile == -1) {
                             // first click
                             sourceTile = tileCoordinate;
                             pieceMoved = board.getPieceAtCoordinate(sourceTile);
-                            if(pieceMoved == null)
+                            if(pieceMoved == null){
                                 sourceTile = -1;
-                            else {
-                                setBackground(greenTileColor);
-                                validate();
-                                repaint();
                             }
                         }
                         else{
@@ -111,14 +108,11 @@ public class GameScreen {
                             if(destTile != sourceTile)
                             {
                                 Move move = Move.MoveFactory.createMove(board, pieceMoved.getPosition(), destTile);
-                                MoveTransition moveTransition = board.getTurn().makeMove(move);
+                                moveTransition = board.getTurn().makeMove(move);
                                 if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                                     board = moveTransition.getToBoard();
                                 }
                             }
-                            putTileColor();
-                            validate();
-                            repaint();
                             sourceTile = -1;
                             destTile = -1;
                             pieceMoved = null;
@@ -176,8 +170,13 @@ public class GameScreen {
         private void putTileColor() {
             boolean isLight = ((tileCoordinate + tileCoordinate / 8) % 2 == 0);
             setBackground(isLight ? whiteTileColor : blackTileColor);
-            if(tileCoordinate == sourceTile)
+            // if the tile of the chosen piece
+            if(tileCoordinate == sourceTile && pieceMoved.getColor() == board.getTurn().getColor())
                 setBackground(greenTileColor);
+            // if the tile is the tile of a king under check
+            if(tileCoordinate == board.getTurn().getKing().getPosition() && board.getTurn().isInCheck())
+                setBackground(redTileColor);
+
         }
 
         public void drawTile(Board board) {

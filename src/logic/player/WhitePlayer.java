@@ -14,14 +14,14 @@ public class WhitePlayer extends Player{
 
     public WhitePlayer(Board board, List<Move> whiteLegalMoves, List<Move> blackLegalMoves) {
         super(board, whiteLegalMoves, blackLegalMoves);
-        this.king = getKing();
+        this.king = findKing(board);
     }
 
 
     @Override
-    protected Piece getKing() {
-        for (Piece piece : getActivePieces()) {
-            if(piece.getClass() == King.class && piece.getColor() ==  Color.White)
+    protected Piece findKing(Board board) {
+        for (Piece piece : board.getWhitePieces()) {
+            if(piece.getClass() == King.class)
                 return piece;
         }
         return null;

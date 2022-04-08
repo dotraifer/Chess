@@ -3,7 +3,6 @@ package logic.player;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import logic.*;
-import logic.Pieces.King;
 import logic.Pieces.Piece;
 
 import java.util.ArrayList;
@@ -17,11 +16,15 @@ public abstract class Player {
 
     public Player(Board board, List<Move> legalMoves, List<Move> enemyLegalMoves) {
         this.board = board;
-        this.king = getKing();
+        this.king = findKing(board);
         this.legalMoves = ImmutableList.copyOf(Iterables.concat(legalMoves, calculateCastles(legalMoves, enemyLegalMoves)));
         this.isInCheck = !getAttacksOnBox(king.getPosition(), enemyLegalMoves).isEmpty();
     }
-    protected abstract Piece getKing();
+    protected abstract Piece findKing(Board board);
+
+    public Piece getKing() {
+        return king;
+    }
 
     public List<Move> getLegalMoves() {
         return legalMoves;
@@ -74,10 +77,10 @@ public abstract class Player {
             return new MoveTransition(this.board, this.board, move, Move.MoveStatus.UNDONE);
         }
         Board transitionBoard = move.executeMove();
-        List<Move> attacksOnKing = getAttacksOnBox(getKing().getPosition(), transitionBoard.getTurn().legalMoves);
-
-        if(!attacksOnKing.isEmpty())
-            return new MoveTransition(this.board, this.board, move, Move.MoveStatus.LEFT_IN_CHECK);;
+        List<Move> attacksOnKing = getAttacksOnBox(findKing(transitionBoard).getPosition(), transitionBoard.getTurn().legalMoves);
+        if(!attacksOnKing.isEmpty()) {
+            return new MoveTransition(this.board, this.board, move, Move.MoveStatus.LEFT_IN_CHECK);
+        }
         return new MoveTransition(this.board, transitionBoard, move, Move.MoveStatus.DONE);
     }
 
