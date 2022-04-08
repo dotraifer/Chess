@@ -5,10 +5,27 @@ import logic.Pieces.Piece;
 import logic.player.Player;
 
 public class PositionEvaluation {
+    public static GameStage gameStage;
     public static double evaluate(Board board)
     {
+        gameStage = calculateGameStage(board);
+        System.out.println(gameStage);
         return (score(board, board.getWhitePlayer()) - score(board, board.getBlackPlayer()));
     }
+
+    private static GameStage calculateGameStage(Board board) {
+        double materialLeft = material(board.getWhitePlayer()) + material(board.getBlackPlayer());
+        materialLeft -= 20000;
+        System.out.println(materialLeft);
+        if(materialLeft > 54)
+            return GameStage.OPENING;
+        else if(materialLeft <= 54 && materialLeft > 28)
+            return GameStage.MIDGAME;
+        else if(materialLeft <= 28)
+            return GameStage.ENDING;
+        return gameStage;
+    }
+
     public static double score(Board board, Player player)
     {
         return material(player) + mobility(player) + checkmate(player);
