@@ -23,6 +23,8 @@ public class Pawn extends Piece {
         for (int mask : move_mask) {
             possible_coordinate = position + (mask * getDirection(color));
             if (isValidCoordinate(possible_coordinate)) {
+                if(isFirstColumnExtremeCase(this.position, mask, color))
+                    continue;
                 if (mask == 8 && board.board_state.get(possible_coordinate) == null) {
                     legalMoves.add(new Move.PawnMove(board, this, possible_coordinate));
                 }
@@ -30,8 +32,6 @@ public class Pawn extends Piece {
                 {
                     legalMoves.add(new Move.PawnMove(board, this, possible_coordinate));
                 }
-                if(isFirstColumnExtremeCase(this.position, mask, color))
-                    break;
                 else if(mask == 7 && board.board_state.get(possible_coordinate) != null && !isFriendlyPieceOnCoordinate(board, possible_coordinate))
                 {
                     legalMoves.add(new Move.PawnAttackMove(board, this, possible_coordinate, board.getPieceAtCoordinate(possible_coordinate)));

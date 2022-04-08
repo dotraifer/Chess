@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Rook extends Piece {
-    final int[] move_mask = {1, 8, -8, 1};
+    final int[] move_mask = {1, 8, -8, -1};
 
     public Rook(int position, Color color) {
         super(position, color, true);
@@ -21,7 +21,7 @@ public class Rook extends Piece {
             possible_coordinate = position;
             while (isValidCoordinate(possible_coordinate))
             {
-                if(isFirstColumnExtremeCase(possible_coordinate, mask))
+                if(isFirstColumnExtremeCase(position, mask))
                     break;
                 possible_coordinate += mask;
                 if(isValidCoordinate(possible_coordinate))

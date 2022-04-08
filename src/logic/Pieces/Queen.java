@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Queen extends Piece {
-    final int[] move_mask = {7, 9, -7, -9, 1, 8, -8, 1};
+    final int[] move_mask = {7, 9, -7, -9, 1, 8, -8, -1};
 
     public Queen(int position, Color color) {
         super(position, color, true);
@@ -21,7 +21,7 @@ public class Queen extends Piece {
         for (int mask : move_mask) {
             possible_coordinate = position;
             while (isValidCoordinate(possible_coordinate)) {
-                if (isFirstColumnExtremeCase(possible_coordinate, mask))
+                if (isFirstColumnExtremeCase(position, mask))
                     break;
                 possible_coordinate += mask;
                 if (isValidCoordinate(possible_coordinate)) {
