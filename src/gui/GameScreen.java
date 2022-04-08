@@ -4,7 +4,9 @@ import logic.Board;
 import logic.Move;
 import logic.Move.MoveStatus;
 import logic.MoveTransition;
+import logic.Pieces.King;
 import logic.Pieces.Piece;
+import logic.player.Player;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -101,6 +103,8 @@ public class GameScreen {
                             if(pieceMoved == null){
                                 sourceTile = -1;
                             }
+                            else
+                                System.out.println(pieceMoved.isFirstMove());
                         }
                         else{
                             // second click
@@ -182,8 +186,31 @@ public class GameScreen {
         public void drawTile(Board board) {
             putTileColor();
             putTilePiece(board);
+            drawPossibleMoves(board);
             validate();
             repaint();
+        }
+
+        public void drawPossibleMoves(Board board)
+        {
+            if(pieceMoved != null) {
+                for (Move move : board.getTurn().getLegalMoves()) {
+                    if (pieceMoved == move.getPieceMoved() && move.getCoordinateMovedTo() == this.tileCoordinate) {
+                        try {
+                            BufferedImage image =
+                                    ImageIO.read(new File("resources/green_dot.png"));
+                            add(new JLabel(new ImageIcon(image)));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+                if(pieceMoved.getClass() == King.class)
+                {
+
+                }
+            }
         }
     }
 }

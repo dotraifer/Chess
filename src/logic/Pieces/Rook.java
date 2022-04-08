@@ -10,8 +10,8 @@ import java.util.List;
 public class Rook extends Piece{
     final int[] move_mask = {1, 8, -8, -1};
 
-    public Rook(int position, Color color) {
-        super(position, color, true);
+    public Rook(int position, Color color, boolean isFirstMove) {
+        super(position, color, isFirstMove);
     }
     @Override
     public List<Move> getLegalMoves(Board board) {
@@ -21,7 +21,7 @@ public class Rook extends Piece{
             possible_coordinate = position;
             while (isValidCoordinate(possible_coordinate))
             {
-                if(isFirstColumnExtremeCase(position, mask))
+                if(isFirstColumnExtremeCase(possible_coordinate, mask))
                     break;
                 possible_coordinate += mask;
                 if(isValidCoordinate(possible_coordinate))

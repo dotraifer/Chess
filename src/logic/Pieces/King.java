@@ -9,8 +9,8 @@ import java.util.List;
 
 public class King extends Piece {
     final int[] move_mask = {-9, -8, -7, -1, 1, 7, 8, 9};
-    public King(int position, Color color) {
-        super(position, color, true);
+    public King(int position, Color color, boolean isFirstMove) {
+        super(position, color, isFirstMove);
     }
 
     @Override

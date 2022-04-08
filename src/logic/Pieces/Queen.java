@@ -10,8 +10,8 @@ import java.util.List;
 public class Queen extends Piece {
     final int[] move_mask = {7, 9, -7, -9, 1, 8, -8, -1};
 
-    public Queen(int position, Color color) {
-        super(position, color, true);
+    public Queen(int position, Color color, boolean isFirstMove) {
+        super(position, color, isFirstMove);
     }
 
     @Override
@@ -21,7 +21,7 @@ public class Queen extends Piece {
         for (int mask : move_mask) {
             possible_coordinate = position;
             while (isValidCoordinate(possible_coordinate)) {
-                if (isFirstColumnExtremeCase(position, mask))
+                if (isFirstColumnExtremeCase(possible_coordinate, mask))
                     break;
                 possible_coordinate += mask;
                 if (isValidCoordinate(possible_coordinate)) {

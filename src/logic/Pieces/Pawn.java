@@ -9,11 +9,9 @@ import java.util.List;
 
 public class Pawn extends Piece {
     final int[] move_mask = {8, 16, 7 , 9};
-    private boolean isFirstMove;
 
-    public Pawn(int position, Color color) {
-        super(position, color, true);
-        this.isFirstMove = true;
+    public Pawn(int position, Color color, boolean isFirstMove) {
+        super(position, color, isFirstMove);
     }
 
     @Override

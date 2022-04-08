@@ -10,8 +10,8 @@ import java.util.List;
 public class Bishop extends Piece {
     final int[] move_mask = {7, 9, -7, -9};
 
-    public Bishop(int position, Color color) {
-        super(position, color, true);
+    public Bishop(int position, Color color, boolean isFirstMove) {
+        super(position, color, isFirstMove);
     }
 
     @Override

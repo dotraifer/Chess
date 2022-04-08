@@ -34,6 +34,11 @@ public abstract class Piece implements Cloneable {
         isFirstMove = firstMove;
     }
 
+    /**
+     * finds all the legal moves for a piece in a given board
+     * @param board the board we check in
+     * @return List of all the legal moves for a piece(some special moves not include)
+     */
     public abstract List<Move> getLegalMoves(Board board);
 
     @Override
@@ -41,19 +46,31 @@ public abstract class Piece implements Cloneable {
         return " " + this.getClass();
     }
 
+    /**
+     * check if a given coordinate is valid(in the board, between 0 and 63)
+     * @param coordinate coordinate as number
+     * @return true if the coordinate is valid, false if not
+     */
     public boolean isValidCoordinate(int coordinate) {
         return coordinate >= 0 && coordinate <= 63;
     }
 
-
+    /**
+     *  check if the coordinate is not empty, and it has friendly piece on it
+     * @param board the board we check on
+     * @param coordinate the coordinate we check on
+     * @return true if the piece is friendly, else otherwise
+     */
     public boolean isFriendlyPieceOnCoordinate(Board board, int coordinate) {
         /*
-        return false if the coordinate in empty, or it has enemy piece on it,
-        and true if there is friendly piece
          */
         return board.board_state.get(coordinate) != null && board.board_state.get(coordinate).color == this.color;
     }
 
+    /**
+     * changes the piece that been moved to the current attributes
+     * @param move the move we make
+     */
     public void movePiece(Move move)
     {
         this.position = move.getCoordinateMovedTo();

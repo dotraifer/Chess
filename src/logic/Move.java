@@ -26,6 +26,10 @@ public abstract class Move {
         return board;
     }
 
+    public Piece getPieceMoved() {
+        return pieceMoved;
+    }
+
     @Override
     public String toString() {
         return "Move{" +
@@ -43,8 +47,6 @@ public abstract class Move {
         builder.setPiece(piece);
         builder.setMoveMaker(this.board.getOponnent().getColor());
         builder.setMoveTransition(this);
-        System.out.println("ldfdhh");
-        System.out.println("a" + builder.transitionMove);
         return builder.build();
     }
     public static class MajorMove extends Move{
@@ -74,10 +76,11 @@ public abstract class Move {
             this.board.getTurn().getActivePieces().stream().filter(piece -> !this.pieceMoved.equals(piece)).forEach(builder::setPiece);
             this.board.getOponnent().getActivePieces().forEach(builder::setPiece);
             Piece piece = pieceMoved.clone();
+            System.out.println(piece.isFirstMove());
             piece.movePiece(this);
             builder.setPiece(piece);
             if(isLastRow(coordinateMovedTo, piece.getColor()))
-                builder.setPiece(new Queen(this.coordinateMovedTo, piece.getColor()));
+                builder.setPiece(new Queen(this.coordinateMovedTo, piece.getColor(), true));
             else
                 builder.setPiece(piece);
             builder.setMoveMaker(this.board.getOponnent().getColor());
@@ -101,7 +104,7 @@ public abstract class Move {
             piece.movePiece(this);
             builder.setPiece(piece);
             if(isLastRow(coordinateMovedTo, pieceMoved.getColor()))
-                builder.setPiece(new Queen(this.coordinateMovedTo, piece.getColor()));
+                builder.setPiece(new Queen(this.coordinateMovedTo, piece.getColor(), true));
             else
                 builder.setPiece(piece);
             builder.setMoveMaker(this.board.getOponnent().getColor());
@@ -149,7 +152,7 @@ public abstract class Move {
             piece.movePiece(this);
             builder.setPiece(piece);
             //calling movePiece here doesn't work, we need to explicitly create a new Rook
-            builder.setPiece(new Rook(this.castleRookDest, this.castleRook.getColor()));
+            builder.setPiece(new Rook(this.castleRookDest, this.castleRook.getColor(), true));
             builder.boardConfig.get(castleRookDest).setFirstMove(false);
             builder.setMoveMaker(this.board.getOponnent().getColor());
             builder.setMoveTransition(this);
