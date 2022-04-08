@@ -51,6 +51,11 @@ public class GameScreen {
 
         this.gameFrame.setVisible(true);
     }
+    public void resetGame()
+    {
+        this.board = new Board(Board.createNewBoard());
+        this.gameFrame.setVisible(true);
+    }
 
     public class BoardPanel extends JPanel {
         private final Dimension BOARD_DIMENSION = new Dimension(400, 400);
@@ -103,8 +108,6 @@ public class GameScreen {
                             if(pieceMoved == null){
                                 sourceTile = -1;
                             }
-                            else
-                                System.out.println(pieceMoved.isFirstMove());
                         }
                         else{
                             // second click
@@ -115,6 +118,8 @@ public class GameScreen {
                                 moveTransition = board.getTurn().makeMove(move);
                                 if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                                     board = moveTransition.getToBoard();
+                                    if(board.getTurn().isInCheckMate())
+                                        gameOver(board.getOponnent().getColor());
                                 }
                             }
                             sourceTile = -1;
@@ -195,7 +200,8 @@ public class GameScreen {
         {
             if(pieceMoved != null) {
                 for (Move move : board.getTurn().getLegalMoves()) {
-                    if (pieceMoved == move.getPieceMoved() && move.getCoordinateMovedTo() == this.tileCoordinate) {
+                    if (pieceMoved == move.getPieceMoved() && move.getCoordinateMovedTo() == this.tileCoordinate
+                    && board.getTurn().getLegalMoves().contains(move)) {
                         try {
                             BufferedImage image =
                                     ImageIO.read(new File("resources/green_dot.png"));
@@ -206,10 +212,21 @@ public class GameScreen {
 
                     }
                 }
-                if(pieceMoved.getClass() == King.class)
-                {
+            }
+        }
+        public void gameOver(logic.Color color)
+        {
+            String message = color + " won, Want to try Again?";
+            String title = "Game Over";
+            int userPressed = JOptionPane.showConfirmDialog(this, message, title, JOptionPane.OK_CANCEL_OPTION);
 
-                }
+            if (userPressed == JOptionPane.OK_OPTION)
+            {
+                resetGame();
+            }
+            else
+            {
+                System.exit(0);
             }
         }
     }

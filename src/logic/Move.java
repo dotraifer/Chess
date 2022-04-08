@@ -76,7 +76,6 @@ public abstract class Move {
             this.board.getTurn().getActivePieces().stream().filter(piece -> !this.pieceMoved.equals(piece)).forEach(builder::setPiece);
             this.board.getOponnent().getActivePieces().forEach(builder::setPiece);
             Piece piece = pieceMoved.clone();
-            System.out.println(piece.isFirstMove());
             piece.movePiece(this);
             builder.setPiece(piece);
             if(isLastRow(coordinateMovedTo, piece.getColor()))

@@ -21,13 +21,14 @@ public class King extends Piece {
             if (isFirstColumnExtremeCase(position, mask))
                 continue;
             possible_coordinate = mask + position;
-            if (isValidCoordinate(possible_coordinate))
+            if (isValidCoordinate(possible_coordinate)) {
                 if (board.board_state.get(possible_coordinate) == null)
                     // regular move
                     legalMoves.add(new Move.MajorMove(board, this, possible_coordinate));
                 else if (!isFriendlyPieceOnCoordinate(board, possible_coordinate)) {
                     legalMoves.add(new Move.AttackMove(board, this, possible_coordinate, board.getPieceAtCoordinate(possible_coordinate)));
                 }
+            }
         }
         return legalMoves;
 
