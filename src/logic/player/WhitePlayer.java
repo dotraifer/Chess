@@ -12,8 +12,8 @@ import java.util.List;
 
 public class WhitePlayer extends Player{
 
-    public WhitePlayer(Board board, List<Move> whiteLegalMoves, List<Move> blackLegalMoves) {
-        super(board, whiteLegalMoves, blackLegalMoves);
+    public WhitePlayer(Board board, List<Move> whiteLegalMoves, List<Move> blackLegalMoves, boolean isAi) {
+        super(board, whiteLegalMoves, blackLegalMoves, isAi);
         this.king = findKing(board);
     }
 
@@ -68,7 +68,7 @@ public class WhitePlayer extends Player{
                     this.board.getPieceAtCoordinate(57) == null)
             {
                 Piece rook = this.board.getPieceAtCoordinate(56);
-                if(rook.getClass() == Rook.class && rook.isFirstMove()) {
+                if(rook != null && rook.getClass() == Rook.class && rook.isFirstMove()) {
                     if (Player.getAttacksOnBox(59, opponentLegals).isEmpty()
                             && Player.getAttacksOnBox(58, opponentLegals).isEmpty()) {
                         Castles.add(new Move.QueenSideCastleMove(this.board, this.king, 58, (Rook)rook, 56, 59));

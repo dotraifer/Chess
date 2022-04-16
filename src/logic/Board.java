@@ -23,8 +23,8 @@ public class Board {
         this.blackPieces = getActivePieces(builder.boardConfig, Color.Black);
         List<Move> whiteLegalMoves = getAllLegalMoves(this.whitePieces);
         List<Move> blackLegalMoves = getAllLegalMoves(this.blackPieces);
-        this.whitePlayer = new WhitePlayer(this, whiteLegalMoves, blackLegalMoves);
-        this.blackPlayer = new BlackPlayer(this, whiteLegalMoves, blackLegalMoves);
+        this.whitePlayer = new WhitePlayer(this, whiteLegalMoves, blackLegalMoves, builder.isWhiteAi);
+        this.blackPlayer = new BlackPlayer(this, whiteLegalMoves, blackLegalMoves, builder.isBlackAi);
         this.turn = getPlayerForColor(builder.nextMoveMaker);
 
     }
@@ -113,7 +113,7 @@ public class Board {
      * create the stating board
      * @return HashMap of the starting board
      */
-    public static UserBuilder createNewBoard()
+    public static UserBuilder createNewBoard(boolean isWhiteAi, boolean isBlackAi)
     {
         UserBuilder builder = new UserBuilder();
         HashMap<Integer, Piece> board_state = new HashMap<Integer, Piece>();
@@ -155,6 +155,8 @@ public class Board {
         builder.setPiece(new Knight(62, Color.White, true));
         builder.setPiece(new Rook(63, Color.White, true));
         builder.setMoveMaker(Color.White);
+        builder.isWhiteAi = isWhiteAi;
+        builder.isBlackAi = isBlackAi;
         return builder;
     }
 
@@ -163,6 +165,8 @@ public class Board {
         Map<Integer, Piece> boardConfig;
         Color nextMoveMaker;
         Move transitionMove;
+        boolean isWhiteAi;
+        boolean isBlackAi;
 
         public UserBuilder() {
             this.boardConfig = new HashMap<>();

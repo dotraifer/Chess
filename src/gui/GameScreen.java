@@ -4,9 +4,8 @@ import logic.Board;
 import logic.Move;
 import logic.Move.MoveStatus;
 import logic.MoveTransition;
-import logic.Pieces.King;
 import logic.Pieces.Piece;
-import logic.player.Player;
+import logic.player.AI.Minimax;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -39,9 +38,13 @@ public class GameScreen {
     private static int destTile = -1;
     private static Piece pieceMoved;
 
+    private static boolean isWhiteAi;
+    private static boolean isBlackAi;
+
     public GameScreen()
     {
-        this.board = new Board(Board.createNewBoard());
+        chooseAiOrNotPopUp();
+        this.board = new Board(Board.createNewBoard(isWhiteAi, isBlackAi));
 
         this.gameFrame = new JFrame("Chess");//creating instance of JFrame
         this.gameFrame.setLayout(new BorderLayout());
@@ -54,8 +57,40 @@ public class GameScreen {
     }
     public void resetGame()
     {
-        this.board = new Board(Board.createNewBoard());
+        chooseAiOrNotPopUp();
+        this.board = new Board(Board.createNewBoard(isWhiteAi, isBlackAi));
         this.gameFrame.setVisible(true);
+    }
+
+    public void chooseAiOrNotPopUp()
+    {
+        String[] options = {"AI", "PVP"};
+        int choice = JOptionPane.showOptionDialog(null, "Choose game Mode",
+                "Game mode",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+        if(choice == 0)
+            chooseColor();
+        else{
+            isWhiteAi = false;
+            isBlackAi = false;
+        }
+    }
+    public void chooseColor()
+    {
+        String[] options = {"WHITE", "BLACK"};
+        int choice = JOptionPane.showOptionDialog(null, "Choose game Mode",
+                "Game mode",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+        if(choice == 0)
+        {
+            isWhiteAi = false;
+            isBlackAi = true;
+        }
+        else if(choice == 1)
+        {
+            isWhiteAi = true;
+            isBlackAi = false;
+        }
     }
 
     public class BoardPanel extends JPanel {
@@ -85,6 +120,21 @@ public class GameScreen {
             validate();
             repaint();
         }
+        public void gameOver(logic.Color color)
+        {
+            String message = color + " won, Want to try Again?";
+            String title = "Game Over";
+            int userPressed = JOptionPane.showConfirmDialog(this, message, title, JOptionPane.OK_CANCEL_OPTION);
+
+            if (userPressed == JOptionPane.OK_OPTION)
+            {
+                resetGame();
+            }
+            else
+            {
+                System.exit(0);
+            }
+        }
     }
     public class TilePanel extends JPanel {
         private final int tileCoordinate;
@@ -95,11 +145,13 @@ public class GameScreen {
             setPreferredSize(TILE_DIMENSION);
             putTileColor();
             putTilePiece(board);
-
+            if(board.getTurn().isAi)
+                AiMove();
             addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     MoveTransition moveTransition = null;
+                    System.out.println("first" + board.getBlackPlayer().isAi);
                     if(isLeftMouseButton(e))
                     {
                         if(sourceTile == -1) {
@@ -117,11 +169,14 @@ public class GameScreen {
                             {
                                 Move move = Move.MoveFactory.createMove(board, pieceMoved.getPosition(), destTile);
                                 moveTransition = board.getTurn().makeMove(move);
+                                System.out.println("sec"+board.getBlackPlayer().isAi);
                                 if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                                     board = moveTransition.getToBoard();
-                                    System.out.println(PositionEvaluation.evaluate(board));
+                                    boardPanel.drawBoard(board);
                                     if(board.getTurn().isInCheckMate())
-                                        gameOver(board.getOponnent().getColor());
+                                        boardPanel.gameOver(board.getOponnent().getColor());
+                                    if(board.getTurn().isAi)
+                                        AiMove();
                                 }
                             }
                             sourceTile = -1;
@@ -161,6 +216,16 @@ public class GameScreen {
 
             validate();
 
+        }
+        public void AiMove()
+        {
+            MoveTransition moveTransition = null;
+            moveTransition = board.getTurn().makeMove(Minimax.execute(board, 4));
+            if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
+                board = moveTransition.getToBoard();
+                if(board.getTurn().isInCheckMate())
+                    boardPanel.gameOver(board.getOponnent().getColor());
+            }
         }
 
         private void putTilePiece(Board board) {
@@ -214,21 +279,6 @@ public class GameScreen {
 
                     }
                 }
-            }
-        }
-        public void gameOver(logic.Color color)
-        {
-            String message = color + " won, Want to try Again?";
-            String title = "Game Over";
-            int userPressed = JOptionPane.showConfirmDialog(this, message, title, JOptionPane.OK_CANCEL_OPTION);
-
-            if (userPressed == JOptionPane.OK_OPTION)
-            {
-                resetGame();
-            }
-            else
-            {
-                System.exit(0);
             }
         }
     }

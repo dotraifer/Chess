@@ -13,12 +13,14 @@ public abstract class Player {
     protected List<Move> legalMoves;
     protected Piece king;
     protected boolean isInCheck;
+    public boolean isAi;
 
-    public Player(Board board, List<Move> legalMoves, List<Move> enemyLegalMoves) {
+    public Player(Board board, List<Move> legalMoves, List<Move> enemyLegalMoves, boolean isAI) {
         this.board = board;
         this.king = findKing(board);
         this.legalMoves = ImmutableList.copyOf(Iterables.concat(legalMoves, calculateCastles(legalMoves, enemyLegalMoves)));
         this.isInCheck = !getAttacksOnBox(king.getPosition(), enemyLegalMoves).isEmpty();
+        this.isAi = isAI;
     }
     protected abstract Piece findKing(Board board);
 

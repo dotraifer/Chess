@@ -19,7 +19,6 @@ public class PositionEvaluation {
 
     private static GameStage calculateGameStage(Board board) {
         double materialLeft = Material.material(board.getWhitePlayer(), board.getWhitePlayer().getActivePieces()) + Material.material(board.getBlackPlayer(), board.getBlackPlayer().getActivePieces());
-        System.out.println(materialLeft);
         if(materialLeft > 60)
             return GameStage.OPENING;
         else if(materialLeft <= 60 && materialLeft > 28)

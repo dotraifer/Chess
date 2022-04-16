@@ -11,8 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BlackPlayer extends Player{
-    public BlackPlayer(Board board, List<Move> whiteLegalMoves, List<Move> blackLegalMoves) {
-        super(board, blackLegalMoves, whiteLegalMoves);
+    public BlackPlayer(Board board, List<Move> whiteLegalMoves, List<Move> blackLegalMoves, boolean isAi) {
+        super(board, blackLegalMoves, whiteLegalMoves, isAi);
+        this.king = findKing(board);
+
     }
 
     @Override
@@ -65,7 +67,7 @@ public class BlackPlayer extends Player{
                     this.board.getPieceAtCoordinate(3) == null)
             {
                 Piece rook = this.board.getPieceAtCoordinate(0);
-                if(rook.getClass() == Rook.class && rook.isFirstMove()) {
+                if(rook != null && rook.getClass() == Rook.class && rook.isFirstMove()) {
                     if (Player.getAttacksOnBox(2, opponentLegals).isEmpty()
                             && Player.getAttacksOnBox(3, opponentLegals).isEmpty()) {
                         Castles.add(new Move.QueenSideCastleMove(this.board, this.king, 2, (Rook)rook, 0, 3));
