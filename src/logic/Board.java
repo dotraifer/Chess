@@ -1,7 +1,6 @@
 package logic;
 
 import logic.Pieces.*;
-import logic.player.AI.PositionEvaluation;
 import logic.player.BlackPlayer;
 import logic.player.Player;
 import logic.player.WhitePlayer;
@@ -29,21 +28,31 @@ public class Board {
 
     }
 
+    // getter
     public Player getWhitePlayer() {
         return whitePlayer;
     }
 
+    // getter
     public Player getBlackPlayer() {
         return blackPlayer;
     }
 
+    // getter
     public List<Piece> getWhitePieces() {
         return whitePieces;
     }
 
+    // getter
     public List<Piece> getBlackPieces() {
         return blackPieces;
     }
+
+    /**
+     * return the player object for the given color
+     * @param color color Enum
+     * @return the player object of this color
+     */
     public Player getPlayerForColor(Color color)
     {
         if(color == Color.White)
@@ -51,7 +60,12 @@ public class Board {
         else
             return this.blackPlayer;
     }
-    public Player getOponnent()
+
+    /**
+     * return the opponent of the player who it's his turn
+     * @return the opponent player object
+     */
+    public Player getOpponent()
     {
         if(this.turn == null)
             return this.whitePlayer;
@@ -60,13 +74,21 @@ public class Board {
         return this.whitePlayer;
     }
 
+    // getter
     public Player getTurn() {
         return turn;
     }
 
+    // setter
     public void setTurn(Player turn) {
         this.turn = turn;
     }
+
+    /**
+     * look for the piece object on a given coordinate
+     * @param coordinate the coordinate we look in
+     * @return the piece object on the given coordinate, or null if no piece there
+     */
     public Piece getPieceAtCoordinate(int coordinate)
     {
         if(board_state.containsKey(coordinate))
@@ -82,6 +104,12 @@ public class Board {
                 '}';
     }
 
+    /**
+     * get a list of all the active pieces for a given color
+     * @param board_state the board state hash map
+     * @param color the color we want to find the pieces for
+     * @return list of all the pieces from this color
+     */
     private List<Piece> getActivePieces(Map<Integer, Piece> board_state, Color color)
     {
         List<Piece> activePieces = new ArrayList<>();

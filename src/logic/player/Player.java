@@ -22,18 +22,33 @@ public abstract class Player {
         this.isInCheck = !getAttacksOnBox(king.getPosition(), enemyLegalMoves).isEmpty();
         this.isAi = isAI;
     }
+    /**
+     * find the king of the player
+     * @param board the board to look on
+     * @return the king of the player
+     */
     protected abstract Piece findKing(Board board);
 
+    /**
+     * get the rival player
+     * @return the rival player object
+     */
     public abstract Player getRival();
 
+    // getter
     public Piece getKing() {
         return king;
     }
 
+    // getter
     public List<Move> getLegalMoves() {
         return legalMoves;
     }
 
+    /**
+     * will get every active piece for the player
+     * @return list of the active pieces of the player
+     */
     public abstract List<Piece> getActivePieces();
 
 
@@ -52,21 +67,35 @@ public abstract class Player {
         }
         return attackMoves;
     }
+    // getter
     public boolean isInCheck(){
         return isInCheck;
     }
 
+    /**
+     * check if this player is in checkmate position
+     * @return true if in check mate, false otherwise
+     */
     public boolean isInCheckMate() {
         // if in check and has no moves
         return isInCheck() && !isCanEscape();
     }
 
+    /**
+     * check if this player is in stalemate position
+     * @return true if in stalemate, false otherwise
+     */
     public boolean isInStaleMate(){
         // if not in check but has no moves
         return !isInCheck() && !isCanEscape();
     }
 
     // TODO : implement method that check if the king can escape
+
+    /**
+     * check if the player has legal moves
+     * @return true if it has legal moves, false otherwise
+     */
     private boolean isCanEscape() {
         for (Move move : this.legalMoves){
             MoveTransition transition = makeMove(move);
@@ -76,6 +105,13 @@ public abstract class Player {
         return false;
     }
 
+    /**
+     * the function make a given move, if the move is illegal it will return move transition with undone or left_in_check
+     * status and won't change the destination board, if the move is legal it will return the move transition of the move.
+     * @see MoveTransition
+     * @param move the move to make
+     * @return move transition of after the move has done
+     */
     public MoveTransition makeMove(Move move) {
         if (!isMoveLegal(move)) {
             return new MoveTransition(this.board, this.board, move, Move.MoveStatus.UNDONE);
@@ -88,11 +124,26 @@ public abstract class Player {
         return new MoveTransition(this.board, transitionBoard, move, Move.MoveStatus.DONE);
     }
 
+    /**
+     * check if the move is legal
+     * @param move the move to check if legal
+     * @return true if move legal, false otherwise
+     */
     private boolean isMoveLegal(Move move) {
         return this.legalMoves.contains(move);
     }
 
+    /**
+     * get the color of the player
+     * @return the color of the player
+     */
     public abstract Color getColor();
 
+    /**
+     * this find the possible castles for the player
+     * @param playerLegals list of the player legal moves
+     * @param opponentLegals list of the rival player legal moves
+     * @return list of the possible caste moves
+     */
     public abstract List<Move> calculateCastles(List<Move> playerLegals, List<Move> opponentLegals);
 }

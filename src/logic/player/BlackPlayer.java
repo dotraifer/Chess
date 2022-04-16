@@ -17,6 +17,9 @@ public class BlackPlayer extends Player{
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Piece findKing(Board board) {
         for (Piece piece : board.getBlackPieces()) {
@@ -26,21 +29,34 @@ public class BlackPlayer extends Player{
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     * @return
+     */
     @Override
     public Player getRival() {
         return board.getWhitePlayer();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Piece> getActivePieces() {
         return this.board.getBlackPieces();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Color getColor() {
         return Color.Black;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Move> calculateCastles(List<Move> playerLegals, List<Move> opponentLegals) {
         List<Move> Castles = new ArrayList<>();

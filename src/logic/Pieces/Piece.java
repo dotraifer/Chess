@@ -13,14 +13,17 @@ public abstract class Piece implements Cloneable {
     protected boolean isFirstMove;
     public double value;
 
+    // getter
     public Color getColor() {
         return color;
     }
 
+    // getter
     public int getPosition() {
         return position;
     }
 
+    // getter
     public boolean isFirstMove() {
         return isFirstMove;
     }
@@ -32,10 +35,12 @@ public abstract class Piece implements Cloneable {
         this.value = getValue();
     }
 
+    // getter
     public double getValue() {
         return value;
     }
 
+    // setter
     public void setFirstMove(boolean firstMove) {
         isFirstMove = firstMove;
     }
@@ -68,8 +73,6 @@ public abstract class Piece implements Cloneable {
      * @return true if the piece is friendly, else otherwise
      */
     public boolean isFriendlyPieceOnCoordinate(Board board, int coordinate) {
-        /*
-         */
         return board.board_state.get(coordinate) != null && board.board_state.get(coordinate).color == this.color;
     }
 
@@ -83,11 +86,20 @@ public abstract class Piece implements Cloneable {
         this.isFirstMove = false;
     }
 
+    /**
+     * equals override, check if object o is equal to this piece
+     * @param o object to check if equal
+     * @return true if all attributes equal, else false
+     */
     @Override
     public boolean equals(Object o) {
+        // if same
         if (this == o) return true;
+        // if not the right class
         if (o == null || getClass() != o.getClass()) return false;
+        // casting
         Piece piece = (Piece) o;
+        // check if all attributes equal
         return position == piece.position && isFirstMove == piece.isFirstMove && color == piece.color;
     }
 
@@ -96,6 +108,10 @@ public abstract class Piece implements Cloneable {
         return Objects.hash(color, position, isFirstMove);
     }
 
+    /**
+     * shallow cloning for piece object
+     * @return return clone of the object
+     */
     @Override
     public Piece clone() {
         try {

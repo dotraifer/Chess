@@ -18,6 +18,9 @@ public class WhitePlayer extends Player{
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Piece findKing(Board board) {
         for (Piece piece : board.getWhitePieces()) {
@@ -27,21 +30,33 @@ public class WhitePlayer extends Player{
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Player getRival() {
         return board.getBlackPlayer();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Piece> getActivePieces() {
         return this.board.getWhitePieces();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Color getColor() {
         return Color.White;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Move> calculateCastles(List<Move> playerLegals, List<Move> opponentLegals) {
         List<Move> Castles = new ArrayList<>();
