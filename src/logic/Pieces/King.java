@@ -10,9 +10,34 @@ import java.util.List;
 public class King extends Piece {
     final int[] move_mask = {-9, -8, -7, -1, 1, 7, 8, 9};
 
+    private final static double[] WHITE_KING_PREFERRED_COORDINATES = {
+            -0.3,-0.4,-0.4,-0.5,-0.5,-0.4,-0.4,-0.3,
+            -0.3,-0.4,-0.4,-0.5,-0.5,-0.4,-0.4,-0.3,
+            -0.3,-0.4,-0.4,-0.5,-0.5,-0.4,-0.4,-0.3,
+            -0.3,-0.4,-0.4,-0.5,-0.5,-0.4,-0.4,-0.3,
+            -0.2,-0.3,-0.3,-0.4,-0.4,-0.3,-0.3,-0.2,
+            -0.1,-0.2,-0.2,-0.2,-0.2,-0.2,-0.2,-0.1,
+            0.2, 0.2,  0,  0,  0,  0, 0.2, 0.2,
+            0.2, 0.3, 0.1,  0,  0, 0.1, 0.3, 0.2
+    };
+
+    private final static double[] BLACK_KING_PREFERRED_COORDINATES = {
+            0.2, 0.3, 0.1,  0,  0, 0.1, 0.3, 0.2,
+            0.2, 0.2,  0,  0,  0,  0, 0.2, 0.2,
+            -0.1,-0.2,-0.2,-0.2,-0.2,-0.2,-0.2,-0.1,
+            -0.2,-0.3,-0.3,-0.4,-0.4,-0.3,-0.3,-0.2,
+            -0.3,-0.4,-0.4,-0.5,-0.5,-0.4,-0.4,-0.3,
+            -0.3,-0.4,-0.4,-0.5,-0.5,-0.4,-0.4,-0.3,
+            -0.3,-0.4,-0.4,-0.5,-0.5,-0.4,-0.4,-0.3,
+            -0.3,-0.4,-0.4,-0.5,-0.5,-0.4,-0.4,-0.3
+    };
     public King(int position, Color color, boolean isFirstMove) {
         super(position, color, isFirstMove);
         this.value = 10000;
+    }
+    @Override
+    public double locationBonus() {
+        return this.color == Color.White ? WHITE_KING_PREFERRED_COORDINATES[this.position] : BLACK_KING_PREFERRED_COORDINATES[this.position];
     }
 
     @Override

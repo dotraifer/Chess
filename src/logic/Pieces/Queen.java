@@ -10,11 +10,37 @@ import java.util.List;
 public class Queen extends Piece {
     final int[] move_mask = {7, 9, -7, -9, 1, 8, -8, -1};
 
+
+    private final static double[] WHITE_QUEEN_PREFERRED_COORDINATES = {
+            -0.2,-0.1,-0.1, -0.05, -0.05,-0.1,-0.1,-0.2,
+            -0.1,  0,  0,  0,  0,  0,  0,-0.1,
+            -0.1,  0,  0.05,  0.05,  0.05,  0.05,  0,-0.1,
+            -0.05,  0,  0.05,  0.05,  0.05,  0.05,  0, -0.05,
+            0,  0,  0.05,  0.05,  0.05,  0.05,  0, -0.05,
+            -0.10,  0.05,  0.05,  0.05,  0.05,  0.05,  0,-0.1,
+            -0.1,  0,  0.05,  0,  0,  0,  0,-0.1,
+            -0.2,-0.1,-0.1, -0.05, -0.05,-0.1,-0.1,-0.2
+    };
+
+    private final static double[] BLACK_QUEEN_PREFERRED_COORDINATES = {
+            -0.2,-0.1,-0.1, -0.05, -0.05,-0.1,-0.1,-0.2,
+            -0.1,  0,  0.05,  0,  0,  0,  0,-0.1,
+            -0.1,  0.05,  0.05,  0.05,  0.05,  0.05,  0,-0.1,
+            0,  0,  0.05,  0.05,  0.05,  0.05,  0, -0.05,
+            0,  0,  0.05,  0.05,  0.05,  0.05,  0, -0.05,
+            -0.1,  0,  0.05,  0.05,  0.05,  0.05,  0,-0.1,
+            -0.1,  0,  0,  0,  0,  0,  0,-0.1,
+            -0.2,-0.1,-0.1, -0.05, -0.05,-0.1,-0.1,-0.2
+    };
     public Queen(int position, Color color, boolean isFirstMove) {
         super(position, color, isFirstMove);
         this.value = 9;
     }
 
+    @Override
+    public double locationBonus() {
+        return this.color == Color.White ? WHITE_QUEEN_PREFERRED_COORDINATES[this.position] : BLACK_QUEEN_PREFERRED_COORDINATES[this.position];
+    }
     @Override
     public List<Move> getLegalMoves(Board board) {
         int possible_coordinate;

@@ -95,7 +95,6 @@ public abstract class Move {
             final Board.UserBuilder builder = new Board.UserBuilder();
             builder.isWhiteAi = board.getWhitePlayer().isAi;
             builder.isBlackAi = board.getBlackPlayer().isAi;
-            System.out.println("third" + builder.isBlackAi);
             this.board.getTurn().getActivePieces().stream().filter(piece -> !this.pieceMoved.equals(piece)).forEach(builder::setPiece);
             this.board.getOpponent().getActivePieces().forEach(builder::setPiece);
             Piece piece = pieceMoved.clone();

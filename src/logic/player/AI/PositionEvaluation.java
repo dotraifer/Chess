@@ -31,7 +31,6 @@ public class PositionEvaluation {
     public static double score(Board board, Player player, GameStage gameStage)
     {
         List<Piece> allActivePieces = player.getActivePieces();
-        System.out.println(Material.material(player, allActivePieces) + " n" + player.getColor() + " " + Mobility.mobility(player) + "" + PawnStruct.pawnStruct(player, allActivePieces));
         return switch (gameStage) {
             case OPENING -> Material.material(player, allActivePieces) +
                     Mobility.mobility(player) * MOBILITY_VALUE_OPENING+

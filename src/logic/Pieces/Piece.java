@@ -44,6 +44,7 @@ public abstract class Piece implements Cloneable {
     public void setFirstMove(boolean firstMove) {
         isFirstMove = firstMove;
     }
+    public abstract double locationBonus();
 
     /**
      * finds all the legal moves for a piece in a given board

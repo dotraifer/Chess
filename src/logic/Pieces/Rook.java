@@ -10,9 +10,36 @@ import java.util.List;
 public class Rook extends Piece{
     final int[] move_mask = {1, 8, -8, -1};
 
+    private final static double[] WHITE_ROOK_PREFERRED_COORDINATES = {
+            0,  0,  0,  0,  0,  0,  0,  0,
+            0.05, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2,  0.05,
+            -0.05,  0,  0,  0,  0,  0,  0, -0.05,
+            -0.05,  0,  0,  0,  0,  0,  0, -0.05,
+            -0.05,  0,  0,  0,  0,  0,  0, -0.05,
+            -0.05,  0,  0,  0,  0,  0,  0, -0.05,
+            -0.05,  0,  0,  0,  0,  0,  0, -0.05,
+            0,  0,  0,  0.05,  0.05,  0,  0,  0
+    };
+
+    private final static double[] BLACK_ROOK_PREFERRED_COORDINATES = {
+            0,  0,  0,  0.05,  0.05,  0,  0,  0,
+            -0.05,  0,  0,  0,  0,  0,  0, -0.05,
+            -0.05,  0,  0,  0,  0,  0,  0, -0.05,
+            -0.05,  0,  0,  0,  0,  0,  0, -0.05,
+            -0.05,  0,  0,  0,  0,  0,  0, -0.05,
+            -0.05,  0,  0,  0,  0,  0,  0, -0.05,
+            0.05, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2,  0.05,
+            0,  0,  0,  0,  0,  0,  0,  0,
+    };
+
     public Rook(int position, Color color, boolean isFirstMove) {
         super(position, color, isFirstMove);
         this.value = 5;
+    }
+
+    @Override
+    public double locationBonus() {
+        return this.color == Color.White ? WHITE_ROOK_PREFERRED_COORDINATES[this.position] : BLACK_ROOK_PREFERRED_COORDINATES[this.position];
     }
     @Override
     public List<Move> getLegalMoves(Board board) {

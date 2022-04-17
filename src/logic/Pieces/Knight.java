@@ -9,9 +9,38 @@ import java.util.List;
 
 public class Knight extends Piece {
     final int[] move_mask = {-17, -15, -10, -6, 17, 15, 10, 6};
+
+    private final static double[] WHITE_KNIGHT_PREFERRED_COORDINATES = {
+            -0.5,-0.4,-0.3,-0.3,-0.3,-0.3,-0.4,-0.5,
+            -0.4,-0.2,  0,  0,  0,  0,-0.2,-0.4,
+            -0.3,  0, 0.1, 0.15, 0.15, 0.1,  0,-0.3,
+            -0.3,  0.05, 0.15, 0.2, 0.2, 0.15,  0.05,-0.3,
+            -0.3,  0, 0.15, 0.2, 0.2, 0.15,  0,-0.3,
+            -0.3,  0.05, 0.1, 0.15, 0.15, 0.1,  0.05,-0.3,
+            -0.4,-0.2,  0,  0.05,  0.05,  0,-0.2,-0.4,
+            -0.5,-0.4,-0.3,-0.3,-0.3,-0.3,-0.4,-0.5
+    };
+
+    private final static double[] BLACK_KNIGHT_PREFERRED_COORDINATES = {
+            -0.5,-0.4,-0.3,-0.3,-0.3,-0.3,-0.4,-0.5,
+            -0.4,-0.2,  0,  0.05,  0.05,  0,-0.2,-0.4,
+            -0.3,  0.05, 0.1, 0.15, 0.15, 0.1,  0.05,-0.3,
+            -0.3,  0, 0.15, 0.20, 0.20, 0.15,  0,-0.30,
+            -0.3,  0.05, 0.15, 0.20, 0.20, 0.15,  0.05,-0.30,
+            -0.30,  0, 0.10, 0.15, 0.15, 0.10,  0,-0.30,
+            -0.4,-0.2,  0,  0,  0,  0,-0.2,-0.4,
+            -0.5,-0.4,-0.3,-0.3,-0.3,-0.3,-0.4,-0.5,
+    };
+
+
     public Knight(int position, Color color, boolean isFirstMove) {
         super(position, color, isFirstMove);
         this.value = 3;
+    }
+
+    @Override
+    public double locationBonus() {
+        return this.color == Color.White ? WHITE_KNIGHT_PREFERRED_COORDINATES[this.position] : BLACK_KNIGHT_PREFERRED_COORDINATES[this.position];
     }
 
     @Override

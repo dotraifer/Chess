@@ -10,9 +10,36 @@ import java.util.List;
 public class Bishop extends Piece {
     final int[] move_mask = {7, 9, -7, -9};
 
+    private final static double[] WHITE_BISHOP_PREFERRED_COORDINATES = {
+            -0.2,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.2,
+            -0.1,  0,  0,  0,  0,  0,  0,-0.1,
+            -0.1,  0,  0.05, 0.1, 0.1,  0.05,  0,-0.1,
+            -0.1,  0.05,  0.05, 0.1, 0.1,  0.05,  0.05,-0.1,
+            -0.1,  0, 0.1, 0.1, 0.1, 0.1,  0,-0.1,
+            -0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1,-0.1,
+            -0.1,  0.05,  0,  0,  0,  0,  0.05,-0.1,
+            -0.2,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.2
+    };
+
+    private final static double[] BLACK_BISHOP_PREFERRED_COORDINATES = {
+            -0.2,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.2,
+            -0.1,  0.05,  0,  0,  0,  0,  0.05,-0.1,
+            -0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1,-0.1,
+            -0.1,  0, 0.1, 0.1, 0.1, 0.1,  0,-0.1,
+            -0.1,  0.05,  0.05, 0.1, 0.1,  0.05,  0.05,-0.1,
+            -0.1,  0,  0.05, 0.1, 0.1,  0.05,  0,-0.1,
+            -0.1,  0,  0,  0,  0,  0,  0,-0.1,
+            -0.2,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.2
+    };
+
     public Bishop(int position, Color color, boolean isFirstMove) {
         super(position, color, isFirstMove);
         this.value = 3;
+    }
+
+    @Override
+    public double locationBonus() {
+        return this.color == Color.White ? WHITE_BISHOP_PREFERRED_COORDINATES[this.position] : BLACK_BISHOP_PREFERRED_COORDINATES[this.position];
     }
 
     @Override

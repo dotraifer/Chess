@@ -8,11 +8,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Pawn extends Piece {
+
+    private final static double[] WHITE_PAWN_PREFERRED_COORDINATES = {
+            0,  0,  0,  0,  0,  0,  0,  0,
+            0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75,
+            0.25, 0.25, 0.29, 0.29, 0.29, 0.29, 0.25, 0.25,
+            0.05,  0.05, 0.1, 0.55, 0.55, 0.1,  0.05,  0.05,
+            0,  0,  0, 0.2, 0.2,  0,  0,  0,
+            0.05, -0.05,-0.1,  0,  0,-0.1, -0.05,  0.05,
+            0.05, 0.1, 0.1,-0.2,-0.2, 0.1, 0.1,  0.05,
+            0,  0,  0,  0,  0,  0,  0,  0
+    };
+
+    private final static double[] BLACK_PAWN_PREFERRED_COORDINATES = {
+            0,  0,  0,  0,  0,  0,  0,  0,
+            0.05, 0.1, 0.1,-0.2,-0.2, 0.1, 0.1,  0.05,
+            0.05, -0.05,-0.1,  0,  0,-0.1, -0.05,  0.05,
+            0,  0,  0, 0.2, 0.2,  0,  0,  0,
+            0.05,  0.05, 0.1, 0.55, 0.55, 0.1,  0.05,  0.05,
+            0.25, 0.25, 0.29, 0.29, 0.29, 0.29, 0.25, 0.25,
+            0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75,
+            0,  0,  0,  0,  0,  0,  0,  0
+    };
     final int[] move_mask = {8, 16, 7 , 9};
 
     public Pawn(int position, Color color, boolean isFirstMove) {
         super(position, color, isFirstMove);
         this.value = 1;
+    }
+
+    @Override
+    public double locationBonus() {
+        return this.color == Color.White ? WHITE_PAWN_PREFERRED_COORDINATES[this.position] : BLACK_PAWN_PREFERRED_COORDINATES[this.position];
     }
 
     @Override
@@ -55,4 +82,6 @@ public class Pawn extends Piece {
             return true;
         else return ((coordinate + 1) % 8 == 0 && ((mask == 9 && color == Color.Black)||(mask == 7 && color == Color.White)));
     }
+
+
 }

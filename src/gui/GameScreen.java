@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static javax.swing.SwingUtilities.isLeftMouseButton;
+import static logic.player.AI.PositionEvaluation.evaluate;
 
 public class GameScreen {
     private final JFrame gameFrame;
@@ -171,6 +172,7 @@ public class GameScreen {
                                 System.out.println("sec"+board.getBlackPlayer().isAi);
                                 if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                                     board = moveTransition.getToBoard();
+                                    System.out.println("hey" + evaluate(board));
                                     boardPanel.drawBoard(board);
                                     if(board.getTurn().isInCheckMate())
                                         boardPanel.gameOver(board.getOpponent().getColor());
