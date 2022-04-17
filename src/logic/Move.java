@@ -34,6 +34,15 @@ public abstract class Move {
         return pieceMoved;
     }
 
+    public boolean isAttack()
+    {
+        return false;
+    }
+
+    public boolean isCastle()
+    {
+        return false;
+    }
     @Override
     public String toString() {
         return "Move{" +
@@ -70,6 +79,11 @@ public abstract class Move {
         public MajorMove(Board board, Piece pieceMoved, int coordinateMovedTo) {
             super(board, pieceMoved, coordinateMovedTo);
         }
+
+        @Override
+        public boolean isAttack() {
+            return false;
+        }
     }
     public static class AttackMove extends Move{
         Piece attackedPiece;
@@ -81,6 +95,11 @@ public abstract class Move {
 
         public Piece getAttackedPiece() {
             return attackedPiece;
+        }
+
+        @Override
+        public boolean isAttack() {
+            return true;
         }
     }
     public static class PawnMove extends Move{
@@ -149,13 +168,6 @@ public abstract class Move {
         }
     }
 
-    public static final class PawnJump extends Move{
-
-        public PawnJump(Board board, Piece pieceMoved, int coordinateMovedTo) {
-            super(board, pieceMoved, coordinateMovedTo);
-        }
-    }
-
     static abstract class CastleMove extends Move{
         protected final Rook castleRook;
         protected final int castleRookStart;
@@ -167,6 +179,11 @@ public abstract class Move {
             this.castleRook = castleRook;
             this.castleRookStart = castleRookStart;
             this.castleRookDest = castleRookDest;
+        }
+
+        @Override
+        public boolean isCastle() {
+            return true;
         }
 
         /**
@@ -193,7 +210,6 @@ public abstract class Move {
             builder.setMoveTransition(this);
             return builder.build();
         }
-
     }
 
     public static final class KingSideCastleMove extends CastleMove {
@@ -203,6 +219,7 @@ public abstract class Move {
             super(board, pieceMoved, coordinateMovedTo, castleRook, castleRookStart,
                    castleRookDest);
         }
+
     }
     public static final class QueenSideCastleMove extends CastleMove{
 
@@ -217,6 +234,7 @@ public abstract class Move {
         public InvalidMove() {
             super(null, null, -1);
         }
+
     }
     public static class MoveFactory {
 

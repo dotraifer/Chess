@@ -176,7 +176,6 @@ public class GameScreen {
                                 if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                                     board = moveTransition.getToBoard();
                                     System.out.println("hey" + evaluate(board));
-                                    boardPanel.drawBoard(board);
                                     if(board.getTurn().isInCheckMate())
                                     {
                                         boardPanel.gameOver(board.getOpponent().getColor());
@@ -186,8 +185,7 @@ public class GameScreen {
                                         boardPanel.gameOver(null);
                                     }
                                     if(board.getTurn().isAi) {
-                                        putTileColor();
-                                        putTilePiece(board);
+                                        drawTile(board);
                                         AiMove();
                                     }
                                 }

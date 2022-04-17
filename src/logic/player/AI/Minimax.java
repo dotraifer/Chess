@@ -1,21 +1,28 @@
 package logic.player.AI;
 
+import com.google.common.collect.Ordering;
 import logic.Board;
 import logic.Color;
 import logic.Move;
 import logic.MoveTransition;
 import logic.player.Player;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 
 public class Minimax {
     public static Move execute(final Board board, int depth) {
+        final long startTime = System.currentTimeMillis();
         final Player turn = board.getTurn();
         final Color color = turn.getColor();
         Move bestMove = null;
         double highestSeenValue = Double.NEGATIVE_INFINITY;
         double lowestSeenValue = Double.POSITIVE_INFINITY;
         double currentValue;
-        for (final Move move : turn.getLegalMoves()) {
+        List<Move> SortedMoves = sortMoves(turn.getLegalMoves());
+        for (final Move move : SortedMoves) {
             final MoveTransition moveTransition = board.getTurn().makeMove(move);
             if (moveTransition.getMoveStatus() == Move.MoveStatus.DONE) {
                 currentValue = color == Color.White ?
@@ -30,7 +37,14 @@ public class Minimax {
                 }
             }
         }
+        long executionTime = System.currentTimeMillis() - startTime;
+        System.out.printf("ececitoin" + executionTime);
         return bestMove;
+    }
+
+    private static List<Move> sortMoves(Collection<Move> legalMoves) {
+        SortMoves sortMoves = new SortMoves();
+        return Ordering.from(sortMoves).immutableSortedCopy(legalMoves);
     }
 
     public static double max(final Board board,
@@ -75,5 +89,11 @@ public class Minimax {
             }
         }
         return currentLowest;
+    }
+
+
+    private static String calculateTimeTaken(final long start, final long end) {
+        final long timeTaken = (end - start) / 1000000;
+        return timeTaken + " ms";
     }
 }
