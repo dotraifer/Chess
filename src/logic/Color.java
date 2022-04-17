@@ -1,7 +1,7 @@
 package logic;
 
 public enum Color {
-    White()
+    White
     , Black
 }
 

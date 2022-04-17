@@ -2,7 +2,10 @@ package logic.player;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import gui.Result;
 import logic.*;
+import logic.Pieces.King;
+import logic.Pieces.Pawn;
 import logic.Pieces.Piece;
 
 import java.util.ArrayList;
@@ -146,4 +149,48 @@ public abstract class Player {
      * @return list of the possible caste moves
      */
     public abstract List<Move> calculateCastles(List<Move> playerLegals, List<Move> opponentLegals);
+
+    /**
+     * check if the game has been finished, and in what score if does
+     * @return the Result of the game, NOT_FINISHED if the game still going
+     * @see Result Enum
+     */
+    public Result gameResult()
+    {
+        if(isInCheckMate() && getColor() == Color.White)
+            return Result.BLACK;
+        if(isInCheckMate() && getColor() == Color.Black)
+            return Result.WHITE;
+        if(isInStaleMate() || board.getMovesWithoutEat() == 50 || notEnoughMaterial())
+            return Result.DRAW;
+        return Result.NOT_FINISHED;
+    }
+
+    /**
+     * check if both of the players has not enough material to win(draw case)
+     * @exemple king against king, king and knight against king and so on...
+     * @return true if both can't win
+     */
+    private boolean notEnoughMaterial() {
+        return isNotEnoughMaterialToWin(board.getBlackPieces()) && isNotEnoughMaterialToWin(board.getWhitePieces());
+    }
+
+    /**
+     * check if the active pieces are enough to win
+     * @param activePieces the active pieces of a player
+     * @return true if the player has not enough material to win, else if does
+     */
+    private boolean isNotEnoughMaterialToWin(List<Piece> activePieces)
+    {
+        boolean isPawn = false;
+        int material = 0;
+        for(Piece piece : activePieces)
+        {
+            if(piece.getClass() != King.class)
+                material += piece.value;
+            if(piece.getClass() == Pawn.class)
+                isPawn = true;
+        }
+        return (material <= 3 && !isPawn);
+    }
 }

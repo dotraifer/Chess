@@ -61,6 +61,7 @@ public abstract class Move {
         // put back the unchanged attributes
         builder.isWhiteAi = board.getWhitePlayer().isAi;
         builder.isBlackAi = board.getBlackPlayer().isAi;
+        builder.movesWithoutEat = board.getMovesWithoutEat() + 1;
         this.board.getTurn().getActivePieces().stream().filter(piece -> !this.pieceMoved.equals(piece)).forEach(builder::setPiece);
         this.board.getOpponent().getActivePieces().forEach(builder::setPiece);
         // clone the moved piece
@@ -93,6 +94,13 @@ public abstract class Move {
             this.attackedPiece = attackedPiece;
         }
 
+        @Override
+        public Board executeMove() {
+            Board board = super.executeMove();
+            board.setMovesWithoutEat(0);
+            return board;
+        }
+
         public Piece getAttackedPiece() {
             return attackedPiece;
         }
@@ -118,6 +126,7 @@ public abstract class Move {
             final Board.UserBuilder builder = new Board.UserBuilder();
             builder.isWhiteAi = board.getWhitePlayer().isAi;
             builder.isBlackAi = board.getBlackPlayer().isAi;
+            builder.movesWithoutEat = board.getMovesWithoutEat() + 1;
             this.board.getTurn().getActivePieces().stream().filter(piece -> !this.pieceMoved.equals(piece)).forEach(builder::setPiece);
             this.board.getOpponent().getActivePieces().forEach(builder::setPiece);
             Piece piece = pieceMoved.clone();
@@ -147,6 +156,7 @@ public abstract class Move {
             final Board.UserBuilder builder = new Board.UserBuilder();
             builder.isWhiteAi = board.getWhitePlayer().isAi;
             builder.isBlackAi = board.getBlackPlayer().isAi;
+            builder.movesWithoutEat = 0;
             this.board.getTurn().getActivePieces().stream().filter(piece -> !this.pieceMoved.equals(piece)).forEach(builder::setPiece);
             this.board.getOpponent().getActivePieces().forEach(builder::setPiece);
             Piece piece = pieceMoved.clone();
@@ -194,6 +204,7 @@ public abstract class Move {
             final Board.UserBuilder builder = new Board.UserBuilder();
             builder.isWhiteAi = board.getWhitePlayer().isAi;
             builder.isBlackAi = board.getBlackPlayer().isAi;
+            builder.movesWithoutEat = board.getMovesWithoutEat() + 1;
             for (final Piece piece : this.board.getTurn().getActivePieces()) {
                 if (!this.pieceMoved.equals(piece) && !this.castleRook.equals(piece)) {
                     builder.setPiece(piece);

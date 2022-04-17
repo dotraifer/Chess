@@ -120,13 +120,13 @@ public class GameScreen {
             validate();
             repaint();
         }
-        public void gameOver(logic.Color color)
+        public void gameOver(Result result)
         {
             String message;
-            if(color == null)
+            if(result == Result.DRAW)
                 message = "draw, Want to try again?";
             else
-                message = color + " won, Want to try Again?";
+                message = result + " won, Want to try Again?";
             String title = "Game Over";
             int userPressed = JOptionPane.showConfirmDialog(this, message, title, JOptionPane.OK_CANCEL_OPTION);
 
@@ -176,13 +176,8 @@ public class GameScreen {
                                 if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                                     board = moveTransition.getToBoard();
                                     System.out.println("hey" + evaluate(board));
-                                    if(board.getTurn().isInCheckMate())
-                                    {
-                                        boardPanel.gameOver(board.getOpponent().getColor());
-                                    }
-                                    if(board.getTurn().isInStaleMate())
-                                    {
-                                        boardPanel.gameOver(null);
+                                    if(board.getTurn().gameResult() != Result.NOT_FINISHED) {
+                                        boardPanel.gameOver(board.getTurn().gameResult());
                                     }
                                     if(board.getTurn().isAi) {
                                         drawTile(board);
@@ -234,8 +229,8 @@ public class GameScreen {
             moveTransition = board.getTurn().makeMove(Minimax.execute(board, 5));
             if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                 board = moveTransition.getToBoard();
-                if(board.getTurn().isInCheckMate())
-                    boardPanel.gameOver(board.getOpponent().getColor());
+                if(board.getTurn().gameResult() != Result.NOT_FINISHED)
+                    boardPanel.gameOver(board.getTurn().gameResult());
             }
         }
 
