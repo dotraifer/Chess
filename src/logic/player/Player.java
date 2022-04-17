@@ -56,9 +56,9 @@ public abstract class Player {
      * find all the possible attack moves on a given box, and return list of it
      * @param boxPos the coordinate of the box
      * @param moves list of moves to check
-     * @return the possible attack moves to a box on the board
+     * @return list of the possible attack moves to a box on the board
      */
-    protected static List<Move> getAttacksOnBox(int boxPos, List<Move> moves){
+    public static List<Move> getAttacksOnBox(int boxPos, List<Move> moves){
         List<Move> attackMoves = new ArrayList<>();
         for (Move move : moves)
         {

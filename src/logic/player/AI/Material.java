@@ -14,8 +14,7 @@ public class Material {
         int numberOfBishops = 0;
         double materialValue = 0;
         for(Piece piece : allActivePieces) {
-            if(piece.getClass() != King.class)
-                materialValue += piece.getValue() + piece.locationBonus();
+            materialValue += piece.getValue() + piece.locationBonus();
             if (piece.getClass() == Bishop.class)
                 numberOfBishops++;
         }

@@ -54,7 +54,8 @@ public class Pawn extends Piece {
                 if (mask == 8 && board.board_state.get(possible_coordinate) == null) {
                     legalMoves.add(new Move.PawnMove(board, this, possible_coordinate));
                 }
-                else if (mask == 16 && board.board_state.get(possible_coordinate) == null && isFirstMove)
+                else if (mask == 16 && board.board_state.get(possible_coordinate) == null &&
+                        board.board_state.get(possible_coordinate - 8 * getDirection(color)) == null && isFirstMove)
                 {
                     legalMoves.add(new Move.PawnMove(board, this, possible_coordinate));
                 }

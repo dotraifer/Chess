@@ -233,7 +233,7 @@ public class GameScreen {
         public void AiMove()
         {
             MoveTransition moveTransition = null;
-            moveTransition = board.getTurn().makeMove(Minimax.execute(board, 4));
+            moveTransition = board.getTurn().makeMove(Minimax.execute(board, 5));
             if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                 board = moveTransition.getToBoard();
                 if(board.getTurn().isInCheckMate())

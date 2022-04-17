@@ -78,6 +78,10 @@ public abstract class Move {
             super(board, pieceMoved, coordinateMovedTo);
             this.attackedPiece = attackedPiece;
         }
+
+        public Piece getAttackedPiece() {
+            return attackedPiece;
+        }
     }
     public static class PawnMove extends Move{
 
