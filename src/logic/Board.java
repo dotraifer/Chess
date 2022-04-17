@@ -15,6 +15,7 @@ public class Board {
     private final Player whitePlayer;
     private final Player blackPlayer;
     private Player turn;
+    private int movesWithoutEat;
 
     public Board(UserBuilder builder) {
         this.board_state = Collections.unmodifiableMap(builder.boardConfig);
@@ -25,6 +26,7 @@ public class Board {
         this.whitePlayer = new WhitePlayer(this, whiteLegalMoves, blackLegalMoves, builder.isWhiteAi);
         this.blackPlayer = new BlackPlayer(this, whiteLegalMoves, blackLegalMoves, builder.isBlackAi);
         this.turn = getPlayerForColor(builder.nextMoveMaker);
+        this.movesWithoutEat = builder.movesWithoutEat;
 
     }
 
@@ -46,6 +48,14 @@ public class Board {
     // getter
     public List<Piece> getBlackPieces() {
         return blackPieces;
+    }
+
+    public int getMovesWithoutEat() {
+        return movesWithoutEat;
+    }
+
+    public void setMovesWithoutEat(int movesWithoutEat) {
+        this.movesWithoutEat = movesWithoutEat;
     }
 
     /**
@@ -185,6 +195,7 @@ public class Board {
         builder.setMoveMaker(Color.White);
         builder.isWhiteAi = isWhiteAi;
         builder.isBlackAi = isBlackAi;
+        builder.movesWithoutEat = 0;
         return builder;
     }
 
@@ -195,6 +206,7 @@ public class Board {
         Move transitionMove;
         boolean isWhiteAi;
         boolean isBlackAi;
+        int movesWithoutEat;
 
         public UserBuilder() {
             this.boardConfig = new HashMap<>();
