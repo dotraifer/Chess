@@ -122,7 +122,11 @@ public class GameScreen {
         }
         public void gameOver(logic.Color color)
         {
-            String message = color + " won, Want to try Again?";
+            String message;
+            if(color == null)
+                message = "draw, Want to try again?";
+            else
+                message = color + " won, Want to try Again?";
             String title = "Game Over";
             int userPressed = JOptionPane.showConfirmDialog(this, message, title, JOptionPane.OK_CANCEL_OPTION);
 
@@ -151,7 +155,6 @@ public class GameScreen {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     MoveTransition moveTransition = null;
-                    System.out.println("first" + board.getBlackPlayer().isAi);
                     if(isLeftMouseButton(e))
                     {
                         if(sourceTile == -1) {
@@ -175,9 +178,18 @@ public class GameScreen {
                                     System.out.println("hey" + evaluate(board));
                                     boardPanel.drawBoard(board);
                                     if(board.getTurn().isInCheckMate())
+                                    {
                                         boardPanel.gameOver(board.getOpponent().getColor());
-                                    if(board.getTurn().isAi)
+                                    }
+                                    if(board.getTurn().isInStaleMate())
+                                    {
+                                        boardPanel.gameOver(null);
+                                    }
+                                    if(board.getTurn().isAi) {
+                                        putTileColor();
+                                        putTilePiece(board);
                                         AiMove();
+                                    }
                                 }
                             }
                             sourceTile = -1;
