@@ -255,7 +255,7 @@ public abstract class Move {
             throw new RuntimeException("Not instantiatable!");
         }
 
-        public Move getNullMove() {
+        public static Move getNullMove() {
             return invalidMove;
         }
 

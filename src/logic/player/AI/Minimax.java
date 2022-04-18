@@ -7,12 +7,15 @@ import logic.Move;
 import logic.MoveTransition;
 import logic.player.Player;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 
 public class Minimax {
+    private static int quiescenceCount = 0;
+    private static final int MAX_QUIESCENCE = 5000 * 5;
     public static Move execute(final Board board, int depth) {
         final long startTime = System.currentTimeMillis();
         final Player turn = board.getTurn();
@@ -60,7 +63,7 @@ public class Minimax {
             final MoveTransition moveTransition = board.getTurn().makeMove(move);
             if (moveTransition.getMoveStatus() == Move.MoveStatus.DONE) {
                 currentHighest = Math.max(currentHighest, min(moveTransition.getToBoard(),
-                        depth-1, currentHighest, lowest));
+                        calculateQuiescenceDepth(moveTransition.getToBoard(), depth), currentHighest, lowest));
                 if (lowest <= currentHighest) {
                     break;
                 }
@@ -82,7 +85,7 @@ public class Minimax {
             final MoveTransition moveTransition = board.getTurn().makeMove(move);
             if (moveTransition.getMoveStatus() == Move.MoveStatus.DONE) {
                 currentLowest = Math.min(currentLowest, max(moveTransition.getToBoard(),
-                        depth - 1, highest, currentLowest));
+                        calculateQuiescenceDepth(moveTransition.getToBoard(), depth), highest, currentLowest));
                 if (currentLowest <= highest) {
                     break;
                 }
@@ -97,5 +100,36 @@ public class Minimax {
         return timeTaken + " ms";
     }
 
+    private static int calculateQuiescenceDepth(final Board toBoard,
+                                         final int depth) {
+        if(depth == 1 && quiescenceCount < MAX_QUIESCENCE) {
+            int activityMeasure = 0;
+            if (toBoard.getTurn().isInCheck()) {
+                activityMeasure += 1;
+            }
+            for(final Move move: lastNMoves(toBoard, 3)) {
+                if(move.isAttack()) {
+                    activityMeasure += 1;
+                }
+            }
+            if(activityMeasure >= 2) {
+                System.out.println("true");
+                quiescenceCount++;
+                return 2;
+            }
+        }
+        return depth - 1;
+    }
 
+    public static List<Move> lastNMoves(final Board board, int N) {
+        final List<Move> moveHistory = new ArrayList<>();
+        Move currentMove = board.getTransitionMove();
+        int i = 0;
+        while(currentMove != Move.MoveFactory.getNullMove() && i < N) {
+            moveHistory.add(currentMove);
+            currentMove = currentMove.getBoard().getTransitionMove();
+            i++;
+        }
+        return Collections.unmodifiableList(moveHistory);
+    }
 }

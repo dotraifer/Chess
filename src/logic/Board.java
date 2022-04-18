@@ -16,6 +16,7 @@ public class Board {
     private final Player blackPlayer;
     private Player turn;
     private int movesWithoutEat;
+    private final Move transitionMove;
 
     public Board(UserBuilder builder) {
         this.board_state = Collections.unmodifiableMap(builder.boardConfig);
@@ -27,6 +28,7 @@ public class Board {
         this.blackPlayer = new BlackPlayer(this, whiteLegalMoves, blackLegalMoves, builder.isBlackAi);
         this.turn = getPlayerForColor(builder.nextMoveMaker);
         this.movesWithoutEat = builder.movesWithoutEat;
+        this.transitionMove = builder.transitionMove != null ? builder.transitionMove : Move.MoveFactory.getNullMove();
 
     }
 
@@ -56,6 +58,10 @@ public class Board {
 
     public void setMovesWithoutEat(int movesWithoutEat) {
         this.movesWithoutEat = movesWithoutEat;
+    }
+
+    public Move getTransitionMove() {
+        return transitionMove;
     }
 
     /**
