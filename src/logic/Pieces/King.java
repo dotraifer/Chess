@@ -35,11 +35,18 @@ public class King extends Piece {
         super(position, color, isFirstMove);
         this.value = 10000;
     }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public double locationBonus() {
         return this.color == Color.White ? WHITE_KING_PREFERRED_COORDINATES[this.position] : BLACK_KING_PREFERRED_COORDINATES[this.position];
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Move> getLegalMoves(Board board) {
         int possible_coordinate;

@@ -38,11 +38,18 @@ public class Knight extends Piece {
         this.value = 3.2;
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public double locationBonus() {
         return this.color == Color.White ? WHITE_KNIGHT_PREFERRED_COORDINATES[this.position] : BLACK_KNIGHT_PREFERRED_COORDINATES[this.position];
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Move> getLegalMoves(Board board) {
         // TODO check if eating move needed

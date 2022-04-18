@@ -37,11 +37,17 @@ public class Bishop extends Piece {
         this.value = 3.3;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public double locationBonus() {
         return this.color == Color.White ? WHITE_BISHOP_PREFERRED_COORDINATES[this.position] : BLACK_BISHOP_PREFERRED_COORDINATES[this.position];
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Move> getLegalMoves(Board board) {
         int possible_coordinate;

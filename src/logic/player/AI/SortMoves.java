@@ -6,6 +6,13 @@ import logic.Move;
 import java.util.Comparator;
 
 public class SortMoves implements Comparator<Move> {
+    /**
+     * this function is used to sort the list of moves by their possibility to be good
+     * the function compare between the first move and the second
+     * @param m1 first move
+     * @param m2 second move
+     * @return the int value of the compartment
+     */
     @Override
     public int compare(Move m1, Move m2) {
         return ComparisonChain.start()

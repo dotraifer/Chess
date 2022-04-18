@@ -37,10 +37,16 @@ public class Queen extends Piece {
         this.value = 9;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public double locationBonus() {
         return this.color == Color.White ? WHITE_QUEEN_PREFERRED_COORDINATES[this.position] : BLACK_QUEEN_PREFERRED_COORDINATES[this.position];
     }
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Move> getLegalMoves(Board board) {
         int possible_coordinate;

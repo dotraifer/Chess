@@ -38,11 +38,17 @@ public class Pawn extends Piece {
         this.value = 1;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public double locationBonus() {
         return this.color == Color.White ? WHITE_PAWN_PREFERRED_COORDINATES[this.position] : BLACK_PAWN_PREFERRED_COORDINATES[this.position];
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Move> getLegalMoves(Board board) {
         int possible_coordinate;

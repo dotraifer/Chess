@@ -44,6 +44,11 @@ public abstract class Piece implements Cloneable {
     public void setFirstMove(boolean firstMove) {
         isFirstMove = firstMove;
     }
+
+    /**
+     * get the bonus for the piece location according to her Piece-Square Tables
+     * @return the bonus to add
+     */
     public abstract double locationBonus();
 
     /**
