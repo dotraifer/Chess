@@ -272,6 +272,15 @@ public abstract class Move {
             return invalidMove;
         }
     }
+
+    /**
+     * this function check if a given coordinate is the last row for a given color
+     * @param coordinate the coordinate to check
+     * @param color the color we check for
+     * @return true if it is the last row, else otherwise
+     * @see PawnMove
+     * @see PawnAttackMove
+     */
     public boolean isLastRow(int coordinate, Color color)
     {
         if(coordinate >= 0 && coordinate <= 7 && color == Color.White)

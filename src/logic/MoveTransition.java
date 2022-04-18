@@ -13,10 +13,12 @@ public class MoveTransition {
         this.moveStatus = moveStatus;
     }
 
+    // getter
     public Move.MoveStatus getMoveStatus() {
         return moveStatus;
     }
 
+    // getter
     public Board getToBoard() {
         return toBoard;
     }

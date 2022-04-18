@@ -1,15 +1,19 @@
 package logic.player.AI;
 
 import logic.Pieces.Bishop;
-import logic.Pieces.King;
 import logic.Pieces.Piece;
-import logic.player.Player;
 
 import java.util.List;
 
 public class Material {
     private final static double TWO_BISHOPS_BONUS = 0.25;
-    public static double material(Player player, List<Piece> allActivePieces)
+
+    /**
+     * this function evaluate the material value of the given pieces
+     * @param allActivePieces the pieces we want to evaluate their values
+     * @return material evaluation for the given pieces
+     */
+    public static double material(List<Piece> allActivePieces)
     {
         int numberOfBishops = 0;
         double materialValue = 0;
