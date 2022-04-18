@@ -22,6 +22,7 @@ public class Material {
             if (piece.getClass() == Bishop.class)
                 numberOfBishops++;
         }
-        return materialValue + (numberOfBishops == 2 ? TWO_BISHOPS_BONUS : 0);
+        return materialValue;
+                //+ (numberOfBishops == 2 ? TWO_BISHOPS_BONUS : 0);
     }
 }

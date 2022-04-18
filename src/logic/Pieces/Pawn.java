@@ -30,6 +30,7 @@ public class Pawn extends Piece {
             0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75,
             0,  0,  0,  0,  0,  0,  0,  0
     };
+
     final int[] move_mask = {8, 16, 7 , 9};
 
     public Pawn(int position, Color color, boolean isFirstMove) {

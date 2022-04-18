@@ -35,7 +35,7 @@ public class Knight extends Piece {
 
     public Knight(int position, Color color, boolean isFirstMove) {
         super(position, color, isFirstMove);
-        this.value = 3;
+        this.value = 3.2;
     }
 
     @Override
