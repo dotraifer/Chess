@@ -9,6 +9,7 @@ import java.util.List;
 public class PawnStruct {
     private static final double DOUBLE_PAWN_PUNISHMENT = -0.1;
     private static final double ISOLATED_PAWN_PUNISHMENT = -0.1;
+    private static final double PAWN_ISLAND_PUNISHMENT = -0.1;
 
     /**
      * this function evaluate the player pawn struct, according to pawns stack and isolated pawns
@@ -19,7 +20,7 @@ public class PawnStruct {
     public static double pawnStruct(Player player, List<Piece> allActivePieces)
     {
         int[] pawnsArr = getPawnsPlacesArray(allActivePieces);
-        return calculateDoublePawns(pawnsArr) + calculateIsolatedPawns((pawnsArr));
+        return calculateDoublePawns(pawnsArr) + calculateIsolatedPawns(pawnsArr) + PawnIslands(pawnsArr);
 
     }
 
@@ -39,11 +40,32 @@ public class PawnStruct {
         }
         return pawnsArr;
     }
+    /**
+     * this function count the pawns islands on the board, and punish the evaluation according to it
+     * @param pawnsArr array of the number of pawns in every column of the player in the board
+     * @return evaluation of the pawns Islands on the board for this pawns
+     * @see <a href="https://www.chessprogramming.org/Pawn_Islands">
+     */
+    private static double PawnIslands(int[] pawnsArr) {
+        int pawnsIslands = 0;
+        for(int i = 0;i < pawnsArr.length; i++)
+        {
+            if(pawnsArr[i] > 0)
+            {
+                while( i < pawnsArr.length && pawnsArr[i] > 0)
+                    i++;
+                pawnsIslands++;
+            }
+        }
+        return pawnsIslands * PAWN_ISLAND_PUNISHMENT;
+    }
+
 
     /**
-     * this function evaluate the pawns stack on the board, and punish the evaluation according to it
+     * this function count the pawns stack on the board, and punish the evaluation according to it
      * @param pawnsArr array of the number of pawns in every column of the player in the board
      * @return evaluation of the pawns stack on the board for this pawns
+     * @see <a href="https://www.chessprogramming.org/Doubled_Pawn"</a>
      */
     public static double calculateDoublePawns(int[] pawnsArr)
     {
@@ -57,9 +79,10 @@ public class PawnStruct {
     }
 
     /**
-     * this function evaluate the isolated pawns on the board, and punish the evaluation according to it
+     * this function count the isolated pawns on the board, and punish the evaluation according to it
      * @param pawnsArr array of the number of pawns in every column of the player in the board
      * @return evaluation of the isolated pawns on the board for this pawns
+     * @see <a href="https://www.chessprogramming.org/Isolated_Pawn"</a>
      */
     public static double calculateIsolatedPawns(int[] pawnsArr)
     {

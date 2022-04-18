@@ -25,7 +25,6 @@ public class PositionEvaluation {
     {
         System.out.println(KingSafety.calculateKingTropism(board.getWhitePlayer()));
         GameStage gameStage = calculateGameStage(board);
-        System.out.println(gameStage);
         return (score(board, board.getWhitePlayer(), gameStage) - score(board, board.getBlackPlayer(), gameStage
         ));
     }
@@ -78,16 +77,21 @@ public class PositionEvaluation {
                     Mobility.mobility(player) * MOBILITY_VALUE_OPENING+
                     PawnStruct.pawnStruct(player, allActivePieces) +
                     checkmate(player) + attacks(player) +
-                    CenterControl.centerControl(player, board)
+                    CenterControl.centerControl(player, board)+
+                    RookStruct.rookStruct(board, allActivePieces)
             ;
             case MIDGAME -> Material.material(allActivePieces) +
                     Mobility.mobility(player) * MOBILITY_VALUE_MIDGAME+
                     PawnStruct.pawnStruct(player, allActivePieces) +
-                    checkmate(player) + attacks(player);
+                    checkmate(player) + attacks(player) +
+                    RookStruct.rookStruct(board, allActivePieces)
+            ;
             case ENDING -> Material.material(allActivePieces) +
                     Mobility.mobility(player) * MOBILITY_VALUE_ENDING +
                     PawnStruct.pawnStruct(player, allActivePieces) +
-                    checkmate(player) + attacks(player);
+                    checkmate(player) + attacks(player) +
+                    RookStruct.rookStruct(board, allActivePieces)
+            ;
         };
     }
 
