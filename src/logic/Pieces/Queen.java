@@ -3,6 +3,7 @@ package logic.Pieces;
 import logic.Board;
 import logic.Color;
 import logic.Move;
+import logic.player.AI.GameStage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,7 @@ public class Queen extends Piece {
      * {@inheritDoc}
      */
     @Override
-    public double locationBonus() {
+    public double locationBonus(GameStage gameStage) {
         return this.color == Color.White ? WHITE_QUEEN_PREFERRED_COORDINATES[this.position] : BLACK_QUEEN_PREFERRED_COORDINATES[this.position];
     }
     /**

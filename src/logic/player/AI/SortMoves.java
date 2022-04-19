@@ -16,6 +16,7 @@ public class SortMoves implements Comparator<Move> {
     @Override
     public int compare(Move m1, Move m2) {
         return ComparisonChain.start()
+                .compareTrueFirst(m1.isPawnPromotion(), m2.isPawnPromotion())
                 .compareTrueFirst(m1.isAttack(), m2.isAttack())
                 .compareTrueFirst(m1.isCastle(), m2.isCastle())
                 .compareTrueFirst(m1.getPieceMoved().getPosition() < m1.getCoordinateMovedTo(),

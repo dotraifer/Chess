@@ -52,6 +52,8 @@ public abstract class Move {
     {
         return false;
     }
+
+    public boolean isPawnPromotion(){return false;}
     @Override
     public String toString() {
         return "Move{" +
@@ -149,6 +151,10 @@ public abstract class Move {
             builder.setMoveTransition(this);
             return builder.build();
         }
+        @Override
+        public boolean isPawnPromotion() {
+            return isLastRow(coordinateMovedTo, pieceMoved.getColor());
+        }
     }
 
     public static class PawnAttackMove extends AttackMove{
@@ -178,6 +184,11 @@ public abstract class Move {
             builder.setMoveMaker(this.board.getOpponent().getColor());
             builder.setMoveTransition(this);
             return builder.build();
+        }
+
+        @Override
+        public boolean isPawnPromotion() {
+            return isLastRow(coordinateMovedTo, pieceMoved.getColor());
         }
     }
     public static final class EnPassantPawnAttackMove extends PawnAttackMove{

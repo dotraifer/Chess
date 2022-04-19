@@ -6,6 +6,7 @@ import logic.Move.MoveStatus;
 import logic.MoveTransition;
 import logic.Pieces.Piece;
 import logic.player.AI.Minimax;
+import logic.player.AI.PositionEvaluation;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -193,10 +194,8 @@ public class GameScreen {
                             {
                                 Move move = Move.MoveFactory.createMove(board, pieceMoved.getPosition(), destTile);
                                 moveTransition = board.getTurn().makeMove(move);
-                                System.out.println("sec"+board.getBlackPlayer().isAi);
                                 if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                                     board = moveTransition.getToBoard();
-                                    System.out.println("hey" + evaluate(board));
                                     if(board.getTurn().gameResult() != Result.NOT_FINISHED) {
                                         boardPanel.gameOver(board.getTurn().gameResult());
                                     }
@@ -250,6 +249,7 @@ public class GameScreen {
          */
         public void AiMove()
         {
+            //System.out.println("chess " + evaluate(Minimax.MiniMaxAB(board, 5).getBoard()));
             MoveTransition moveTransition = null;
             moveTransition = board.getTurn().makeMove(Minimax.MiniMaxAB(board, 5));
             if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
@@ -257,6 +257,7 @@ public class GameScreen {
                 if(board.getTurn().gameResult() != Result.NOT_FINISHED)
                     boardPanel.gameOver(board.getTurn().gameResult());
             }
+            System.out.println(PositionEvaluation.evaluationDetails(board));
         }
 
         /**

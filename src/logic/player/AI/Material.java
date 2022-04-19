@@ -6,7 +6,7 @@ import logic.Pieces.Piece;
 import java.util.List;
 
 public class Material {
-    private final static double TWO_BISHOPS_BONUS = 0.25;
+    private final static double TWO_BISHOPS_BONUS = 0.05;
 
     /**
      * this function evaluate the material value of the given pieces
@@ -18,11 +18,11 @@ public class Material {
         int numberOfBishops = 0;
         double materialValue = 0;
         for(Piece piece : allActivePieces) {
-            materialValue += piece.getValue() + piece.locationBonus();
+            materialValue += piece.getValue();
             if (piece.getClass() == Bishop.class)
                 numberOfBishops++;
         }
-        return materialValue;
-                //+ (numberOfBishops == 2 ? TWO_BISHOPS_BONUS : 0);
+        return materialValue
+                + (numberOfBishops == 2 ? TWO_BISHOPS_BONUS : 0);
     }
 }

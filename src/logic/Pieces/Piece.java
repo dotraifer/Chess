@@ -3,6 +3,7 @@ package logic.Pieces;
 import logic.Board;
 import logic.Color;
 import logic.Move;
+import logic.player.AI.GameStage;
 
 import java.util.List;
 import java.util.Objects;
@@ -53,7 +54,7 @@ public abstract class Piece implements Cloneable {
      * get the bonus for the piece location according to her Piece-Square Tables
      * @return the bonus to add
      */
-    public abstract double locationBonus();
+    public abstract double locationBonus(GameStage gameStage);
 
     /**
      * finds all the legal moves for a piece in a given board

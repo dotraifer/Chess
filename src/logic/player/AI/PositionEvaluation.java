@@ -23,7 +23,6 @@ public class PositionEvaluation {
      */
     public static double evaluate(Board board)
     {
-        System.out.println(KingSafety.calculateKingTropism(board.getWhitePlayer()));
         GameStage gameStage = calculateGameStage(board);
         return (score(board, board.getWhitePlayer(), gameStage) - score(board, board.getBlackPlayer(), gameStage
         ));
@@ -77,20 +76,22 @@ public class PositionEvaluation {
                     Mobility.mobility(player) * MOBILITY_VALUE_OPENING+
                     PawnStruct.pawnStruct(player, allActivePieces) +
                     checkmate(player) + attacks(player) +
-                    CenterControl.centerControl(player, board)+
-                    RookStruct.rookStruct(board, allActivePieces)
+                    RookStruct.rookStruct(board, allActivePieces)+
+                    PieceLocation.pieceLocation(allActivePieces, gameStage)
             ;
             case MIDGAME -> Material.material(allActivePieces) +
                     Mobility.mobility(player) * MOBILITY_VALUE_MIDGAME+
                     PawnStruct.pawnStruct(player, allActivePieces) +
                     checkmate(player) + attacks(player) +
-                    RookStruct.rookStruct(board, allActivePieces)
+                    RookStruct.rookStruct(board, allActivePieces) +
+                    PieceLocation.pieceLocation(allActivePieces, gameStage)
             ;
             case ENDING -> Material.material(allActivePieces) +
                     Mobility.mobility(player) * MOBILITY_VALUE_ENDING +
                     PawnStruct.pawnStruct(player, allActivePieces) +
                     checkmate(player) + attacks(player) +
-                    RookStruct.rookStruct(board, allActivePieces)
+                    RookStruct.rookStruct(board, allActivePieces)+
+                    PieceLocation.pieceLocation(allActivePieces, gameStage)
             ;
         };
     }
@@ -116,6 +117,28 @@ public class PositionEvaluation {
             }
         }
         return attackScore * ATTACK_MULTIPLIER;
+    }
+
+    public static String evaluationDetails(final Board board) {
+        List<Piece> WallActivePieces = board.getWhitePieces();
+        List<Piece> BallActivePieces = board.getBlackPieces();
+        return
+                "\ngame stage" + calculateGameStage(board) + "\n" +
+                ("White:\n material: " + Material.material(WallActivePieces) + " \nmobility:" +
+        Mobility.mobility(board.getWhitePlayer()) * MOBILITY_VALUE_OPENING+"\n pawns"+
+                PawnStruct.pawnStruct(board.getWhitePlayer(), WallActivePieces) +"\nchackmate:"+
+                checkmate(board.getWhitePlayer())) + "\n attack: " + attacks(board.getWhitePlayer()) +"\ncenter:"+
+                CenterControl.centerControl(board.getWhitePlayer(), board)+"\nrooks:"+
+                RookStruct.rookStruct(board, WallActivePieces ) +"\n"+
+                        "black +: \n material" + Material.material(BallActivePieces) + "\nmobility:" +
+                        Mobility.mobility(board.getBlackPlayer()) * MOBILITY_VALUE_OPENING+"\n pawns"+
+                        PawnStruct.pawnStruct(board.getBlackPlayer(), BallActivePieces) +"\n checkmate"+
+                        checkmate(board.getBlackPlayer()) +"\n attack:" + attacks(board.getBlackPlayer()) +"\ncenter:"+
+                CenterControl.centerControl(board.getBlackPlayer(), board)+"\nrooks:"+
+                RookStruct.rookStruct(board, BallActivePieces ) +"\n"+
+
+                        "Final Score = " + evaluate(board);
+
     }
 
 

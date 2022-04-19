@@ -37,6 +37,9 @@ public class Minimax {
         for (final Move move : SortedMoves) {
             final MoveTransition moveTransition = board.getTurn().makeMove(move);
             if (moveTransition.getMoveStatus() == Move.MoveStatus.DONE) {
+                // check if works
+                if(moveTransition.getToBoard().getTurn().isInCheckMate())
+                    return move;
                 currentValue = color == Color.White ?
                         min(moveTransition.getToBoard(), depth - 1, highestSeenValue, lowestSeenValue) :
                         max(moveTransition.getToBoard(), depth - 1, highestSeenValue, lowestSeenValue);
@@ -50,7 +53,7 @@ public class Minimax {
             }
         }
         long executionTime = System.currentTimeMillis() - startTime;
-        System.out.printf("ececitoin" + executionTime);
+        //System.out.printf("ececitoin" + executionTime);
         return bestMove;
     }
 
@@ -73,7 +76,8 @@ public class Minimax {
             return PositionEvaluation.evaluate(board);
         }
         double currentHighest = highest;
-        for (final Move move : board.getTurn().getLegalMoves()) {
+        List<Move> SortedMoves = sortMoves(board.getTurn().getLegalMoves());
+        for (final Move move : SortedMoves) {
             final MoveTransition moveTransition = board.getTurn().makeMove(move);
             if (moveTransition.getMoveStatus() == Move.MoveStatus.DONE) {
                 currentHighest = Math.max(currentHighest, min(moveTransition.getToBoard(),
@@ -95,7 +99,8 @@ public class Minimax {
             return PositionEvaluation.evaluate(board);
         }
         double currentLowest = lowest;
-        for (final Move move : board.getTurn().getLegalMoves()) {
+        List<Move> SortedMoves = sortMoves(board.getTurn().getLegalMoves());
+        for (final Move move : SortedMoves) {
             final MoveTransition moveTransition = board.getTurn().makeMove(move);
             if (moveTransition.getMoveStatus() == Move.MoveStatus.DONE) {
                 currentLowest = Math.min(currentLowest, max(moveTransition.getToBoard(),
@@ -121,13 +126,15 @@ public class Minimax {
             if (toBoard.getTurn().isInCheck()) {
                 activityMeasure += 1;
             }
+
+            if(toBoard.getTransitionMove().isPawnPromotion())
+                activityMeasure += 2;
             for(final Move move: lastNMoves(toBoard, 3)) {
                 if(move.isAttack()) {
                     activityMeasure += 1;
                 }
             }
             if(activityMeasure >= 2) {
-                System.out.println("true");
                 quiescenceCount++;
                 return 2;
             }

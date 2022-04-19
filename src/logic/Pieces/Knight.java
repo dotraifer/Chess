@@ -3,6 +3,7 @@ package logic.Pieces;
 import logic.Board;
 import logic.Color;
 import logic.Move;
+import logic.player.AI.GameStage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,7 @@ public class Knight extends Piece {
      * {@inheritDoc}
      */
     @Override
-    public double locationBonus() {
+    public double locationBonus(GameStage gameStage) {
         return this.color == Color.White ? WHITE_KNIGHT_PREFERRED_COORDINATES[this.position] : BLACK_KNIGHT_PREFERRED_COORDINATES[this.position];
     }
 
