@@ -28,7 +28,7 @@ public class Board {
      * Constructor for the Board class
      * @param builder a builder that contains the needed values for the new Board
      */
-    public Board(UserBuilder builder) {
+    public Board(BoardBuilder builder) {
         this.board_state = Collections.unmodifiableMap(builder.boardConfig);
         this.whitePieces = getActivePieces(builder.boardConfig, Color.White);
         this.blackPieces = getActivePieces(builder.boardConfig, Color.Black);
@@ -167,9 +167,9 @@ public class Board {
      * create the stating board
      * @return HashMap of the starting board
      */
-    public static UserBuilder createNewBoard(boolean isWhiteAi, boolean isBlackAi)
+    public static BoardBuilder createNewBoard(boolean isWhiteAi, boolean isBlackAi)
     {
-        UserBuilder builder = new UserBuilder();
+        BoardBuilder builder = new BoardBuilder();
         HashMap<Integer, Piece> board_state = new HashMap<Integer, Piece>();
         // Black Layout
         builder.setPiece(new Rook(0, Color.Black, true));
@@ -215,7 +215,7 @@ public class Board {
         return builder;
     }
 
-    public static class UserBuilder {
+    public static class BoardBuilder {
 
         Map<Integer, Piece> boardConfig;
         Color nextMoveMaker;
@@ -224,21 +224,21 @@ public class Board {
         boolean isBlackAi;
         int movesWithoutEat;
 
-        public UserBuilder() {
+        public BoardBuilder() {
             this.boardConfig = new HashMap<>();
         }
 
-        public UserBuilder setPiece(final Piece piece) {
+        public BoardBuilder setPiece(final Piece piece) {
             this.boardConfig.put(piece.getPosition(), piece);
             return this;
         }
 
-        public UserBuilder setMoveMaker(final Color nextMoveMaker) {
+        public BoardBuilder setMoveMaker(final Color nextMoveMaker) {
             this.nextMoveMaker = nextMoveMaker;
             return this;
         }
 
-        public UserBuilder setMoveTransition(final Move transitionMove) {
+        public BoardBuilder setMoveTransition(final Move transitionMove) {
             this.transitionMove = transitionMove;
             return this;
         }

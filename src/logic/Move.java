@@ -66,7 +66,7 @@ public abstract class Move {
      */
     public Board executeMove() {
         // create new builder
-        final Board.UserBuilder builder = new Board.UserBuilder();
+        final Board.BoardBuilder builder = new Board.BoardBuilder();
         // put back the unchanged attributes
         builder.isWhiteAi = board.getWhitePlayer().isAi;
         builder.isBlackAi = board.getBlackPlayer().isAi;
@@ -132,10 +132,10 @@ public abstract class Move {
         @Override
         public Board executeMove()
         {
-            final Board.UserBuilder builder = new Board.UserBuilder();
+            final Board.BoardBuilder builder = new Board.BoardBuilder();
             builder.isWhiteAi = board.getWhitePlayer().isAi;
             builder.isBlackAi = board.getBlackPlayer().isAi;
-            builder.movesWithoutEat = board.getMovesWithoutEat() + 1;
+            builder.movesWithoutEat = 0;
             this.board.getTurn().getActivePieces().stream().filter(piece -> !this.pieceMoved.equals(piece)).forEach(builder::setPiece);
             this.board.getOpponent().getActivePieces().forEach(builder::setPiece);
             Piece piece = pieceMoved.clone();
@@ -162,7 +162,7 @@ public abstract class Move {
         @Override
         public Board executeMove()
         {
-            final Board.UserBuilder builder = new Board.UserBuilder();
+            final Board.BoardBuilder builder = new Board.BoardBuilder();
             builder.isWhiteAi = board.getWhitePlayer().isAi;
             builder.isBlackAi = board.getBlackPlayer().isAi;
             builder.movesWithoutEat = 0;
@@ -210,7 +210,7 @@ public abstract class Move {
          */
         @Override
         public Board executeMove() {
-            final Board.UserBuilder builder = new Board.UserBuilder();
+            final Board.BoardBuilder builder = new Board.BoardBuilder();
             builder.isWhiteAi = board.getWhitePlayer().isAi;
             builder.isBlackAi = board.getBlackPlayer().isAi;
             builder.movesWithoutEat = board.getMovesWithoutEat() + 1;
