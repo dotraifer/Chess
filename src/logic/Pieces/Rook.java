@@ -7,6 +7,11 @@ import logic.Move;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * this class represent a Rook, and it extends Piece class
+ * @author dotanraif
+ * @see logic.Pieces.Piece
+ */
 public class Rook extends Piece{
     final int[] move_mask = {1, 8, -8, -1};
 

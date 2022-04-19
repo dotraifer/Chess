@@ -7,6 +7,11 @@ import logic.Move;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * this class represent a bishop, and it extends Piece class
+ * @author dotanraif
+ * @see logic.Pieces.Piece
+ */
 public class Bishop extends Piece {
     final int[] move_mask = {7, 9, -7, -9};
 

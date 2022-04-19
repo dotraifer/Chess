@@ -4,12 +4,21 @@ import logic.Pieces.Piece;
 import logic.Pieces.Queen;
 import logic.Pieces.Rook;
 
+/**
+ * this class represent a Move on the board, and its attributes
+ */
 public abstract class Move {
     protected Board board;
     protected Piece pieceMoved;
     protected int coordinateMovedTo;
 
-
+    /**
+     * Constructor for the Move class
+     * @param board the board we make the move in
+     * @param pieceMoved the piece that moved in this Move
+     * @param coordinateMovedTo the coordinate on the board that the Piece moved to
+     * @see Board
+     */
     public Move(Board board, Piece pieceMoved, int coordinateMovedTo) {
         this.board = board;
         this.pieceMoved = pieceMoved;

@@ -41,6 +41,9 @@ public class GameScreen {
     private static boolean isWhiteAi;
     private static boolean isBlackAi;
 
+    /**
+     * our game screen definition
+     */
     public GameScreen()
     {
         chooseAiOrNotPopUp();
@@ -55,6 +58,10 @@ public class GameScreen {
 
         this.gameFrame.setVisible(true);
     }
+
+    /**
+     * reset the game
+     */
     public void resetGame()
     {
         chooseAiOrNotPopUp();
@@ -62,6 +69,9 @@ public class GameScreen {
         this.gameFrame.setVisible(true);
     }
 
+    /**
+     * pop up that asks the user to choose if he wants to play against Ai or not
+     */
     public void chooseAiOrNotPopUp()
     {
         String[] options = {"AI", "PVP"};
@@ -75,11 +85,15 @@ public class GameScreen {
             isBlackAi = false;
         }
     }
+
+    /**
+     * pop up that asks the player to choose color
+     */
     public void chooseColor()
     {
         String[] options = {"WHITE", "BLACK"};
-        int choice = JOptionPane.showOptionDialog(null, "Choose game Mode",
-                "Game mode",
+        int choice = JOptionPane.showOptionDialog(null, "Choose Your Color",
+                "Choose Color",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
         if(choice == 0)
         {
@@ -110,6 +124,10 @@ public class GameScreen {
             validate();
         }
 
+        /**
+         * draw the board tiles
+         * @param board the board to draw
+         */
         public void drawBoard(Board board) {
             removeAll();
             for(TilePanel tilePanel : Tiles)
@@ -120,6 +138,9 @@ public class GameScreen {
             validate();
             repaint();
         }
+        /**
+         * game over pop up
+         */
         public void gameOver(Result result)
         {
             String message;
@@ -223,10 +244,14 @@ public class GameScreen {
             validate();
 
         }
+
+        /**
+         * this function make an AI move for the current player
+         */
         public void AiMove()
         {
             MoveTransition moveTransition = null;
-            moveTransition = board.getTurn().makeMove(Minimax.execute(board, 5));
+            moveTransition = board.getTurn().makeMove(Minimax.MiniMaxAB(board, 5));
             if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                 board = moveTransition.getToBoard();
                 if(board.getTurn().gameResult() != Result.NOT_FINISHED)
@@ -234,6 +259,10 @@ public class GameScreen {
             }
         }
 
+        /**
+         * put the piece on the tile
+         * @param board the board we put his tiles
+         */
         private void putTilePiece(Board board) {
             this.removeAll();
             Piece piece = board.board_state.get(tileCoordinate);
@@ -249,6 +278,9 @@ public class GameScreen {
             }
         }
 
+        /**
+         * choose the current color for a tile
+         */
         private void putTileColor() {
             boolean isLight = ((tileCoordinate + tileCoordinate / 8) % 2 == 0);
             setBackground(isLight ? whiteTileColor : blackTileColor);
@@ -261,6 +293,10 @@ public class GameScreen {
 
         }
 
+        /**
+         * draw the tile, his color, and the piece on it(or not)
+         * @param board the board to draw his tiles
+         */
         public void drawTile(Board board) {
             putTileColor();
             putTilePiece(board);
@@ -269,6 +305,10 @@ public class GameScreen {
             repaint();
         }
 
+        /**
+         * draw the possible moves for a chosen piece
+         * @param board the board the piece is in
+         */
         public void drawPossibleMoves(Board board)
         {
             if(pieceMoved != null) {

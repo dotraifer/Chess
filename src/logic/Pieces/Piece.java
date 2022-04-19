@@ -7,6 +7,10 @@ import logic.Move;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * this class is an abstract class of a piece on the board, and it extends by the spastic class of every piece
+ * @author dotanraif
+ */
 public abstract class Piece implements Cloneable {
     protected final Color color;
     protected int position;

@@ -7,6 +7,11 @@ import logic.Move;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * this class represent a Queen, and it extends Piece class
+ * @author dotanraif
+ * @see logic.Pieces.Piece
+ */
 public class Queen extends Piece {
     final int[] move_mask = {7, 9, -7, -9, 1, 8, -8, -1};
 

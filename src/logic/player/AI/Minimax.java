@@ -16,7 +16,16 @@ import java.util.List;
 public class Minimax {
     private static int quiescenceCount = 0;
     private static final int MAX_QUIESCENCE = 5000 * 5;
-    public static Move execute(final Board board, int depth) {
+
+
+    /**
+     * this function uses Minimax with Alpha-Beta to find the best move for a player in the given board
+     * @param board the board we want to return the best move for
+     * @param depth the depth we want to calculate the board positions
+     * @return the best move by the computer for the given board
+     * @see <a href="https://www.youtube.com/watch?v=l-hh51ncgDI">
+     */
+    public static Move MiniMaxAB(final Board board, int depth) {
         final long startTime = System.currentTimeMillis();
         final Player turn = board.getTurn();
         final Color color = turn.getColor();
@@ -45,6 +54,11 @@ public class Minimax {
         return bestMove;
     }
 
+    /**
+     * sort the move by order
+     * @param legalMoves the list of moves we want to sort
+     * @return the sorted list of moves
+     */
     private static List<Move> sortMoves(Collection<Move> legalMoves) {
         SortMoves sortMoves = new SortMoves();
         return Ordering.from(sortMoves).immutableSortedCopy(legalMoves);

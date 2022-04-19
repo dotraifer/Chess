@@ -6,7 +6,11 @@ import logic.Move;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * this class represent a pawn, and it extends Piece class
+ * @author dotanraif
+ * @see logic.Pieces.Piece
+ */
 public class Pawn extends Piece {
 
     private final static double[] WHITE_PAWN_PREFERRED_COORDINATES = {

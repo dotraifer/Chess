@@ -8,7 +8,13 @@ import logic.player.WhitePlayer;
 import java.util.*;
 import java.util.Collections;
 
+/**
+ * this class represent a board of chess, and its attributes
+ */
 public class Board {
+    /**
+     * an HahMap of the board state
+     */
     public final Map<Integer, Piece> board_state;
     private final List<Piece> whitePieces;
     private final List<Piece> blackPieces;
@@ -18,6 +24,10 @@ public class Board {
     private int movesWithoutEat;
     private final Move transitionMove;
 
+    /**
+     * Constructor for the Board class
+     * @param builder a builder that contains the needed values for the new Board
+     */
     public Board(UserBuilder builder) {
         this.board_state = Collections.unmodifiableMap(builder.boardConfig);
         this.whitePieces = getActivePieces(builder.boardConfig, Color.White);

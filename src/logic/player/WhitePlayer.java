@@ -10,8 +10,16 @@ import logic.Pieces.Rook;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * this class represent a black player, and it extends the Player class
+ * @author dotanraif
+ * @see logic.player.Player
+ */
 public class WhitePlayer extends Player{
 
+    /**
+     * {@inheritDoc}
+     */
     public WhitePlayer(Board board, List<Move> whiteLegalMoves, List<Move> blackLegalMoves, boolean isAi) {
         super(board, whiteLegalMoves, blackLegalMoves, isAi);
         this.king = findKing(board);

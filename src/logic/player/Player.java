@@ -11,6 +11,11 @@ import logic.Pieces.Piece;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * this is an abstract class that represent a player, and it extended by the WhitePlayer Class
+ * and the BlackPlayerClass
+ * @author dotanraif
+ */
 public abstract class Player {
     protected Board board;
     protected List<Move> legalMoves;
@@ -18,6 +23,13 @@ public abstract class Player {
     protected boolean isInCheck;
     public boolean isAi;
 
+    /**
+     * A constructor for the Player class
+     * @param board the board the player is in
+     * @param legalMoves the legal moves of the player
+     * @param enemyLegalMoves the legal moves of the player's enemy
+     * @param isAI is the user choose this Player to be AI
+     */
     public Player(Board board, List<Move> legalMoves, List<Move> enemyLegalMoves, boolean isAI) {
         this.board = board;
         this.king = findKing(board);
