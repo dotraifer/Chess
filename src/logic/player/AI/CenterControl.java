@@ -8,18 +8,18 @@ import logic.player.Player;
 import java.util.List;
 
 public class CenterControl {
-    private static final double ATTACKS_ON_ENEMY_CENTER_MULTIPLIER = 0.1;
-    private static final double ATTACKS_ON_SELF_CENTER_MULTIPLIER = 0.05;
-    private static final double PAWNS_ON_CENTER_MULTIPLIER = 0.15;
+    private static final double ATTACKS_ON_ENEMY_CENTER_MULTIPLIER = 0.03;
+    private static final double ATTACKS_ON_SELF_CENTER_MULTIPLIER = 0.002;
+    private static final double PAWNS_ON_CENTER_MULTIPLIER = 0.04;
     private static final int[] CENTER_COORDINATE = {27, 28, 35, 36};
 
 
     public static double centerControl(Player player, Board board)
     {
         List<Move> allPlayersLegalMoves = player.getLegalMoves();
-        System.out.println("\n center: " + "\n Enemycenter:" + calculateAttacksOnEnemyCenter(player, allPlayersLegalMoves) +
-                "\nself center: " + calculateAttacksOnSelfCenter(player, allPlayersLegalMoves) + "\n pawns on center: " +
-                pawnsOnCenter(player, board));
+        //System.out.println("\n center: " + "\n Enemycenter:" + calculateAttacksOnEnemyCenter(player, allPlayersLegalMoves) +
+               // "\nself center: " + calculateAttacksOnSelfCenter(player, allPlayersLegalMoves) + "\n pawns on center: " +
+               // pawnsOnCenter(player, board));
         return calculateAttacksOnEnemyCenter(player, allPlayersLegalMoves) +
                 calculateAttacksOnSelfCenter(player, allPlayersLegalMoves) +
                 pawnsOnCenter(player, board);

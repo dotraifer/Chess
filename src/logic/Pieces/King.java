@@ -37,6 +37,19 @@ public class King extends Piece {
             -0.3,-0.4,-0.4,-0.5,-0.5,-0.4,-0.4,-0.3,
             -0.3,-0.4,-0.4,-0.5,-0.5,-0.4,-0.4,-0.3
     };
+
+    private final static double[] WHITE_KING_PREFERRED_COORDINATES_ENDING =
+            {
+                    -0.5, -0.4, -0.3, -0.2, -0.2, -0.3, -0.4, -0.5,
+                    -0.3, -0.2, -0.1, 0, 0, -0.1, -0.2, -0.3,
+                    -0.3, -0.1, 0.2, 0.3, 0.3, 0.2, -0.1, -0.3,
+                    -0.3, -0.1, 0.3, 0.4, 0.4, 0.3, -0.1, -0.3,
+                    -0.3, -0.1, 0.3, 0.4, 0.4, 0.3, -0.1, -0.3,
+                    -0.3, -0.1, 0.2, 0.3, 0.3, 0.2, -0.1, -0.3,
+                    -0.3, -0.3, 0, 0, 0, 0, -0.3, -0.3,
+                    -0.5, -0.3, -0.3, -0.3, -0.3, -0.3, -0.3, -0.5,
+            };
+
     public King(int position, Color color, boolean isFirstMove) {
         super(position, color, isFirstMove);
         this.value = 10000;
@@ -49,8 +62,7 @@ public class King extends Piece {
     public double locationBonus(GameStage gameStage) {
         if(gameStage == GameStage.OPENING || gameStage == GameStage.MIDGAME)
             return this.color == Color.White ? WHITE_KING_PREFERRED_COORDINATES_STARTMID[this.position] : BLACK_KING_PREFERRED_COORDINATES_STARTMID[this.position];
-        else
-            return this.color == Color.White ? WHITE_KING_PREFERRED_COORDINATES_STARTMID[this.position] : BLACK_KING_PREFERRED_COORDINATES_STARTMID[this.position];
+        return this.color == Color.White ? WHITE_KING_PREFERRED_COORDINATES_ENDING[this.position] : WHITE_KING_PREFERRED_COORDINATES_ENDING[WHITE_KING_PREFERRED_COORDINATES_ENDING.length - this.position - 1];
 
     }
 

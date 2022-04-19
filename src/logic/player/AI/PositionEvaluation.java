@@ -77,7 +77,8 @@ public class PositionEvaluation {
                     PawnStruct.pawnStruct(player, allActivePieces) +
                     checkmate(player) + attacks(player) +
                     RookStruct.rookStruct(board, allActivePieces)+
-                    PieceLocation.pieceLocation(allActivePieces, gameStage)
+                    PieceLocation.pieceLocation(allActivePieces, gameStage)+
+                    CenterControl.centerControl(player, board)
             ;
             case MIDGAME -> Material.material(allActivePieces) +
                     Mobility.mobility(player) * MOBILITY_VALUE_MIDGAME+
