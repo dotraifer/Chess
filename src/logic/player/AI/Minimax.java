@@ -50,11 +50,15 @@ public class Minimax {
                 } else if (color == Color.Black && currentValue < lowestSeenValue) {
                     lowestSeenValue = currentValue;
                     bestMove = move;
+                    System.out.println(lowestSeenValue + " " + move);
                 }
             }
         }
         long executionTime = System.currentTimeMillis() - startTime;
         //System.out.printf("ececitoin" + executionTime);
+        System.out.println("best" + bestMove);
+        System.out.println("highest" + highestSeenValue);
+        System.out.println("lowest" + lowestSeenValue);
         return bestMove;
     }
 
@@ -84,8 +88,8 @@ public class Minimax {
             if (moveTransition.getMoveStatus() == Move.MoveStatus.DONE) {
                 currentHighest = Math.max(currentHighest, min(moveTransition.getToBoard(),
                         calculateQuiescenceDepth(moveTransition.getToBoard(), depth), currentHighest, lowest));
-                if (lowest <= currentHighest) {
-                    break;
+                if (currentHighest >= lowest) {
+                    return lowest;
                 }
             }
         }
@@ -109,7 +113,7 @@ public class Minimax {
                 currentLowest = Math.min(currentLowest, max(moveTransition.getToBoard(),
                         calculateQuiescenceDepth(moveTransition.getToBoard(), depth), highest, currentLowest));
                 if (currentLowest <= highest) {
-                    break;
+                    return highest;
                 }
             }
         }
@@ -141,7 +145,7 @@ public class Minimax {
             }
             if(activityMeasure >= 2) {
                 quiescenceCount++;
-                return 2;
+                return 3;
             }
         }
         return depth - 1;

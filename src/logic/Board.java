@@ -222,7 +222,6 @@ public class Board {
      */
     public Result gameResult()
     {
-        System.out.println(isThreeTimesPosition());
         if(this.whitePlayer.isInCheckMate())
             return Result.BLACK;
         if(this.blackPlayer.isInCheckMate())

@@ -249,6 +249,7 @@ public class GameScreen {
          */
         public void AiMove()
         {
+            System.out.println(PositionEvaluation.evaluationDetails(board));
             //System.out.println("chess " + evaluate(Minimax.MiniMaxAB(board, 5).getBoard()));
             MoveTransition moveTransition = null;
             moveTransition = board.getTurn().makeMove(Minimax.MiniMaxAB(board, 5));
