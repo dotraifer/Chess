@@ -1,6 +1,7 @@
 package logic.player.AI;
 
 import com.google.common.collect.Ordering;
+import gui.Result;
 import logic.Board;
 import logic.Color;
 import logic.Move;
@@ -71,8 +72,9 @@ public class Minimax {
                    final int depth,
                    final double highest,
                    final double lowest) {
-        if (depth == 0 ||  board.getTurn().isInCheckMate() ||
-                board.getTurn().isInStaleMate()) {
+        if (depth == 0 ||  board.gameResult() != Result.NOT_FINISHED) {
+            if(board.gameResult() == Result.DRAW)
+                return 0;
             return PositionEvaluation.evaluate(board);
         }
         double currentHighest = highest;
@@ -94,8 +96,9 @@ public class Minimax {
                    final int depth,
                    final double highest,
                    final double lowest) {
-        if (depth == 0 ||  board.getTurn().isInCheckMate() ||
-                board.getTurn().isInStaleMate()) {
+        if (depth == 0 ||  board.gameResult() != Result.NOT_FINISHED) {
+            if(board.gameResult() == Result.DRAW)
+                return 0;
             return PositionEvaluation.evaluate(board);
         }
         double currentLowest = lowest;
@@ -131,7 +134,7 @@ public class Minimax {
                 activityMeasure += 2;
             if(toBoard.getTransitionMove().isAttack())
                 activityMeasure += 2;
-            for(final Move move: lastNMoves(toBoard, 3)) {
+            for(final Move move: toBoard.lastNMoves(3)) {
                 if(move.isAttack()) {
                     activityMeasure += 1;
                 }
@@ -144,15 +147,4 @@ public class Minimax {
         return depth - 1;
     }
 
-    public static List<Move> lastNMoves(final Board board, int N) {
-        final List<Move> moveHistory = new ArrayList<>();
-        Move currentMove = board.getTransitionMove();
-        int i = 0;
-        while(currentMove != Move.MoveFactory.getNullMove() && i < N) {
-            moveHistory.add(currentMove);
-            currentMove = currentMove.getBoard().getTransitionMove();
-            i++;
-        }
-        return Collections.unmodifiableList(moveHistory);
-    }
 }

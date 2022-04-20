@@ -196,8 +196,8 @@ public class GameScreen {
                                 moveTransition = board.getTurn().makeMove(move);
                                 if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                                     board = moveTransition.getToBoard();
-                                    if(board.getTurn().gameResult() != Result.NOT_FINISHED) {
-                                        boardPanel.gameOver(board.getTurn().gameResult());
+                                    if(board.gameResult() != Result.NOT_FINISHED) {
+                                        boardPanel.gameOver(board.gameResult());
                                     }
                                     if(board.getTurn().isAi) {
                                         drawTile(board);
@@ -254,9 +254,8 @@ public class GameScreen {
             moveTransition = board.getTurn().makeMove(Minimax.MiniMaxAB(board, 5));
             if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                 board = moveTransition.getToBoard();
-                System.out.println(moveTransition.transitionMove.isCastle());
-                if(board.getTurn().gameResult() != Result.NOT_FINISHED)
-                    boardPanel.gameOver(board.getTurn().gameResult());
+                if(board.gameResult() != Result.NOT_FINISHED)
+                    boardPanel.gameOver(board.gameResult());
             }
             System.out.println(PositionEvaluation.evaluationDetails(board));
         }

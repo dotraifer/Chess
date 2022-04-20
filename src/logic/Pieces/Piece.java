@@ -111,7 +111,7 @@ public abstract class Piece implements Cloneable {
         // casting
         Piece piece = (Piece) o;
         // check if all attributes equal
-        return position == piece.position && isFirstMove == piece.isFirstMove && color == piece.color;
+        return position == piece.position && color == piece.color;
     }
 
     @Override

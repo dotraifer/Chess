@@ -1,5 +1,6 @@
 package logic;
 
+import gui.Result;
 import logic.Pieces.*;
 import logic.player.BlackPlayer;
 import logic.player.Player;
@@ -189,9 +190,6 @@ public class Board {
         builder.setPiece(new Pawn(14, Color.Black, true));
         builder.setPiece(new Pawn(15, Color.Black, true));
         // Empty boxes
-        for (int i = 16; i < 48;i++)
-            builder.boardConfig.put(i, null);
-        // White Layout
         builder.setPiece(new Pawn(48, Color.White, true));
         builder.setPiece(new Pawn(49, Color.White, true));
         builder.setPiece(new Pawn(50, Color.White, true));
@@ -215,6 +213,93 @@ public class Board {
         builder.blackHasCastled = false;
         builder.movesWithoutEat = 0;
         return builder;
+    }
+
+    /**
+     * check if the game has been finished, and in what score if does
+     * @return the Result of the game, NOT_FINISHED if the game still going
+     * @see Result Enum
+     */
+    public Result gameResult()
+    {
+        System.out.println(isThreeTimesPosition());
+        if(this.whitePlayer.isInCheckMate())
+            return Result.BLACK;
+        if(this.blackPlayer.isInCheckMate())
+            return Result.WHITE;
+        if(this.getTurn().isInStaleMate() || this.getMovesWithoutEat() == 50 || notEnoughMaterial()
+        || isThreeTimesPosition())
+            return Result.DRAW;
+        return Result.NOT_FINISHED;
+    }
+
+    /**
+     * check if both of the players has not enough material to win(draw case)
+     * @exemple king against king, king and knight against king and so on...
+     * @return true if both can't win
+     */
+    private boolean notEnoughMaterial() {
+        return isNotEnoughMaterialToWin(this.blackPieces) && isNotEnoughMaterialToWin(this.whitePieces);
+    }
+
+    /**
+     * check if the active pieces are enough to win
+     * @param activePieces the active pieces of a player
+     * @return true if the player has not enough material to win, else if does
+     */
+    private boolean isNotEnoughMaterialToWin(List<Piece> activePieces)
+    {
+        boolean isPawn = false;
+        int material = 0;
+        for(Piece piece : activePieces)
+        {
+            if(piece.getClass() != King.class)
+                material += piece.value;
+            if(piece.getClass() == Pawn.class)
+                isPawn = true;
+        }
+        return (material <= 3 && !isPawn);
+    }
+
+    /**
+     * this function checks if we go back at the same position 3 times
+     * @see <a href="https://en.wikipedia.org/wiki/Threefold_repetition">
+     * @return true if the same position returned 3 times-false otherwise
+     */
+    private boolean isThreeTimesPosition()
+    {
+        int samePositionCounter = 0;
+        // for every move in the last N moves without eat
+        for(Move move : lastNMoves(movesWithoutEat))
+        {
+            // check if the move board was equal to the current board
+            if (this.equals(move.getBoard())) {
+                samePositionCounter++;
+            }
+        }
+        // if we get back 3 times
+        return samePositionCounter >= 3;
+    }
+
+    /**
+     * this function return a list of the last N Moves in the game
+     * @param N the number of last moves to find
+     * @return list of Move of the last N moves in the game
+     */
+    public List<Move> lastNMoves(int N) {
+        final List<Move> moveHistory = new ArrayList<>();
+        Move currentMove = this.getTransitionMove();
+        int i = 0;
+        // while the not a nullMove and still not in N
+        while(currentMove != Move.MoveFactory.getNullMove() && i < N) {
+            // add the move
+            moveHistory.add(currentMove);
+            // go back another board
+            currentMove = currentMove.getBoard().getTransitionMove();
+            i++;
+        }
+        // return the list
+        return Collections.unmodifiableList(moveHistory);
     }
 
     public static class BoardBuilder {
@@ -252,4 +337,16 @@ public class Board {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Board b = (Board) o;
+        return board_state.equals(b.board_state) && turn.getColor().equals(b.turn.getColor());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(board_state, turn);
+    }
 }
