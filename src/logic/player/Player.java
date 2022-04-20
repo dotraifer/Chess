@@ -22,6 +22,7 @@ public abstract class Player {
     protected Piece king;
     protected boolean isInCheck;
     public boolean isAi;
+    protected boolean hasCastled;
 
     /**
      * A constructor for the Player class
@@ -30,12 +31,13 @@ public abstract class Player {
      * @param enemyLegalMoves the legal moves of the player's enemy
      * @param isAI is the user choose this Player to be AI
      */
-    public Player(Board board, List<Move> legalMoves, List<Move> enemyLegalMoves, boolean isAI) {
+    public Player(Board board, List<Move> legalMoves, List<Move> enemyLegalMoves, boolean isAI, boolean hasCastled) {
         this.board = board;
         this.king = findKing(board);
         this.legalMoves = ImmutableList.copyOf(Iterables.concat(legalMoves, calculateCastles(legalMoves, enemyLegalMoves)));
         this.isInCheck = !getAttacksOnBox(king.getPosition(), enemyLegalMoves).isEmpty();
         this.isAi = isAI;
+        this.hasCastled = hasCastled;
     }
     /**
      * find the king of the player
@@ -60,12 +62,22 @@ public abstract class Player {
         return legalMoves;
     }
 
+
+
     /**
      * will get every active piece for the player
      * @return list of the active pieces of the player
      */
     public abstract List<Piece> getActivePieces();
 
+
+    public boolean isHasCastled() {
+        return hasCastled;
+    }
+
+    public void setHasCastled(boolean hasCastled) {
+        this.hasCastled = hasCastled;
+    }
 
     /**
      * find all the possible attack moves on a given box, and return list of it

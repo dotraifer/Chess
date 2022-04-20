@@ -72,6 +72,8 @@ public abstract class Move {
         // put back the unchanged attributes
         builder.isWhiteAi = board.getWhitePlayer().isAi;
         builder.isBlackAi = board.getBlackPlayer().isAi;
+        builder.whiteHasCastled = board.getWhitePlayer().isHasCastled();
+        builder.blackHasCastled = board.getBlackPlayer().isHasCastled();
         builder.movesWithoutEat = board.getMovesWithoutEat() + 1;
         this.board.getTurn().getActivePieces().stream().filter(piece -> !this.pieceMoved.equals(piece)).forEach(builder::setPiece);
         this.board.getOpponent().getActivePieces().forEach(builder::setPiece);
@@ -137,6 +139,8 @@ public abstract class Move {
             final Board.BoardBuilder builder = new Board.BoardBuilder();
             builder.isWhiteAi = board.getWhitePlayer().isAi;
             builder.isBlackAi = board.getBlackPlayer().isAi;
+            builder.whiteHasCastled = board.getWhitePlayer().isHasCastled();
+            builder.blackHasCastled = board.getBlackPlayer().isHasCastled();
             builder.movesWithoutEat = 0;
             this.board.getTurn().getActivePieces().stream().filter(piece -> !this.pieceMoved.equals(piece)).forEach(builder::setPiece);
             this.board.getOpponent().getActivePieces().forEach(builder::setPiece);
@@ -172,6 +176,8 @@ public abstract class Move {
             builder.isWhiteAi = board.getWhitePlayer().isAi;
             builder.isBlackAi = board.getBlackPlayer().isAi;
             builder.movesWithoutEat = 0;
+            builder.whiteHasCastled = board.getWhitePlayer().isHasCastled();
+            builder.blackHasCastled = board.getBlackPlayer().isHasCastled();
             this.board.getTurn().getActivePieces().stream().filter(piece -> !this.pieceMoved.equals(piece)).forEach(builder::setPiece);
             this.board.getOpponent().getActivePieces().forEach(builder::setPiece);
             Piece piece = pieceMoved.clone();
@@ -224,6 +230,12 @@ public abstract class Move {
             final Board.BoardBuilder builder = new Board.BoardBuilder();
             builder.isWhiteAi = board.getWhitePlayer().isAi;
             builder.isBlackAi = board.getBlackPlayer().isAi;
+            builder.whiteHasCastled = board.getWhitePlayer().isHasCastled();
+            builder.blackHasCastled = board.getBlackPlayer().isHasCastled();
+            if(board.getTurn().getColor() == Color.White)
+                builder.whiteHasCastled = true;
+            else
+                builder.blackHasCastled = true;
             builder.movesWithoutEat = board.getMovesWithoutEat() + 1;
             for (final Piece piece : this.board.getTurn().getActivePieces()) {
                 if (!this.pieceMoved.equals(piece) && !this.castleRook.equals(piece)) {

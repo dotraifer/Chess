@@ -20,8 +20,8 @@ public class WhitePlayer extends Player{
     /**
      * {@inheritDoc}
      */
-    public WhitePlayer(Board board, List<Move> whiteLegalMoves, List<Move> blackLegalMoves, boolean isAi) {
-        super(board, whiteLegalMoves, blackLegalMoves, isAi);
+    public WhitePlayer(Board board, List<Move> whiteLegalMoves, List<Move> blackLegalMoves, boolean isAi, boolean hasCastled) {
+        super(board, whiteLegalMoves, blackLegalMoves, isAi, hasCastled);
         this.king = findKing(board);
     }
 

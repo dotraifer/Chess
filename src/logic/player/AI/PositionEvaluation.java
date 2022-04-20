@@ -78,21 +78,25 @@ public class PositionEvaluation {
                     checkmate(player) + attacks(player) +
                     RookStruct.rookStruct(board, allActivePieces)+
                     PieceLocation.pieceLocation(allActivePieces, gameStage)+
-                    CenterControl.centerControl(player, board)
+                    CenterControl.centerControl(player, board)+
+                    KingSafety.calculateKingSafety(player, board)
             ;
             case MIDGAME -> Material.material(allActivePieces) +
                     Mobility.mobility(player) * MOBILITY_VALUE_MIDGAME+
                     PawnStruct.pawnStruct(player, allActivePieces) +
                     checkmate(player) + attacks(player) +
                     RookStruct.rookStruct(board, allActivePieces) +
-                    PieceLocation.pieceLocation(allActivePieces, gameStage)
+                    PieceLocation.pieceLocation(allActivePieces, gameStage)+
+                    KingSafety.calculateKingSafety(player, board)
+
             ;
             case ENDING -> Material.material(allActivePieces) +
                     Mobility.mobility(player) * MOBILITY_VALUE_ENDING +
                     PawnStruct.pawnStruct(player, allActivePieces) +
                     checkmate(player) + attacks(player) +
                     RookStruct.rookStruct(board, allActivePieces)+
-                    PieceLocation.pieceLocation(allActivePieces, gameStage)
+                    PieceLocation.pieceLocation(allActivePieces, gameStage)+
+                    KingSafety.calculateKingSafety(player, board)
             ;
         };
     }
@@ -131,12 +135,18 @@ public class PositionEvaluation {
                 checkmate(board.getWhitePlayer())) + "\n attack: " + attacks(board.getWhitePlayer()) +"\ncenter:"+
                 CenterControl.centerControl(board.getWhitePlayer(), board)+"\nrooks:"+
                 RookStruct.rookStruct(board, WallActivePieces ) +"\n"+
+                        "kingtro :" + KingSafety.calculateKingTropism(board.getWhitePlayer()) + "\n" +
+                        "saftey: " + KingSafety.calculateKingSafety(board.getWhitePlayer(), board) + "\n"+
+
                         "black +: \n material" + Material.material(BallActivePieces) + "\nmobility:" +
                         Mobility.mobility(board.getBlackPlayer()) * MOBILITY_VALUE_OPENING+"\n pawns"+
                         PawnStruct.pawnStruct(board.getBlackPlayer(), BallActivePieces) +"\n checkmate"+
                         checkmate(board.getBlackPlayer()) +"\n attack:" + attacks(board.getBlackPlayer()) +"\ncenter:"+
                 CenterControl.centerControl(board.getBlackPlayer(), board)+"\nrooks:"+
                 RookStruct.rookStruct(board, BallActivePieces ) +"\n"+
+                        "kingtro"+ KingSafety.calculateKingTropism(board.getBlackPlayer()) + "\n" +
+                        "saftey: " + KingSafety.calculateKingSafety(board.getBlackPlayer(), board) + "\n" +
+                        "casled" + board.getBlackPlayer().isHasCastled() +
 
                         "Final Score = " + evaluate(board);
 

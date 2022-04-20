@@ -6,7 +6,7 @@ package logic;
 public class MoveTransition {
     private Board fromBoard;
     private Board toBoard;
-    private Move transitionMove;
+    public Move transitionMove;
     private Move.MoveStatus moveStatus;
 
     /**

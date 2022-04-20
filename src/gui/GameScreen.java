@@ -254,6 +254,7 @@ public class GameScreen {
             moveTransition = board.getTurn().makeMove(Minimax.MiniMaxAB(board, 5));
             if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                 board = moveTransition.getToBoard();
+                System.out.println(moveTransition.transitionMove.isCastle());
                 if(board.getTurn().gameResult() != Result.NOT_FINISHED)
                     boardPanel.gameOver(board.getTurn().gameResult());
             }

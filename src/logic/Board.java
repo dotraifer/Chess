@@ -34,8 +34,8 @@ public class Board {
         this.blackPieces = getActivePieces(builder.boardConfig, Color.Black);
         List<Move> whiteLegalMoves = getAllLegalMoves(this.whitePieces);
         List<Move> blackLegalMoves = getAllLegalMoves(this.blackPieces);
-        this.whitePlayer = new WhitePlayer(this, whiteLegalMoves, blackLegalMoves, builder.isWhiteAi);
-        this.blackPlayer = new BlackPlayer(this, whiteLegalMoves, blackLegalMoves, builder.isBlackAi);
+        this.whitePlayer = new WhitePlayer(this, whiteLegalMoves, blackLegalMoves, builder.isWhiteAi, builder.whiteHasCastled);
+        this.blackPlayer = new BlackPlayer(this, whiteLegalMoves, blackLegalMoves, builder.isBlackAi, builder.blackHasCastled);
         this.turn = getPlayerForColor(builder.nextMoveMaker);
         this.movesWithoutEat = builder.movesWithoutEat;
         this.transitionMove = builder.transitionMove != null ? builder.transitionMove : Move.MoveFactory.getNullMove();
@@ -211,6 +211,8 @@ public class Board {
         builder.setMoveMaker(Color.White);
         builder.isWhiteAi = isWhiteAi;
         builder.isBlackAi = isBlackAi;
+        builder.whiteHasCastled = false;
+        builder.blackHasCastled = false;
         builder.movesWithoutEat = 0;
         return builder;
     }
@@ -223,6 +225,8 @@ public class Board {
         boolean isWhiteAi;
         boolean isBlackAi;
         int movesWithoutEat;
+        boolean whiteHasCastled;
+        boolean blackHasCastled;
 
         public BoardBuilder() {
             this.boardConfig = new HashMap<>();

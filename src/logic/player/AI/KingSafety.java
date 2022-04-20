@@ -1,12 +1,25 @@
 package logic.player.AI;
 
+import logic.Board;
+import logic.Color;
 import logic.Move;
+import logic.Pieces.Pawn;
 import logic.Pieces.Piece;
 import logic.player.Player;
 
 import java.util.Collection;
 
 public class KingSafety {
+    private static final double CASTLE_BONUS = 0.2;
+    private static final double NONE_CASTLE_PUNISHMENT = -0.1;
+    private static final double GOOD_PAWNS_SHIELD_BONUS = 0.3;
+    private static final double BED_PAWNS_SHIELD_PUNISHMENT = -0.3;
+
+
+    public static double calculateKingSafety(Player player, Board board)
+    {
+        return calculateCastleValue(player, board);
+    }
     public static double calculateKingTropism(final Player player) {
         final int playerKingSquare = player.getKing().getPosition();
         final Collection<Move> enemyMoves = player.getRival().getLegalMoves();
@@ -34,5 +47,46 @@ public class KingSafety {
         return Math.max(columnDistance, rowDistance);
 
 
+    }
+
+    public static double calculateCastleValue(Player player, Board board) {
+        if (player.isHasCastled()) {
+            return CASTLE_BONUS + calcPawnsShield(player, board);
+        }
+        else if(!player.getKing().isFirstMove())
+            return NONE_CASTLE_PUNISHMENT;
+        return 0;
+    }
+
+    private static double calcPawnsShield(Player player, Board board) {
+        final int[] pawnsBestPos1 = {9, 8, 7};
+        final int[] pawnsBestPos2 = {9, 8, 15};
+        final int[] pawnsBestPos3 = {9, 16, 7};
+        final int[] pawnsBestPos4 = {17, 8, 7};
+        final int[][] pawnsBestShield = {pawnsBestPos1, pawnsBestPos2, pawnsBestPos3, pawnsBestPos4};
+        int kingCoordinate = player.getKing().getPosition();
+        boolean isAllShieldTrue = true;
+        for(int[] shield : pawnsBestShield)
+        {
+            isAllShieldTrue = true;
+            for(int i : shield)
+            {
+                if(board.getPieceAtCoordinate(kingCoordinate + i * getDirection(player.getColor())) == null ||
+                !(board.getPieceAtCoordinate(kingCoordinate + i * getDirection(player.getColor())).getClass() ==
+                        Pawn.class))
+                    isAllShieldTrue = false;
+            }
+            if(isAllShieldTrue)
+                return GOOD_PAWNS_SHIELD_BONUS;
+        }
+        return BED_PAWNS_SHIELD_PUNISHMENT;
+
+    }
+
+    private static int getDirection(Color color)
+    {
+        if(color == Color.White)
+            return -1;
+        return 1;
     }
 }
