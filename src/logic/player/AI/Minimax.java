@@ -34,6 +34,7 @@ public class Minimax {
         double highestSeenValue = Double.NEGATIVE_INFINITY;
         double lowestSeenValue = Double.POSITIVE_INFINITY;
         double currentValue;
+        quiescenceCount = 0;
         List<Move> SortedMoves = sortMoves(turn.getLegalMoves());
         for (final Move move : SortedMoves) {
             final MoveTransition moveTransition = board.getTurn().makeMove(move);
@@ -137,6 +138,8 @@ public class Minimax {
             if(toBoard.getTransitionMove().isPawnPromotion())
                 activityMeasure += 2;
             if(toBoard.getTransitionMove().isAttack())
+                activityMeasure += 2;
+            if(toBoard.getTransitionMove().isPawnThreat())
                 activityMeasure += 2;
             for(final Move move: toBoard.lastNMoves(3)) {
                 if(move.isAttack()) {

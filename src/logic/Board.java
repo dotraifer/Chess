@@ -31,8 +31,8 @@ public class Board {
      */
     public Board(BoardBuilder builder) {
         this.board_state = Collections.unmodifiableMap(builder.boardConfig);
-        this.whitePieces = getActivePieces(builder.boardConfig, Color.White);
-        this.blackPieces = getActivePieces(builder.boardConfig, Color.Black);
+        this.whitePieces = getActivePieces(Color.White);
+        this.blackPieces = getActivePieces(Color.Black);
         List<Move> whiteLegalMoves = getAllLegalMoves(this.whitePieces);
         List<Move> blackLegalMoves = getAllLegalMoves(this.blackPieces);
         this.whitePlayer = new WhitePlayer(this, whiteLegalMoves, blackLegalMoves, builder.isWhiteAi, builder.whiteHasCastled);
@@ -133,14 +133,13 @@ public class Board {
 
     /**
      * get a list of all the active pieces for a given color
-     * @param board_state the board state hash map
      * @param color the color we want to find the pieces for
      * @return list of all the pieces from this color
      */
-    private List<Piece> getActivePieces(Map<Integer, Piece> board_state, Color color)
+    private List<Piece> getActivePieces(Color color)
     {
         List<Piece> activePieces = new ArrayList<>();
-        for (Piece piece : board_state.values())
+        for (Piece piece : this.board_state.values())
         {
             if (piece != null && piece.getColor() == color)
                 activePieces.add(piece);

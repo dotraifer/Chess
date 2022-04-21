@@ -7,8 +7,8 @@ import logic.player.Player;
 import java.util.List;
 
 public class PawnStruct {
-    private static final double DOUBLE_PAWN_PUNISHMENT = -0.1;
-    private static final double ISOLATED_PAWN_PUNISHMENT = -0.1;
+    private static final double DOUBLE_PAWN_PUNISHMENT = -0.2;
+    private static final double ISOLATED_PAWN_PUNISHMENT = -0.15;
     private static final double PAWN_ISLAND_PUNISHMENT = -0.1;
 
     /**

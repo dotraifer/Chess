@@ -8,9 +8,9 @@ import logic.player.Player;
 import java.util.List;
 
 public class CenterControl {
-    private static final double ATTACKS_ON_ENEMY_CENTER_MULTIPLIER = 0.03;
-    private static final double ATTACKS_ON_SELF_CENTER_MULTIPLIER = 0.002;
-    private static final double PAWNS_ON_CENTER_MULTIPLIER = 0.04;
+    private static final double ATTACKS_ON_ENEMY_CENTER_MULTIPLIER = 0.06;
+    private static final double ATTACKS_ON_SELF_CENTER_MULTIPLIER = 0.025;
+    private static final double PAWNS_ON_CENTER_MULTIPLIER = 0.08;
     private static final int[] CENTER_COORDINATE = {27, 28, 35, 36};
 
 

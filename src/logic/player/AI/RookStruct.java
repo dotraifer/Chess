@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RookStruct {
-    private static final double CONNECTED_ROW_ROOKS_BONUS = 0.07;
-    private static final double CONNECTED_COLUMN_ROOKS_BONUS = 0.12;
+    private static final double CONNECTED_ROW_ROOKS_BONUS = 0.1;
+    private static final double CONNECTED_COLUMN_ROOKS_BONUS = 0.15;
 
     /**
      * this function evaluate the rook structure on the board for the player

@@ -54,6 +54,8 @@ public abstract class Move {
     }
 
     public boolean isPawnPromotion(){return false;}
+
+    public boolean isPawnThreat(){return false;}
     @Override
     public String toString() {
         return "Move{" +
@@ -158,6 +160,13 @@ public abstract class Move {
         @Override
         public boolean isPawnPromotion() {
             return isLastRow(coordinateMovedTo, pieceMoved.getColor());
+        }
+
+        @Override
+        public boolean isPawnThreat() {
+            return board.getPieceAtCoordinate(coordinateMovedTo + (9 * pieceMoved.getColor().getDirection())) != null ||
+                    board.getPieceAtCoordinate(coordinateMovedTo + (7 * pieceMoved.getColor().getDirection())) != null;
+
         }
     }
 

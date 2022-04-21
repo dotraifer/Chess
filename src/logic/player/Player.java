@@ -79,6 +79,10 @@ public abstract class Player {
         this.hasCastled = hasCastled;
     }
 
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+
     /**
      * find all the possible attack moves on a given box, and return list of it
      * @param boxPos the coordinate of the box

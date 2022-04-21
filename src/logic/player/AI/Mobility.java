@@ -2,19 +2,20 @@ package logic.player.AI;
 
 import logic.Color;
 import logic.Move;
+import logic.MoveTransition;
 import logic.Pieces.Bishop;
 import logic.Pieces.Knight;
 import logic.Pieces.Rook;
 import logic.player.Player;
 
 public class Mobility {
-    private final static double ROOK_FORWARD_MOVES_MULTIPLIER = 0.015;
-    private final static double ROOK_SIDE_MOVES_MULTIPLIER = 0.007;
-    private final static double ROOK_BACKWARD_MOVES_MULTIPLIER = 0.002;
-    private final static double BISHOP_FORWARD_MOVES_MULTIPLIER = 0.01;
-    private final static double BISHOP_BACKWARD_MOVES_MULTIPLIER = 0.005;
-    private final static double KNIGHT_FORWARD_MOVES_MULTIPLIER = 0.007;
-    private final static double KNIGHT_BACKWARD_MOVES_MULTIPLIER = 0.003;
+    private final static double ROOK_FORWARD_MOVES_MULTIPLIER = 0.02;
+    private final static double ROOK_SIDE_MOVES_MULTIPLIER = 0.012;
+    private final static double ROOK_BACKWARD_MOVES_MULTIPLIER = 0.007;
+    private final static double BISHOP_FORWARD_MOVES_MULTIPLIER = 0.014;
+    private final static double BISHOP_BACKWARD_MOVES_MULTIPLIER = 0.009;
+    private final static double KNIGHT_FORWARD_MOVES_MULTIPLIER = 0.012;
+    private final static double KNIGHT_BACKWARD_MOVES_MULTIPLIER = 0.005;
     /**
      * this function evaluate player mobility
      * @param player the player we calculate his mobility
