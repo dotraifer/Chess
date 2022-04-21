@@ -16,6 +16,12 @@ public class KingSafety {
     private static final double BED_PAWNS_SHIELD_PUNISHMENT = -0.3;
 
 
+    /**
+     * evaluate the board according to king safety
+     * @param player the player we evaluate for
+     * @param board the current board
+     * @return the value of the player's king safety if the current board
+     */
     public static double calculateKingSafety(Player player, Board board)
     {
         return calculateCastleValue(player, board);
@@ -49,6 +55,12 @@ public class KingSafety {
 
     }
 
+    /**
+     * this function evaluate the castle and possibility to castle of a player
+     * @param player the player we calculate castling values
+     * @param board the current board
+     * @return the value of castling for the player
+     */
     public static double calculateCastleValue(Player player, Board board) {
         if (player.isHasCastled()) {
             return CASTLE_BONUS + calcPawnsShield(player, board);
@@ -58,6 +70,12 @@ public class KingSafety {
         return 0;
     }
 
+    /**
+     * this function calculate the king position evaluation according to his pawn shield
+     * @param player the player we calculate his king pos
+     * @param board thr current board
+     * @return the evaluation of the pawn shield
+     */
     private static double calcPawnsShield(Player player, Board board) {
         final int[] pawnsBestPos1 = {9, 8, 7};
         final int[] pawnsBestPos2 = {9, 8, 15};
@@ -83,6 +101,11 @@ public class KingSafety {
 
     }
 
+    /**
+     * get the movement direction
+     * @param color the color
+     * @return the direction multiplier
+     */
     private static int getDirection(Color color)
     {
         if(color == Color.White)
