@@ -39,4 +39,8 @@ public class MoveTransition {
     public Board getFromBoard() {
         return fromBoard;
     }
+
+    public Move getTransitionMove() {
+        return transitionMove;
+    }
 }

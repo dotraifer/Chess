@@ -34,6 +34,7 @@ public class GameScreen {
     private final Color blackTileColor = Color.decode("#D2691E");
     private final Color greenTileColor = Color.decode("#00FF00");
     private final Color redTileColor = Color.decode("#FF0000");
+    private final Color blueTileColor = Color.decode("#0000FF");
 
     private static int sourceTile = -1;
     private static int destTile = -1;
@@ -79,7 +80,9 @@ public class GameScreen {
         int choice = JOptionPane.showOptionDialog(null, "Choose game Mode",
                 "Game mode",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-        if(choice == 0)
+        if(choice == -1)
+            System.exit(0);
+        else if(choice == 0)
             chooseColor();
         else{
             isWhiteAi = false;
@@ -96,7 +99,9 @@ public class GameScreen {
         int choice = JOptionPane.showOptionDialog(null, "Choose Your Color",
                 "Choose Color",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-        if(choice == 0)
+        if(choice == -1)
+            System.exit(0);
+        else if(choice == 0)
         {
             isWhiteAi = false;
             isBlackAi = true;
@@ -125,11 +130,14 @@ public class GameScreen {
             validate();
         }
 
+
+
         /**
          * draw the board tiles
          * @param board the board to draw
          */
         public void drawBoard(Board board) {
+            System.out.println(board.board_state);
             removeAll();
             for(TilePanel tilePanel : Tiles)
             {
@@ -164,6 +172,7 @@ public class GameScreen {
     }
     public class TilePanel extends JPanel {
         private final int tileCoordinate;
+        private Move computerMove;
 
         TilePanel(BoardPanel boardPanel, int tileCoordinate){
             super(new GridBagLayout());
@@ -196,11 +205,7 @@ public class GameScreen {
                                 moveTransition = board.getTurn().makeMove(move);
                                 if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                                     board = moveTransition.getToBoard();
-                                    if(board.gameResult() != Result.NOT_FINISHED) {
-                                        boardPanel.gameOver(board.gameResult());
-                                    }
                                     if(board.getTurn().isAi) {
-                                        drawTile(board);
                                         AiMove();
                                     }
                                 }
@@ -213,6 +218,9 @@ public class GameScreen {
                             @Override
                             public void run() {
                                 boardPanel.drawBoard(board);
+                                if(board.gameResult() != Result.NOT_FINISHED) {
+                                    boardPanel.gameOver(board.gameResult());
+                                }
                             }
                         });
                     }
@@ -226,7 +234,6 @@ public class GameScreen {
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
-
                 }
 
                 @Override
@@ -250,11 +257,11 @@ public class GameScreen {
         public void AiMove()
         {
             System.out.println(PositionEvaluation.evaluationDetails(board));
-            //System.out.println("chess " + evaluate(Minimax.MiniMaxAB(board, 5).getBoard()));
-            MoveTransition moveTransition = null;
+            MoveTransition moveTransition;
             moveTransition = board.getTurn().makeMove(Minimax.MiniMaxAB(board, 5));
             if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                 board = moveTransition.getToBoard();
+                computerMove = moveTransition.getTransitionMove();
                 if(board.gameResult() != Result.NOT_FINISHED)
                     boardPanel.gameOver(board.gameResult());
             }
@@ -303,8 +310,19 @@ public class GameScreen {
             putTileColor();
             putTilePiece(board);
             drawPossibleMoves(board);
+            highlightAIMove();
             validate();
             repaint();
+        }
+
+        private void highlightAIMove() {
+            if(computerMove != null) {
+                System.out.println(tileCoordinate + "" + computerMove.getCoordinateMovedTo());
+                if(this.tileCoordinate == computerMove.getCoordinateMovedTo()) {
+                    System.out.println("wtfffffffffffffffffff");
+                    setBackground(blueTileColor);
+                }
+            }
         }
 
         /**
@@ -315,8 +333,9 @@ public class GameScreen {
         {
             if(pieceMoved != null) {
                 for (Move move : board.getTurn().getLegalMoves()) {
+                    MoveTransition moveTransition = board.getTurn().makeMove(move);
                     if (pieceMoved == move.getPieceMoved() && move.getCoordinateMovedTo() == this.tileCoordinate
-                    && board.getTurn().getLegalMoves().contains(move)) {
+                    && board.getTurn().getLegalMoves().contains(move) && moveTransition.getMoveStatus() == MoveStatus.DONE) {
                         try {
                             BufferedImage image =
                                     ImageIO.read(new File("resources/green_dot.png"));

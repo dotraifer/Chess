@@ -19,9 +19,9 @@ public class SortMoves implements Comparator<Move> {
                 .compareTrueFirst(m1.isPawnPromotion(), m2.isPawnPromotion())
                 .compareTrueFirst(m1.isAttack(), m2.isAttack())
                 .compareTrueFirst(m1.isCastle(), m2.isCastle())
+                .compare(m2.getPieceMoved().value, m1.getPieceMoved().value)
                 .compareTrueFirst(m1.getPieceMoved().getPosition() < m1.getCoordinateMovedTo(),
                         m2.getPieceMoved().getPosition() < m2.getCoordinateMovedTo())
-                .compare(m2.getPieceMoved().value, m1.getPieceMoved().value)
                 .result();
     }
 }
