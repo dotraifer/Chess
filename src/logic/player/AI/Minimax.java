@@ -151,8 +151,6 @@ public class Minimax {
                 return 3;
             }
         }
-        if(toBoard.getTransitionMove().isAttack())
-            System.out.println(toBoard.getTransitionMove() + "qs" + quiescenceCount);
         return depth - 1;
     }
 
