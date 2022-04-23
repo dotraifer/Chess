@@ -16,6 +16,7 @@ import java.util.List;
 public class King extends Piece {
     final int[] move_mask = {-9, -8, -7, -1, 1, 7, 8, 9};
 
+    // piece square table for white king in start and midgame
     private final static double[] WHITE_KING_PREFERRED_COORDINATES_STARTMID = {
             -0.3,-0.4,-0.4,-0.5,-0.5,-0.4,-0.4,-0.3,
             -0.3,-0.4,-0.4,-0.5,-0.5,-0.4,-0.4,-0.3,
@@ -27,6 +28,7 @@ public class King extends Piece {
             0.2, 0.3, 0.1,  0,  0, 0.1, 0.3, 0.2
     };
 
+    // piece square table for black king in start and midgame
     private final static double[] BLACK_KING_PREFERRED_COORDINATES_STARTMID = {
             0.2, 0.3, 0.1,  0,  0, 0.1, 0.3, 0.2,
             0.2, 0.2,  0,  0,  0,  0, 0.2, 0.2,
@@ -38,6 +40,7 @@ public class King extends Piece {
             -0.3,-0.4,-0.4,-0.5,-0.5,-0.4,-0.4,-0.3
     };
 
+    // piece square table for white king in ending
     private final static double[] WHITE_KING_PREFERRED_COORDINATES_ENDING =
             {
                     -0.5, -0.4, -0.3, -0.2, -0.2, -0.3, -0.4, -0.5,
@@ -89,6 +92,14 @@ public class King extends Piece {
         return legalMoves;
 
     }
+
+    /**
+     * this function use to check that a piece is not going out from one side of the board to the other
+     * because it's on first column
+     * @param coordinate the coordinate the piece is in
+     * @param mask the mask we check in
+     * @return true if the move is illegal-false otherwise
+     */
     public boolean isFirstColumnExtremeCase(int coordinate, int mask) {
         if (coordinate % 8 == 0 && (mask == -1 || mask == -9 || mask == 7))
             return true;

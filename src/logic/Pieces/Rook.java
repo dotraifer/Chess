@@ -16,6 +16,7 @@ import java.util.List;
 public class Rook extends Piece{
     final int[] move_mask = {1, 8, -8, -1};
 
+    // piece square table for white rook
     private final static double[] WHITE_ROOK_PREFERRED_COORDINATES = {
             0,  0,  0,  0,  0,  0,  0,  0,
             0.05, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2,  0.05,
@@ -27,6 +28,7 @@ public class Rook extends Piece{
             0,  0,  0,  0.05,  0.05,  0,  0,  0
     };
 
+    // piece square table for black rook
     private final static double[] BLACK_ROOK_PREFERRED_COORDINATES = {
             0,  0,  0,  0.05,  0.05,  0,  0,  0,
             -0.05,  0,  0,  0,  0,  0,  0, -0.05,
@@ -88,6 +90,13 @@ public class Rook extends Piece{
         return legalMoves;
     }
 
+    /**
+     * this function use to check that a piece is not going out from one side of the board to the other
+     * because it's on first column
+     * @param coordinate the coordinate the piece is in
+     * @param mask the mask we check in
+     * @return true if the move is illegal-false otherwise
+     */
     public boolean isFirstColumnExtremeCase(int coordinate, int mask) {
         if (coordinate % 8 == 0 && (mask == -1))
             return true;

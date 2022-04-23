@@ -7,7 +7,9 @@ import logic.Pieces.Piece;
 import logic.player.Player;
 
 import java.util.List;
-
+/**
+ * this class contains static methods for evaluating a full position of a player
+ */
 public class PositionEvaluation {
     private static final double MOBILITY_VALUE_OPENING = 1;
     private static final double MOBILITY_VALUE_MIDGAME = 0.8;
@@ -24,6 +26,7 @@ public class PositionEvaluation {
     public static double evaluate(Board board)
     {
         GameStage gameStage = calculateGameStage(board);
+        // the score of the white - the score of the black
         return (score(board, board.getWhitePlayer(), gameStage) - score(board, board.getBlackPlayer(), gameStage
         ));
     }
@@ -53,6 +56,7 @@ public class PositionEvaluation {
         double materialSum = 0;
         for(Piece piece : board.board_state.values())
         {
+            // if the piece is not king,add her value
             if(piece != null && piece.getClass() != King.class)
                 materialSum += piece.value;
 
@@ -72,6 +76,7 @@ public class PositionEvaluation {
     {
         List<Piece> allActivePieces = player.getActivePieces();
         return switch (gameStage) {
+            // if opening game stage
             case OPENING -> Material.material(allActivePieces) +
                     Mobility.mobility(player) * MOBILITY_VALUE_OPENING+
                     PawnStruct.pawnStruct(player, allActivePieces) +
@@ -81,6 +86,7 @@ public class PositionEvaluation {
                     KingSafety.calculateKingSafety(player, board) +
                     PieceLocation.pieceLocation(allActivePieces, GameStage.OPENING)
             ;
+            // if midgame game stage
             case MIDGAME -> Material.material(allActivePieces) +
                     Mobility.mobility(player) * MOBILITY_VALUE_MIDGAME+
                     PawnStruct.pawnStruct(player, allActivePieces) +
@@ -91,6 +97,7 @@ public class PositionEvaluation {
                     PieceLocation.pieceLocation(allActivePieces, GameStage.MIDGAME)
 
             ;
+            // if ending game stage
             case ENDING -> Material.material(allActivePieces) +
                     Mobility.mobility(player) * MOBILITY_VALUE_ENDING +
                     PawnStruct.pawnStruct(player, allActivePieces) +
@@ -112,6 +119,11 @@ public class PositionEvaluation {
         return (player.getRival().isInCheckMate() ?  10000 :  0);
     }
 
+    /**
+     * this function evaluate good eating moves(where smaller piece eat a bigger piece)
+     * @param player the player we look for good eating moves
+     * @return the evaluation for good eating moves
+     */
     private static double attacks(final Player player) {
         int attackScore = 0;
         for(final Move move : player.getLegalMoves()) {
@@ -126,6 +138,11 @@ public class PositionEvaluation {
         return attackScore * ATTACK_MULTIPLIER;
     }
 
+    /**
+     * this function prints the evaluation Details
+     * @param board the board we evaluate
+     * @return String of the evaluation details
+     */
     public static String evaluationDetails(final Board board) {
         List<Piece> WallActivePieces = board.getWhitePieces();
         List<Piece> BallActivePieces = board.getBlackPieces();

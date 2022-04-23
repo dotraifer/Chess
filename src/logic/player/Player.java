@@ -131,6 +131,7 @@ public abstract class Player {
     private boolean isCanEscape() {
         for (Move move : this.legalMoves){
             MoveTransition transition = makeMove(move);
+            // if the move is done
             if (transition.getMoveStatus() == Move.MoveStatus.DONE)
                 return true;
         }
@@ -145,14 +146,19 @@ public abstract class Player {
      * @return move transition of after the move has done
      */
     public MoveTransition makeMove(Move move) {
+        // if the move is illegal
         if (!isMoveLegal(move)) {
             return new MoveTransition(this.board, this.board, move, Move.MoveStatus.UNDONE);
         }
+        // execute the move to temp board
         Board transitionBoard = move.executeMove();
+        // get attacks on king
         List<Move> attacksOnKing = getAttacksOnBox(findKing(transitionBoard).getPosition(), transitionBoard.getTurn().legalMoves);
+        // if in the new board there are any attacks on the king, the king was left in check' and the move is illegal
         if(!attacksOnKing.isEmpty()) {
             return new MoveTransition(this.board, this.board, move, Move.MoveStatus.LEFT_IN_CHECK);
         }
+        // if the move legal, return the new Transition move
         return new MoveTransition(this.board, transitionBoard, move, Move.MoveStatus.DONE);
     }
 

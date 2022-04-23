@@ -14,6 +14,7 @@ import java.util.List;
  */
 public class Pawn extends Piece {
 
+    // piece square table for white pawn
     private final static double[] WHITE_PAWN_PREFERRED_COORDINATES = {
             0,  0,  0,  0,  0,  0,  0,  0,
             0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75,
@@ -24,7 +25,7 @@ public class Pawn extends Piece {
             0.05, 0.1, 0.1,-0.2,-0.2, 0.1, 0.1,  0.05,
             0,  0,  0,  0,  0,  0,  0,  0
     };
-
+    // piece square table for black pawn
     private final static double[] BLACK_PAWN_PREFERRED_COORDINATES = {
             0,  0,  0,  0,  0,  0,  0,  0,
             0.05, 0.1, 0.1,-0.2,-0.2, 0.1, 0.1,  0.05,
@@ -89,6 +90,14 @@ public class Pawn extends Piece {
             return -1;
         return 1;
     }
+
+    /**
+     * this function use to check that a piece is not going out from one side of the board to the other
+     * because it's on first column
+     * @param coordinate the coordinate the piece is in
+     * @param mask the mask we check in
+     * @return true if the move is illegal-false otherwise
+     */
     public boolean isFirstColumnExtremeCase(int coordinate, int mask, Color color) {
         // TODO possible problem with direction
         if (coordinate % 8 == 0 && ((mask == 7 && color == Color.Black)||(mask == 9 && color == Color.White)))

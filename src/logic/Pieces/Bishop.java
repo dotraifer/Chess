@@ -16,6 +16,7 @@ import java.util.List;
 public class Bishop extends Piece {
     final int[] move_mask = {7, 9, -7, -9};
 
+    // piece square table for white bishop
     private final static double[] WHITE_BISHOP_PREFERRED_COORDINATES = {
             -0.2,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.2,
             -0.1,  0,  0,  0,  0,  0,  0,-0.1,
@@ -27,6 +28,7 @@ public class Bishop extends Piece {
             -0.2,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.2
     };
 
+    // piece square table for black bishop
     private final static double[] BLACK_BISHOP_PREFERRED_COORDINATES = {
             -0.2,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.2,
             -0.1,  0.05,  0,  0,  0,  0,  0.05,-0.1,
@@ -84,6 +86,13 @@ public class Bishop extends Piece {
         return legalMoves;
     }
 
+    /**
+     * this function use to check that a piece is not going out from one side of the board to the other
+     * because it's on first column
+     * @param coordinate the coordinate the piece is in
+     * @param mask the mask we check in
+     * @return true if the move is illegal-false otherwise
+     */
     public boolean isFirstColumnExtremeCase(int coordinate, int mask) {
         if (coordinate % 8 == 0 && (mask == -9 || mask == 7))
             return true;

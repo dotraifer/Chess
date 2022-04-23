@@ -6,6 +6,9 @@ import logic.player.Player;
 
 import java.util.List;
 
+/**
+ * this class contains static methods for evaluating a Pawn structure of a player
+ */
 public class PawnStruct {
     private static final double DOUBLE_PAWN_PUNISHMENT = -0.2;
     private static final double ISOLATED_PAWN_PUNISHMENT = -0.15;

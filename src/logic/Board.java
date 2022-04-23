@@ -30,14 +30,14 @@ public class Board {
      * @param builder a builder that contains the needed values for the new Board
      */
     public Board(BoardBuilder builder) {
-        this.board_state = Collections.unmodifiableMap(builder.boardConfig);
+        this.board_state = Collections.unmodifiableMap(builder.boardState);
         this.whitePieces = getActivePieces(Color.White);
         this.blackPieces = getActivePieces(Color.Black);
         List<Move> whiteLegalMoves = getAllLegalMoves(this.whitePieces);
         List<Move> blackLegalMoves = getAllLegalMoves(this.blackPieces);
         this.whitePlayer = new WhitePlayer(this, whiteLegalMoves, blackLegalMoves, builder.isWhiteAi, builder.whiteHasCastled);
         this.blackPlayer = new BlackPlayer(this, whiteLegalMoves, blackLegalMoves, builder.isBlackAi, builder.blackHasCastled);
-        this.turn = getPlayerForColor(builder.nextMoveMaker);
+        this.turn = getPlayerForColor(builder.turn);
         this.movesWithoutEat = builder.movesWithoutEat;
         this.transitionMove = builder.transitionMove != null ? builder.transitionMove : Move.MoveFactory.getNullMove();
 
@@ -205,11 +205,16 @@ public class Board {
         builder.setPiece(new Bishop(61, Color.White, true));
         builder.setPiece(new Knight(62, Color.White, true));
         builder.setPiece(new Rook(63, Color.White, true));
-        builder.setMoveMaker(Color.White);
+
+        // turn to white
+        builder.setTurn(Color.White);
+        // AI values
         builder.isWhiteAi = isWhiteAi;
         builder.isBlackAi = isBlackAi;
+        // has castled values
         builder.whiteHasCastled = false;
         builder.blackHasCastled = false;
+        //moves without eat to 0
         builder.movesWithoutEat = 0;
         return builder;
     }
@@ -221,13 +226,17 @@ public class Board {
      */
     public Result gameResult()
     {
+        // if black gave white checkmate
         if(this.whitePlayer.isInCheckMate())
             return Result.BLACK;
+        // if white gave black checkmate
         if(this.blackPlayer.isInCheckMate())
             return Result.WHITE;
+        // if one of the draw conditions happens
         if(this.getTurn().isInStaleMate() || this.getMovesWithoutEat() == 50 || notEnoughMaterial()
         || isThreeTimesPosition())
             return Result.DRAW;
+        // else-the game still going
         return Result.NOT_FINISHED;
     }
 
@@ -300,10 +309,13 @@ public class Board {
         return Collections.unmodifiableList(moveHistory);
     }
 
+    /**
+     * this Inner class is responsible for building a new board' with his attributes
+     */
     public static class BoardBuilder {
 
-        Map<Integer, Piece> boardConfig;
-        Color nextMoveMaker;
+        Map<Integer, Piece> boardState;
+        Color turn;
         Move transitionMove;
         boolean isWhiteAi;
         boolean isBlackAi;
@@ -312,29 +324,53 @@ public class Board {
         boolean blackHasCastled;
 
         public BoardBuilder() {
-            this.boardConfig = new HashMap<>();
+            this.boardState = new HashMap<>();
         }
 
+        /**
+         * put piece in the board state
+         * @param piece the piece we want to set
+         * @return the board builder after the piece set
+         */
         public BoardBuilder setPiece(final Piece piece) {
-            this.boardConfig.put(piece.getPosition(), piece);
+            this.boardState.put(piece.getPosition(), piece);
             return this;
         }
 
-        public BoardBuilder setMoveMaker(final Color nextMoveMaker) {
-            this.nextMoveMaker = nextMoveMaker;
+        /**
+         * set the turn
+         * @param nextMoveMaker the color of the player we want to change the turn to
+         * @return the board builder after the turn set
+         */
+        public BoardBuilder setTurn(final Color nextMoveMaker) {
+            this.turn = nextMoveMaker;
             return this;
         }
 
+        /**
+         * set the move transition
+         * @param transitionMove the last move we made the brought us to the current board
+         * @return the board builder after the set
+         */
         public BoardBuilder setMoveTransition(final Move transitionMove) {
             this.transitionMove = transitionMove;
             return this;
         }
 
+        /**
+         * build the new board
+         * @return the new board
+         */
         public Board build() {
             return new Board(this);
         }
     }
 
+    /**
+     * equals override-checks if 2 board are equal
+     * @param o the board we want the check if equal to this board
+     * @return true if they are equal, false if not
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -343,6 +379,10 @@ public class Board {
         return board_state.equals(b.board_state) && turn.getColor().equals(b.turn.getColor());
     }
 
+    /**
+     * hash code for the board equals
+     * @return the hash of the board
+     */
     @Override
     public int hashCode() {
         return Objects.hash(board_state, turn);

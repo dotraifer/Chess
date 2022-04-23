@@ -5,6 +5,9 @@ import logic.Pieces.Piece;
 
 import java.util.List;
 
+/**
+ * this class contains static methods for evaluating a Material of a player
+ */
 public class Material {
     private final static double TWO_BISHOPS_BONUS = 0.05;
 

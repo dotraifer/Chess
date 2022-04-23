@@ -36,10 +36,12 @@ public class MoveTransition {
         return toBoard;
     }
 
+    // getter
     public Board getFromBoard() {
         return fromBoard;
     }
 
+    // getter
     public Move getTransitionMove() {
         return transitionMove;
     }

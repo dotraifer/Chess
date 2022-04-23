@@ -4,7 +4,10 @@ import com.google.common.collect.ComparisonChain;
 import logic.Move;
 
 import java.util.Comparator;
-
+/**
+ * this class implements the Comparator interface and used for compare between moves
+ * to make a Move ordering strategy
+ */
 public class SortMoves implements Comparator<Move> {
     /**
      * this function is used to sort the list of moves by their possibility to be good

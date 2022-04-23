@@ -43,18 +43,22 @@ public abstract class Move {
         return pieceMoved;
     }
 
+    // is attack move
     public boolean isAttack()
     {
         return false;
     }
 
+    // is castle move
     public boolean isCastle()
     {
         return false;
     }
 
+    // is pawn promotion
     public boolean isPawnPromotion(){return false;}
 
+    // is pawn threat
     public boolean isPawnThreat(){return false;}
     @Override
     public String toString() {
@@ -76,8 +80,11 @@ public abstract class Move {
         builder.isBlackAi = board.getBlackPlayer().isAi;
         builder.whiteHasCastled = board.getWhitePlayer().isHasCastled();
         builder.blackHasCastled = board.getBlackPlayer().isHasCastled();
+        // add to the moves without eat 1
         builder.movesWithoutEat = board.getMovesWithoutEat() + 1;
+        // set turn player pieces
         this.board.getTurn().getActivePieces().stream().filter(piece -> !this.pieceMoved.equals(piece)).forEach(builder::setPiece);
+        // set enemy pieces
         this.board.getOpponent().getActivePieces().forEach(builder::setPiece);
         // clone the moved piece
         Piece piece = pieceMoved.clone();
@@ -85,22 +92,30 @@ public abstract class Move {
         piece.movePiece(this);
         builder.setPiece(piece);
         // change turn
-        builder.setMoveMaker(this.board.getOpponent().getColor());
+        builder.setTurn(this.board.getOpponent().getColor());
         // set the move transition
         builder.setMoveTransition(this);
         return builder.build();
     }
-    public static class MajorMove extends Move{
 
+    /**
+     * this class represent a regular move
+     */
+    public static class MajorMove extends Move{
         public MajorMove(Board board, Piece pieceMoved, int coordinateMovedTo) {
             super(board, pieceMoved, coordinateMovedTo);
         }
 
         @Override
         public boolean isAttack() {
+            // not an attack
             return false;
         }
     }
+
+    /**
+     * this class represent an Attack move
+     */
     public static class AttackMove extends Move{
         Piece attackedPiece;
         public AttackMove(Board board, Piece pieceMoved, int coordinateMovedTo, Piece
@@ -109,9 +124,13 @@ public abstract class Move {
             this.attackedPiece = attackedPiece;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Board executeMove() {
             Board board = super.executeMove();
+            // moves without eat to 0
             board.setMovesWithoutEat(0);
             return board;
         }
@@ -125,6 +144,10 @@ public abstract class Move {
             return true;
         }
     }
+
+    /**
+     * this class represent a Pawn move
+     */
     public static class PawnMove extends Move{
 
         public PawnMove(Board board, Piece pieceMoved, int coordinateMovedTo) {
@@ -138,30 +161,50 @@ public abstract class Move {
         @Override
         public Board executeMove()
         {
+            // create new board builder
             final Board.BoardBuilder builder = new Board.BoardBuilder();
+            // put back the unchanged attributes
             builder.isWhiteAi = board.getWhitePlayer().isAi;
             builder.isBlackAi = board.getBlackPlayer().isAi;
             builder.whiteHasCastled = board.getWhitePlayer().isHasCastled();
             builder.blackHasCastled = board.getBlackPlayer().isHasCastled();
+            // pawn move initialized moves without eat
             builder.movesWithoutEat = 0;
+            // set the turn player pieces
             this.board.getTurn().getActivePieces().stream().filter(piece -> !this.pieceMoved.equals(piece)).forEach(builder::setPiece);
+            // set the enemy player pieces
             this.board.getOpponent().getActivePieces().forEach(builder::setPiece);
+            // clone the moved piece
             Piece piece = pieceMoved.clone();
+            // move the piece
             piece.movePiece(this);
+            // set the piece in the builder
             builder.setPiece(piece);
+            // check if pawn promotion
             if(isLastRow(coordinateMovedTo, piece.getColor()))
                 builder.setPiece(new Queen(this.coordinateMovedTo, piece.getColor(), true));
             else
                 builder.setPiece(piece);
-            builder.setMoveMaker(this.board.getOpponent().getColor());
+            // change turn
+            builder.setTurn(this.board.getOpponent().getColor());
+            // set the move transition
             builder.setMoveTransition(this);
+            // build the new board
             return builder.build();
         }
+
+        /**
+         * check if the move is pawn promotion
+         * @return true if pawn promotion, false otherwise
+         */
         @Override
         public boolean isPawnPromotion() {
             return isLastRow(coordinateMovedTo, pieceMoved.getColor());
         }
 
+        /**
+         * check if the pawn threat other pieces
+         */
         @Override
         public boolean isPawnThreat() {
             return board.getPieceAtCoordinate(coordinateMovedTo + (9 * pieceMoved.getColor().getDirection())) != null ||
@@ -170,6 +213,9 @@ public abstract class Move {
         }
     }
 
+    /**
+     * this class represent a pawn's attack move
+     */
     public static class PawnAttackMove extends AttackMove{
 
         public PawnAttackMove(Board board, Piece pieceMoved, int coordinateMovedTo, Piece attackedPiece) {
@@ -181,23 +227,35 @@ public abstract class Move {
         @Override
         public Board executeMove()
         {
+            // create new board builder
             final Board.BoardBuilder builder = new Board.BoardBuilder();
+            // put back the unchanged attributes
             builder.isWhiteAi = board.getWhitePlayer().isAi;
             builder.isBlackAi = board.getBlackPlayer().isAi;
+            // pawn move initialized moves without eat
             builder.movesWithoutEat = 0;
             builder.whiteHasCastled = board.getWhitePlayer().isHasCastled();
             builder.blackHasCastled = board.getBlackPlayer().isHasCastled();
+            // set the turn player pieces
             this.board.getTurn().getActivePieces().stream().filter(piece -> !this.pieceMoved.equals(piece)).forEach(builder::setPiece);
+            // set the enemy player pieces
             this.board.getOpponent().getActivePieces().forEach(builder::setPiece);
+            // clone the moved piece
             Piece piece = pieceMoved.clone();
+            // move the piece
             piece.movePiece(this);
+            // set the piece in the builder
             builder.setPiece(piece);
+            // check if pawn promotion
             if(isLastRow(coordinateMovedTo, pieceMoved.getColor()))
                 builder.setPiece(new Queen(this.coordinateMovedTo, piece.getColor(), true));
             else
                 builder.setPiece(piece);
-            builder.setMoveMaker(this.board.getOpponent().getColor());
+            // change turn
+            builder.setTurn(this.board.getOpponent().getColor());
+            // set the move transition
             builder.setMoveTransition(this);
+            // build the new board
             return builder.build();
         }
 
@@ -213,6 +271,9 @@ public abstract class Move {
         }
     }
 
+    /**
+     * this class represent a castle move
+     */
     static abstract class CastleMove extends Move{
         protected final Rook castleRook;
         protected final int castleRookStart;
@@ -236,34 +297,50 @@ public abstract class Move {
          */
         @Override
         public Board executeMove() {
+            // create new board builder
             final Board.BoardBuilder builder = new Board.BoardBuilder();
+            // put back the unchanged attributes
             builder.isWhiteAi = board.getWhitePlayer().isAi;
             builder.isBlackAi = board.getBlackPlayer().isAi;
             builder.whiteHasCastled = board.getWhitePlayer().isHasCastled();
             builder.blackHasCastled = board.getBlackPlayer().isHasCastled();
+            // put castled value
             if(board.getTurn().getColor() == Color.White)
                 builder.whiteHasCastled = true;
             else
                 builder.blackHasCastled = true;
+            // moves without eat or pawns move + 1
             builder.movesWithoutEat = board.getMovesWithoutEat() + 1;
+            // set the turn payer pieces
             for (final Piece piece : this.board.getTurn().getActivePieces()) {
                 if (!this.pieceMoved.equals(piece) && !this.castleRook.equals(piece)) {
                     builder.setPiece(piece);
                 }
             }
+            // set the enemy pieces
             this.board.getOpponent().getActivePieces().forEach(builder::setPiece);
+            // clone the moved piece
             Piece piece = pieceMoved.clone();
+            // move the piece
             piece.movePiece(this);
+            // set the piece to the board
             builder.setPiece(piece);
-            //calling movePiece here doesn't work, we need to explicitly create a new Rook
+            // create new rook with the new attributes
             builder.setPiece(new Rook(this.castleRookDest, this.castleRook.getColor(), true));
-            builder.boardConfig.get(castleRookDest).setFirstMove(false);
-            builder.setMoveMaker(this.board.getOpponent().getColor());
+            // set the rook first move to false
+            builder.boardState.get(castleRookDest).setFirstMove(false);
+            // change turn
+            builder.setTurn(this.board.getOpponent().getColor());
+            // set the move transition
             builder.setMoveTransition(this);
+            // build and return the new board
             return builder.build();
         }
     }
 
+    /**
+     * this class represent a king castle move
+     */
     public static final class KingSideCastleMove extends CastleMove {
 
         public KingSideCastleMove(Board board, Piece pieceMoved, int coordinateMovedTo, final Rook castleRook,
@@ -273,6 +350,9 @@ public abstract class Move {
         }
 
     }
+    /**
+     * this class represent a queen castle move
+     */
     public static final class QueenSideCastleMove extends CastleMove{
 
         public QueenSideCastleMove(Board board, Piece pieceMoved, int coordinateMovedTo, final Rook castleRook,
@@ -281,6 +361,9 @@ public abstract class Move {
                     castleRookDest);
         }
     }
+    /**
+     * this class represent a Invalid Move move
+     */
     public final static class InvalidMove extends Move{
 
         public InvalidMove() {
@@ -288,13 +371,13 @@ public abstract class Move {
         }
 
     }
+
+    /**
+     * this class is making a move objects
+     */
     public static class MoveFactory {
 
         private static final Move invalidMove = new InvalidMove();
-
-        public MoveFactory() {
-            throw new RuntimeException("Not instantiatable!");
-        }
 
         public static Move getNullMove() {
             return invalidMove;
@@ -303,7 +386,7 @@ public abstract class Move {
         public static Move createMove(final Board board,
                                       final int currentCoordinate,
                                       final int destinationCoordinate) {
-
+            // check if the move exists
             for (final Move move : board.getTurn().getLegalMoves()) {
                 if (move.pieceMoved.getPosition() == currentCoordinate &&
                         move.getCoordinateMovedTo() == destinationCoordinate) {

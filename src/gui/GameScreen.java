@@ -23,6 +23,9 @@ import static javax.swing.SwingUtilities.invokeLater;
 import static javax.swing.SwingUtilities.isLeftMouseButton;
 import static logic.player.AI.PositionEvaluation.evaluate;
 
+/**
+ * this function is responsible for all our gui
+ */
 public class GameScreen {
     private final JFrame gameFrame;
     private final BoardPanel boardPanel;
@@ -114,6 +117,9 @@ public class GameScreen {
         }
     }
 
+    /**
+     * this class represent the board panel
+     */
     public class BoardPanel extends JPanel {
         private final Dimension BOARD_DIMENSION = new Dimension(400, 400);
         List<TilePanel> Tiles;
@@ -121,6 +127,7 @@ public class GameScreen {
         BoardPanel(){
             super(new GridLayout(8, 8));
             this.Tiles = new ArrayList<>();
+            // make a list of 64 tiles
             for (int i = 0; i < 64;i++)
             {
                 TilePanel tilePanel = new TilePanel(this, i);
@@ -170,6 +177,10 @@ public class GameScreen {
             }
         }
     }
+
+    /**
+     * this class represent a single tile/box panel on the board
+     */
     public class TilePanel extends JPanel {
         private final int tileCoordinate;
         private Move computerMove;
@@ -204,12 +215,15 @@ public class GameScreen {
                                 Move move = Move.MoveFactory.createMove(board, pieceMoved.getPosition(), destTile);
                                 moveTransition = board.getTurn().makeMove(move);
                                 if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
+                                    // if the move legal, make it
                                     board = moveTransition.getToBoard();
                                     if(board.getTurn().isAi) {
+                                        // if it's the AI turn, make an AI move
                                         AiMove();
                                     }
                                 }
                             }
+                            // initialize
                             sourceTile = -1;
                             destTile = -1;
                             pieceMoved = null;
@@ -310,19 +324,8 @@ public class GameScreen {
             putTileColor();
             putTilePiece(board);
             drawPossibleMoves(board);
-            highlightAIMove();
             validate();
             repaint();
-        }
-
-        private void highlightAIMove() {
-            if(computerMove != null) {
-                System.out.println(tileCoordinate + "" + computerMove.getCoordinateMovedTo());
-                if(this.tileCoordinate == computerMove.getCoordinateMovedTo()) {
-                    System.out.println("wtfffffffffffffffffff");
-                    setBackground(blueTileColor);
-                }
-            }
         }
 
         /**

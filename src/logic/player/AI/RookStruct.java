@@ -8,6 +8,9 @@ import logic.Pieces.Rook;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * this class contains static methods for evaluating a Rook structure of a player
+ */
 public class RookStruct {
     private static final double CONNECTED_ROW_ROOKS_BONUS = 0.1;
     private static final double CONNECTED_COLUMN_ROOKS_BONUS = 0.15;
@@ -54,8 +57,10 @@ public class RookStruct {
      * @return the bonus if the rooks are connected on column, 0 otherwise
      */
     private static double calculateConnectedColumnRooks(Piece rook1, Piece rook2, Board board) {
+        // if the rooks are on the same column
         if(rook1.getPosition() % 8 == rook2.getPosition() % 8)
         {
+            // check if there are any pieces between the rooks
             for(int i = Math.min(rook1.getPosition() + 8, rook2.getPosition());i < Math.max(rook1.getPosition(), rook2.getPosition());i+=8)
             {
                 if(board.getPieceAtCoordinate(i) != null)
@@ -74,8 +79,10 @@ public class RookStruct {
      * @return the bonus if the rooks are connected on row, 0 otherwise
      */
     private static double calculateConnectedRowRooks(Piece rook1, Piece rook2, Board board) {
+        // if the rooks are on the same row
         if(rook1.getPosition() / 8 == rook2.getPosition() / 8)
         {
+            // check if there are any pieces between the rooks
             for(int i = Math.min(rook1.getPosition() + 1, rook2.getPosition());i < Math.max(rook1.getPosition(), rook2.getPosition());i++)
             {
                 if(board.getPieceAtCoordinate(i) != null)

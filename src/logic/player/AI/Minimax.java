@@ -13,7 +13,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-
+/**
+ * this class contains static methods for the Minimax with alpha-beta pruning to find the best move for a player
+ */
 public class Minimax {
     private static int quiescenceCount = 0;
     private static final int MAX_QUIESCENCE = 5000 * 5;
@@ -27,7 +29,6 @@ public class Minimax {
      * @see <a href="https://www.youtube.com/watch?v=l-hh51ncgDI">
      */
     public static Move MiniMaxAB(final Board board, int depth) {
-        final long startTime = System.currentTimeMillis();
         final Player turn = board.getTurn();
         final Color color = turn.getColor();
         Move bestMove = null;
@@ -35,31 +36,30 @@ public class Minimax {
         double lowestSeenValue = Double.POSITIVE_INFINITY;
         double currentValue;
         quiescenceCount = 0;
+        // sort the moves
         List<Move> SortedMoves = sortMoves(turn.getLegalMoves());
+        // for every possible move
         for (final Move move : SortedMoves) {
             final MoveTransition moveTransition = board.getTurn().makeMove(move);
             if (moveTransition.getMoveStatus() == Move.MoveStatus.DONE) {
-                // check if works
+                // if the move is checkmate-return him
                 if(moveTransition.getToBoard().getTurn().isInCheckMate())
                     return move;
+                // if white turn, call min, else call max
                 currentValue = color == Color.White ?
                         min(moveTransition.getToBoard(), depth - 1, highestSeenValue, lowestSeenValue) :
                         max(moveTransition.getToBoard(), depth - 1, highestSeenValue, lowestSeenValue);
+                // if white and we found bigger
                 if (color == Color.White && currentValue > highestSeenValue) {
                     highestSeenValue = currentValue;
                     bestMove = move;
+                    // if black and we found bigger
                 } else if (color == Color.Black && currentValue < lowestSeenValue) {
                     lowestSeenValue = currentValue;
                     bestMove = move;
-                    System.out.println(lowestSeenValue + " " + move);
                 }
             }
         }
-        long executionTime = System.currentTimeMillis() - startTime;
-        //System.out.printf("ececitoin" + executionTime);
-        System.out.println("best" + bestMove);
-        System.out.println("highest" + highestSeenValue);
-        System.out.println("lowest" + lowestSeenValue);
         return bestMove;
     }
 
@@ -70,22 +70,38 @@ public class Minimax {
      */
     private static List<Move> sortMoves(Collection<Move> legalMoves) {
         SortMoves sortMoves = new SortMoves();
+        // sort the moves by order
         return Ordering.from(sortMoves).immutableSortedCopy(legalMoves);
     }
 
+    /**
+     * this function finds the best move for the max player
+     * @param board the board we are in
+     * @param depth the tree depth left
+     * @param highest the highest value we have seen
+     * @param lowest the lowest value we have seen
+     * @return the highest move evaluation for the max player
+     */
     public static double max(final Board board,
                    final int depth,
                    final double highest,
                    final double lowest) {
+        // depth end of the depth search or game came to result
         if (depth == 0 ||  board.gameResult() != Result.NOT_FINISHED) {
+            // if the game is draw-return 0;
             if(board.gameResult() == Result.DRAW)
                 return 0;
+            // return the position evaluation
             return PositionEvaluation.evaluate(board);
         }
         double currentHighest = highest;
+        // sort the moves
         List<Move> SortedMoves = sortMoves(board.getTurn().getLegalMoves());
+        // for every move
         for (final Move move : SortedMoves) {
+            // make the move
             final MoveTransition moveTransition = board.getTurn().makeMove(move);
+            // if the move legal
             if (moveTransition.getMoveStatus() == Move.MoveStatus.DONE) {
                 currentHighest = Math.max(currentHighest, min(moveTransition.getToBoard(),
                         calculateQuiescenceDepth(moveTransition.getToBoard(), depth), currentHighest, lowest));
@@ -97,19 +113,34 @@ public class Minimax {
         return currentHighest;
     }
 
+    /**
+     * this function finds the best move for the min player
+     * @param board the board we are in
+     * @param depth the tree depth left
+     * @param highest the highest value we have seen
+     * @param lowest the lowest value we have seen
+     * @return the minimum move evaluation for the min player
+     */
     public static double min(final Board board,
                    final int depth,
                    final double highest,
                    final double lowest) {
+        // depth end of the depth search or game came to result
         if (depth == 0 ||  board.gameResult() != Result.NOT_FINISHED) {
             if(board.gameResult() == Result.DRAW)
+                // if the game is draw-return 0;
                 return 0;
+            // return the position evaluation
             return PositionEvaluation.evaluate(board);
         }
         double currentLowest = lowest;
+        // sort the moves
         List<Move> SortedMoves = sortMoves(board.getTurn().getLegalMoves());
+        // for every move
         for (final Move move : SortedMoves) {
+            // make the move
             final MoveTransition moveTransition = board.getTurn().makeMove(move);
+            // if the move legal
             if (moveTransition.getMoveStatus() == Move.MoveStatus.DONE) {
                 currentLowest = Math.min(currentLowest, max(moveTransition.getToBoard(),
                         calculateQuiescenceDepth(moveTransition.getToBoard(), depth), highest, currentLowest));
@@ -127,8 +158,15 @@ public class Minimax {
         return timeTaken + " ms";
     }
 
+    /**
+     * this function calculate the quiescence needed depth
+     * @param toBoard the board we move to
+     * @param depth the current depth
+     * @return the quiescence new depth
+     */
     private static int calculateQuiescenceDepth(final Board toBoard,
                                          final int depth) {
+        // if the depth is 1, and we didn't pass the Max quiescence limit, check for non quit moves
         if(depth == 1 && quiescenceCount < MAX_QUIESCENCE) {
             int activityMeasure = 0;
             if (toBoard.getTurn().isInCheck()) {
@@ -146,6 +184,7 @@ public class Minimax {
                     activityMeasure += 1;
                 }
             }
+            // if the activity measure is bigger or equal to 2, add depth
             if(activityMeasure >= 2) {
                 quiescenceCount++;
                 return 3;

@@ -3,12 +3,17 @@ package logic.player.AI;
 import logic.Board;
 import logic.Color;
 import logic.Move;
+import logic.Pieces.King;
 import logic.Pieces.Pawn;
 import logic.Pieces.Piece;
 import logic.player.Player;
 
 import java.util.Collection;
+import java.util.List;
 
+/**
+ * this class contains static methods for evaluating a King safety of a player
+ */
 public class KingSafety {
     private static final double CASTLE_BONUS = 0.2;
     private static final double NONE_CASTLE_PUNISHMENT = -0.1;
@@ -24,23 +29,41 @@ public class KingSafety {
      */
     public static double calculateKingSafety(Player player, Board board)
     {
-        return calculateCastleValue(player, board);
+        return calculateCastleValue(player, board) + calculateKingTropism(player);
     }
+
+    /**
+     * this function calculate the king tropism for the player
+     * @param player the player we calculate his king tropism
+     * @return the king tropism evaluation
+     */
     public static double calculateKingTropism(final Player player) {
         final int playerKingSquare = player.getKing().getPosition();
-        final Collection<Move> enemyMoves = player.getRival().getLegalMoves();
+        final List<Move> enemyMoves = player.getRival().getLegalMoves();
+        // the closest distance move
+        int currentDistance;
+        // the closest piece
         Piece closestPiece = null;
         int closestDistance = Integer.MAX_VALUE;
         for(final Move move : enemyMoves) {
-            final int currentDistance = calculateChebyshevDistance(playerKingSquare, move.getCoordinateMovedTo());
-            if(currentDistance < closestDistance) {
+            // calculate the distance between the move to the king
+            currentDistance = calculateChebyshevDistance(playerKingSquare, move.getCoordinateMovedTo());
+            if(move.getPieceMoved().getClass() != King.class && currentDistance < closestDistance) {
                 closestDistance = currentDistance;
                 closestPiece = move.getPieceMoved();
             }
         }
-        return closestPiece.value / 10 * closestDistance;
+        if(closestPiece != null)
+            return -1*(closestPiece.value / 200 * (10 - closestDistance));
+        return 0;
     }
 
+    /**
+     * this function calculate the Chebyshev Distance between the king coordinate to a piece move coordinate
+     * @param playerKingSquare the king coordinate
+     * @param coordinateMovedTo the piece coordinate
+     * @return return the Chebyshev distance to the king
+     */
     private static int calculateChebyshevDistance(int playerKingSquare, int coordinateMovedTo) {
         int kingColumn =  playerKingSquare % 8;
         int kingRow = playerKingSquare / 8;
@@ -84,14 +107,18 @@ public class KingSafety {
         final int[][] pawnsBestShield = {pawnsBestPos1, pawnsBestPos2, pawnsBestPos3, pawnsBestPos4};
         int kingCoordinate = player.getKing().getPosition();
         boolean isAllShieldTrue = true;
+        // for every possible shield
         for(int[] shield : pawnsBestShield)
         {
             isAllShieldTrue = true;
+            // for every spot in the shield
             for(int i : shield)
             {
+                // if there is no pawn in the spot, and the king is not if first column case with the mask
                 if(board.getPieceAtCoordinate(kingCoordinate + i * getDirection(player.getColor())) == null ||
                 !(board.getPieceAtCoordinate(kingCoordinate + i * getDirection(player.getColor())).getClass() ==
-                        Pawn.class))
+                        Pawn.class) &&
+                        ((King)player.getKing()).isFirstColumnExtremeCase(kingCoordinate, i))
                     isAllShieldTrue = false;
             }
             if(isAllShieldTrue)
