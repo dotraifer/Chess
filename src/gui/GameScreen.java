@@ -138,7 +138,6 @@ public class GameScreen {
          * @param board the board to draw
          */
         public void drawBoard(Board board) {
-            System.out.println(board.board_state);
             removeAll();
             for(TilePanel tilePanel : Tiles)
             {

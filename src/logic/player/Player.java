@@ -21,6 +21,7 @@ public abstract class Player {
     protected List<Move> legalMoves;
     protected Piece king;
     protected boolean isInCheck;
+     // is the player is AI
     public boolean isAi;
     protected boolean hasCastled;
 

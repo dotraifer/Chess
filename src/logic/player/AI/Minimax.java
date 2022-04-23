@@ -140,7 +140,7 @@ public class Minimax {
             if(toBoard.getTransitionMove().isAttack())
                 activityMeasure += 2;
             if(toBoard.getTransitionMove().isPawnThreat())
-                activityMeasure += 2;
+                activityMeasure += 1;
             for(final Move move: toBoard.lastNMoves(3)) {
                 if(move.isAttack()) {
                     activityMeasure += 1;
