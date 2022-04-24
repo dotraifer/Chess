@@ -8,6 +8,7 @@ import logic.Pieces.Pawn;
 import logic.Pieces.Piece;
 import logic.player.Player;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -104,7 +105,9 @@ public class KingSafety {
         final int[] pawnsBestPos2 = {9, 8, 15};
         final int[] pawnsBestPos3 = {9, 16, 7};
         final int[] pawnsBestPos4 = {17, 8, 7};
-        final int[][] pawnsBestShield = {pawnsBestPos1, pawnsBestPos2, pawnsBestPos3, pawnsBestPos4};
+        final int[] pawnsBestPos5 = {1, 8, -1};
+        final int[][] pawnsBestShield = {pawnsBestPos1, pawnsBestPos2, pawnsBestPos3, pawnsBestPos4, pawnsBestPos5
+        };
         int kingCoordinate = player.getKing().getPosition();
         boolean isAllShieldTrue = true;
         // for every possible shield
@@ -115,18 +118,33 @@ public class KingSafety {
             for(int i : shield)
             {
                 // if there is no pawn in the spot, and the king is not if first column case with the mask
-                if(board.getPieceAtCoordinate(kingCoordinate + i * getDirection(player.getColor())) == null ||
-                !(board.getPieceAtCoordinate(kingCoordinate + i * getDirection(player.getColor())).getClass() ==
-                        Pawn.class) &&
-                        ((King)player.getKing()).isFirstColumnExtremeCase(kingCoordinate, i))
+                if((board.getPieceAtCoordinate(kingCoordinate + i * getDirection(player.getColor())) == null ||
+                (board.getPieceAtCoordinate(kingCoordinate + i * getDirection(player.getColor())).getClass() !=
+                        Pawn.class)) &&
+                        !isPawnFromOtherSide(kingCoordinate, kingCoordinate + i * getDirection(player.getColor())))
                     isAllShieldTrue = false;
             }
-            if(isAllShieldTrue)
+            if(isAllShieldTrue && isOnFirstOrSecond(kingCoordinate, player.getColor()))
                 return GOOD_PAWNS_SHIELD_BONUS;
         }
         return BED_PAWNS_SHIELD_PUNISHMENT;
 
     }
+
+    private static boolean isOnFirstOrSecond(int kingCoordinate, Color playerColor)
+    {
+        if(playerColor == Color.White)
+            return kingCoordinate <= 63 && kingCoordinate >= 48;
+        return kingCoordinate <= 15 && kingCoordinate >= 0;
+    }
+
+    private static boolean isPawnFromOtherSide(int kingCoordinate, int pawnCoordinate)
+    {
+        if (kingCoordinate % 8 == 0 && ((pawnCoordinate + 1) % 8 == 0))
+            return true;
+        else return ((kingCoordinate + 1) % 8 == 0 && (pawnCoordinate % 8 == 0));
+    }
+
 
     /**
      * get the movement direction
