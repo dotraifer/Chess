@@ -1,6 +1,7 @@
 package logic.player.AI;
 
 import logic.Board;
+import logic.Color;
 import logic.Move;
 import logic.Pieces.King;
 import logic.Pieces.Piece;
@@ -27,8 +28,7 @@ public class PositionEvaluation {
     {
         GameStage gameStage = calculateGameStage(board);
         // the score of the white - the score of the black
-        return (score(board, board.getWhitePlayer(), gameStage) - score(board, board.getBlackPlayer(), gameStage
-        ));
+        return (score(board, board.getWhitePlayer(), gameStage) - score(board, board.getBlackPlayer(), gameStage));
     }
 
     /**
@@ -84,7 +84,7 @@ public class PositionEvaluation {
                     RookStruct.rookStruct(board, allActivePieces)+
                     CenterControl.centerControl(player, board)+
                     KingSafety.calculateKingSafety(player, board, gameStage) +
-                    PieceLocation.pieceLocation(allActivePieces, gameStage)
+                    PieceLocation.pieceLocation(allActivePieces, gameStage) * 0.9
             ;
             // if midgame game stage
             case MIDGAME -> Material.material(allActivePieces) +

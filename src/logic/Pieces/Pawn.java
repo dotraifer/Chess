@@ -105,5 +105,10 @@ public class Pawn extends Piece {
         else return ((coordinate + 1) % 8 == 0 && ((mask == 9 && color == Color.Black)||(mask == 7 && color == Color.White)));
     }
 
+    @Override
+    public String toString() {
+        return "P";
+    }
+
 
 }

@@ -124,11 +124,19 @@ public class Board {
     }
     @Override
     public String toString() {
-        return "Board{" +
-                "board_state=" + board_state +
-                ", whitePieces=" + whitePieces +
-                ", blackPieces=" + blackPieces +
-                '}';
+        StringBuilder str = new StringBuilder();
+        for(int i = 0;i<8;i++)
+        {
+            for(int j =0;j<8;j++)
+            {
+                if(board_state.get(i * 8 + j) == null)
+                    str.append("0 ");
+                else
+                    str.append(board_state.get(i * 8 + j).toString()).append(" ");
+            }
+            str.append("\n");
+        }
+        return str.toString();
     }
 
     /**
@@ -308,6 +316,8 @@ public class Board {
         // return the list
         return Collections.unmodifiableList(moveHistory);
     }
+
+
 
     /**
      * this Inner class is responsible for building a new board' with his attributes

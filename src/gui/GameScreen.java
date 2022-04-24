@@ -270,7 +270,6 @@ public class GameScreen {
          */
         public void AiMove()
         {
-            System.out.println(PositionEvaluation.evaluationDetails(board));
             MoveTransition moveTransition;
             moveTransition = board.getTurn().makeMove(Minimax.MiniMaxAB(board, 5));
             if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
@@ -279,6 +278,7 @@ public class GameScreen {
                 if(board.gameResult() != Result.NOT_FINISHED)
                     boardPanel.gameOver(board.gameResult());
             }
+            System.out.println(Minimax.bestBoard);
             System.out.println(PositionEvaluation.evaluationDetails(board));
         }
 

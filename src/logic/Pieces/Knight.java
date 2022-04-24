@@ -141,4 +141,9 @@ public class Knight extends Piece {
             return true;
         else return ((coordinate >= 48 && coordinate <= 55) && (mask == 17 || mask == 15));
     }
+
+    @Override
+    public String toString() {
+        return "N";
+    }
 }

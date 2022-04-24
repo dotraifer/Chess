@@ -19,6 +19,7 @@ import java.util.List;
 public class Minimax {
     private static int quiescenceCount = 0;
     private static final int MAX_QUIESCENCE = 5000 * 5;
+    public static Board bestBoard;
 
 
     /**
@@ -88,6 +89,7 @@ public class Minimax {
                    final double lowest) {
         // depth end of the depth search or game came to result
         if (depth == 0 ||  board.gameResult() != Result.NOT_FINISHED) {
+            bestBoard = board;
             // if the game is draw-return 0;
             if(board.gameResult() == Result.DRAW)
                 return 0;
@@ -127,6 +129,7 @@ public class Minimax {
                    final double lowest) {
         // depth end of the depth search or game came to result
         if (depth == 0 ||  board.gameResult() != Result.NOT_FINISHED) {
+            bestBoard = board;
             if(board.gameResult() == Result.DRAW)
                 // if the game is draw-return 0;
                 return 0;

@@ -98,4 +98,9 @@ public class Bishop extends Piece {
             return true;
         else return ((coordinate + 1) % 8 == 0 && (mask == -7 || mask == 9));
     }
+
+    @Override
+    public String toString() {
+        return "B";
+    }
 }

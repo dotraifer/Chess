@@ -103,4 +103,9 @@ public class Rook extends Piece{
         else return ((coordinate + 1) % 8 == 0 && (mask == 1));
     }
 
+    @Override
+    public String toString() {
+        return "R";
+    }
+
 }
