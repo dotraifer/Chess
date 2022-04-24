@@ -106,7 +106,10 @@ public class KingSafety {
         final int[] pawnsBestPos3 = {9, 16, 7};
         final int[] pawnsBestPos4 = {17, 8, 7};
         final int[] pawnsBestPos5 = {1, 8, -1};
-        final int[][] pawnsBestShield = {pawnsBestPos1, pawnsBestPos2, pawnsBestPos3, pawnsBestPos4, pawnsBestPos5
+        final int[] pawnsBestPos6 = {8, 7};
+        final int[] pawnsBestPos7 = {8, 9};
+        final int[][] pawnsBestShield = {pawnsBestPos1, pawnsBestPos2, pawnsBestPos3, pawnsBestPos4, pawnsBestPos5,
+                pawnsBestPos6, pawnsBestPos7
         };
         int kingCoordinate = player.getKing().getPosition();
         boolean isAllShieldTrue = true;
