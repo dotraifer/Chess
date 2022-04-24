@@ -28,9 +28,13 @@ public class KingSafety {
      * @param board the current board
      * @return the value of the player's king safety if the current board
      */
-    public static double calculateKingSafety(Player player, Board board)
+    public static double calculateKingSafety(Player player, Board board, GameStage gameStage)
     {
-        return calculateCastleValue(player, board) + calculateKingTropism(player);
+        // if start or mid-Castle relevant
+        if(gameStage == GameStage.OPENING || gameStage == GameStage.MIDGAME)
+            return calculateCastleValue(player, board) + calculateKingTropism(player);
+        // if ending-castle irrelevant
+        else return calculateKingTropism(player);
     }
 
     /**
@@ -134,17 +138,33 @@ public class KingSafety {
 
     }
 
+    /**
+     * this function checks if the king is in his first or second row
+     * @param kingCoordinate the king coordinate to check
+     * @param playerColor the king color/player color
+     * @return true if the king is in the first or second, false otherwise
+     */
     private static boolean isOnFirstOrSecond(int kingCoordinate, Color playerColor)
     {
         if(playerColor == Color.White)
+            // white second and first places
             return kingCoordinate <= 63 && kingCoordinate >= 48;
+        // black second and first places
         return kingCoordinate <= 15 && kingCoordinate >= 0;
     }
 
+    /**
+     * this function is the pawn we found in the pawn shield is from the other side of the board(like king at 63 and pawn at 48)
+     * @param kingCoordinate the coordinate of the king
+     * @param pawnCoordinate the coordinate of the pawn
+     * @return true if the pawn is from the otherwise, false otherwise
+     */
     private static boolean isPawnFromOtherSide(int kingCoordinate, int pawnCoordinate)
     {
+        // if the king at rightest col and pawn at leftest
         if (kingCoordinate % 8 == 0 && ((pawnCoordinate + 1) % 8 == 0))
             return true;
+        // if the king at leftest col and pawn at rightest
         else return ((kingCoordinate + 1) % 8 == 0 && (pawnCoordinate % 8 == 0));
     }
 

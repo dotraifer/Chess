@@ -83,8 +83,8 @@ public class PositionEvaluation {
                     checkmate(player) + attacks(player) +
                     RookStruct.rookStruct(board, allActivePieces)+
                     CenterControl.centerControl(player, board)+
-                    KingSafety.calculateKingSafety(player, board) +
-                    PieceLocation.pieceLocation(allActivePieces, GameStage.OPENING)
+                    KingSafety.calculateKingSafety(player, board, gameStage) +
+                    PieceLocation.pieceLocation(allActivePieces, gameStage)
             ;
             // if midgame game stage
             case MIDGAME -> Material.material(allActivePieces) +
@@ -93,8 +93,8 @@ public class PositionEvaluation {
                     CenterControl.centerControl(player, board) +
                     checkmate(player) + attacks(player) +
                     RookStruct.rookStruct(board, allActivePieces)+
-                    KingSafety.calculateKingSafety(player, board) +
-                    PieceLocation.pieceLocation(allActivePieces, GameStage.MIDGAME)
+                    KingSafety.calculateKingSafety(player, board, gameStage) +
+                    PieceLocation.pieceLocation(allActivePieces, gameStage)
 
             ;
             // if ending game stage
@@ -104,8 +104,8 @@ public class PositionEvaluation {
                     checkmate(player) + attacks(player) +
                     CenterControl.centerControl(player, board) +
                     RookStruct.rookStruct(board, allActivePieces)+
-                    KingSafety.calculateKingSafety(player, board) +
-                    PieceLocation.pieceLocation(allActivePieces, GameStage.ENDING)
+                    KingSafety.calculateKingSafety(player, board, gameStage) +
+                    PieceLocation.pieceLocation(allActivePieces, gameStage)
             ;
         };
     }
@@ -155,7 +155,7 @@ public class PositionEvaluation {
                 CenterControl.centerControl(board.getWhitePlayer(), board)+"\nrooks:"+
                 RookStruct.rookStruct(board, WallActivePieces ) +"\n"+
                         "kingtro :" + KingSafety.calculateKingTropism(board.getWhitePlayer()) + "\n" +
-                        "saftey: " + KingSafety.calculateKingSafety(board.getWhitePlayer(), board) + "\n"+
+                        "saftey: " + KingSafety.calculateKingSafety(board.getWhitePlayer(), board, calculateGameStage(board)) + "\n"+
                         "PL:" + PieceLocation.pieceLocation(WallActivePieces, calculateGameStage(board)) +
 
                         "black +: \n material" + Material.material(BallActivePieces) + "\nmobility:" +
@@ -165,7 +165,7 @@ public class PositionEvaluation {
                 CenterControl.centerControl(board.getBlackPlayer(), board)+"\nrooks:"+
                 RookStruct.rookStruct(board, BallActivePieces ) +"\n"+
                         "kingtro"+ KingSafety.calculateKingTropism(board.getBlackPlayer()) + "\n" +
-                        "saftey: " + KingSafety.calculateKingSafety(board.getBlackPlayer(), board) + "\n" +
+                        "saftey: " + KingSafety.calculateKingSafety(board.getBlackPlayer(), board, calculateGameStage(board)) + "\n" +
                         "casled" + board.getBlackPlayer().isHasCastled() +
                         "PL:" + PieceLocation.pieceLocation(BallActivePieces, calculateGameStage(board)) +
 
