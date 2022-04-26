@@ -63,7 +63,9 @@ public abstract class Player {
         return legalMoves;
     }
 
-
+    public Board getBoard() {
+        return board;
+    }
 
     /**
      * will get every active piece for the player

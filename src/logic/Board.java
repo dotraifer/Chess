@@ -24,6 +24,7 @@ public class Board {
     private Player turn;
     private int movesWithoutEat;
     private final Move transitionMove;
+    public static int size = 64;
 
     /**
      * Constructor for the Board class

@@ -1,4 +1,7 @@
 import gui.GameScreen;
+import logic.Board;
+import logic.Move;
+import logic.player.AI.Zobrist;
 
 /**
  * Chess program

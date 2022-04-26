@@ -22,7 +22,6 @@ public class WhitePlayer extends Player{
      */
     public WhitePlayer(Board board, List<Move> whiteLegalMoves, List<Move> blackLegalMoves, boolean isAi, boolean hasCastled) {
         super(board, whiteLegalMoves, blackLegalMoves, isAi, hasCastled);
-        this.king = findKing(board);
     }
 
 
@@ -68,7 +67,7 @@ public class WhitePlayer extends Player{
     @Override
     public List<Move> calculateCastles(List<Move> playerLegals, List<Move> opponentLegals) {
         List<Move> Castles = new ArrayList<>();
-        if(this.king.isFirstMove() && !this.isInCheck)
+        if(this.king.isFirstMove() && this.king.getPosition() == 60 && Player.getAttacksOnBox(60, opponentLegals).isEmpty())
         {
             // if not occupied
             if(this.board.getPieceAtCoordinate(61) == null && this.board.getPieceAtCoordinate(62) == null)

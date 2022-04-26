@@ -108,6 +108,6 @@ public class King extends Piece {
 
     @Override
     public String toString() {
-        return "K";
+        return color == Color.White ? "K" : "k";
     }
 }

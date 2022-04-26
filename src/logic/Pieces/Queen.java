@@ -100,6 +100,6 @@ public class Queen extends Piece {
 
     @Override
     public String toString() {
-        return "Q";
+        return color == Color.White ? "Q" : "q";
     }
 }

@@ -101,6 +101,6 @@ public class Bishop extends Piece {
 
     @Override
     public String toString() {
-        return "B";
+        return color == Color.White ? "B" : "b";
     }
 }

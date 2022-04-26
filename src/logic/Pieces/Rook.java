@@ -105,7 +105,7 @@ public class Rook extends Piece{
 
     @Override
     public String toString() {
-        return "R";
+        return color == Color.White ? "R" : "r";
     }
 
 }

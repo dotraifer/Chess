@@ -1,5 +1,7 @@
 package logic.player.AI;
 
+import logic.Board;
+import logic.Color;
 import logic.Pieces.Pawn;
 import logic.Pieces.Piece;
 import logic.player.Player;
@@ -13,6 +15,7 @@ public class PawnStruct {
     private static final double DOUBLE_PAWN_PUNISHMENT = -0.2;
     private static final double ISOLATED_PAWN_PUNISHMENT = -0.15;
     private static final double PAWN_ISLAND_PUNISHMENT = -0.1;
+    private static final double BACKWARD_PAWN_PUNISHMENT = -0.12;
 
     /**
      * this function evaluate the player pawn struct, according to pawns stack and isolated pawns
@@ -23,8 +26,59 @@ public class PawnStruct {
     public static double pawnStruct(Player player, List<Piece> allActivePieces)
     {
         int[] pawnsArr = getPawnsPlacesArray(allActivePieces);
-        return calculateDoublePawns(pawnsArr) + calculateIsolatedPawns(pawnsArr) + PawnIslands(pawnsArr);
+        return calculateDoublePawns(pawnsArr) + calculateIsolatedPawns(pawnsArr) + PawnIslands(pawnsArr)
+                + BackwardPawns(player.getBoard(), player,allActivePieces);
 
+    }
+
+    private static double BackwardPawns(Board board,Player player, List<Piece> allActivePieces) {
+        boolean isBackward;
+        int backwardCounter = 0;
+        for (Piece piece : allActivePieces) {
+            isBackward = true;
+            if (piece.getClass() == Pawn.class) {
+                int pawnLoc = piece.getPosition();
+                int pawnCol = pawnLoc % 8;
+                int dif;
+                if (pawnCol != 7 && pawnCol != 0) {
+                    for (int i = pawnCol + 1; i < EvaluationAssistants.size; i += 8) {
+                        if (board.getPieceAtCoordinate(i) != null && board.getPieceAtCoordinate(i).getClass() == Pawn.class) {
+                            dif = (pawnLoc - i) * piece.getColor().getDirection();
+                            if (dif <= 1&& dif >=-1)
+                                isBackward = false;
+                        }
+                    }
+                    for (int i = pawnCol - 1; i < EvaluationAssistants.size; i += 8) {
+                        if (board.getPieceAtCoordinate(i) != null && board.getPieceAtCoordinate(i).getClass() == Pawn.class) {
+                            dif = (pawnLoc - i) * piece.getColor().getDirection();
+                            if (dif <= 1&& dif >=-1)
+                                isBackward = false;
+                        }
+                    }
+                }
+                if (pawnCol == 0) {
+                    for (int i = pawnCol + 1; i < EvaluationAssistants.size; i += 8) {
+                        if (board.getPieceAtCoordinate(i) != null && board.getPieceAtCoordinate(i).getClass() == Pawn.class) {
+                            dif = (pawnLoc - i) * piece.getColor().getDirection();
+                            if (dif <= 1&& dif >=-1)
+                                isBackward = false;
+                        }
+                    }
+                }
+                if (pawnCol == 7) {
+                    for (int i = pawnCol - 1; i < EvaluationAssistants.size; i += 8) {
+                        if (board.getPieceAtCoordinate(i) != null && board.getPieceAtCoordinate(i).getClass() == Pawn.class) {
+                            dif = (pawnLoc - i) * piece.getColor().getDirection();
+                            if (dif <=1 && dif >=-1)
+                                isBackward = false;
+                        }
+                    }
+                }
+                if(isBackward)
+                    backwardCounter++;
+            }
+        }
+        return backwardCounter * BACKWARD_PAWN_PUNISHMENT;
     }
 
     /**

@@ -84,7 +84,7 @@ public class PositionEvaluation {
                     RookStruct.rookStruct(board, allActivePieces)+
                     CenterControl.centerControl(player, board)+
                     KingSafety.calculateKingSafety(player, board, gameStage) +
-                    PieceLocation.pieceLocation(allActivePieces, gameStage) * 0.9
+                    PieceLocation.pieceLocation(allActivePieces, gameStage)
             ;
             // if midgame game stage
             case MIDGAME -> Material.material(allActivePieces) +

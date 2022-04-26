@@ -12,7 +12,7 @@ public enum Color {
             {
                 public int getDirection(){return 1;}
             };
-    abstract int getDirection();
+    public abstract int getDirection();
 
 }
 
