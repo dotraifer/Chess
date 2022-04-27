@@ -21,6 +21,8 @@ public class SortMoves implements Comparator<Move> {
         return ComparisonChain.start()
                 .compareTrueFirst(m1.isPawnPromotion(), m2.isPawnPromotion())
                 .compareTrueFirst(m1.isAttack(), m2.isAttack())
+                .compareTrueFirst(m1.isAttack() && ((Move.AttackMove)m1).getAttackedPiece().value >= m1.getPieceMoved().value,
+                        m2.isAttack() && ((Move.AttackMove)m2).getAttackedPiece().value >= m2.getPieceMoved().value)
                 .compareTrueFirst(m1.isCastle(), m2.isCastle())
                 .compare(m2.getPieceMoved().value, m1.getPieceMoved().value)
                 .compareTrueFirst(m1.getPieceMoved().getPosition() < m1.getCoordinateMovedTo(),

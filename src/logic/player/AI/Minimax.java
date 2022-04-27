@@ -1,7 +1,6 @@
 package logic.player.AI;
 
 import com.google.common.collect.Ordering;
-import com.google.common.hash.HashCode;
 import gui.Result;
 import logic.Board;
 import logic.Color;
@@ -11,6 +10,8 @@ import logic.player.Player;
 
 import java.util.*;
 
+import static logic.player.AI.CachedData.Type.*;
+
 /**
  * this class contains static methods for the Minimax with alpha-beta pruning to find the best move for a player
  */
@@ -18,11 +19,6 @@ public class Minimax {
     private static int quiescenceCount = 0;
     private static final int MAX_QUIESCENCE = 5000 * 5;
     private static Map<Long, CachedData> transpositionTable = new HashMap<>();
-
-    public enum Flag
-    {
-        VALUE, UPPERBOUND, LOWERBOUND
-    }
 
     /**
      * this function uses Minimax with Alpha-Beta to find the best move for a player in the given board
@@ -35,9 +31,8 @@ public class Minimax {
         final Player turn = board.getTurn();
         final Color color = turn.getColor();
         Move bestMove = null;
-        double highestSeenValue = Double.NEGATIVE_INFINITY;
-        double lowestSeenValue = Double.POSITIVE_INFINITY;
-        double currentValue = color == Color.White ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
+        double bestValue = Double.NEGATIVE_INFINITY;
+        double currentValue;
         quiescenceCount = 0;
         // sort the moves
         List<Move> SortedMoves = sortMoves(turn.getLegalMoves());
@@ -48,45 +43,15 @@ public class Minimax {
                 // if the move is checkmate-return him
                 if(moveTransition.getToBoard().getTurn().isInCheckMate())
                     return move;
-                long boardIndex = HashCode(moveTransition.getToBoard());
-                CachedData key = transpositionTable.get(boardIndex);
-                //if(key != null && key.getDepth() >= depth)
-                //{
-                //    currentValue = color == Color.White ? Math.max(key.getScore(), currentValue) :
-                //    Math.min(key.getScore(), currentValue);
-                //}
                 // if white turn, call min, else call max
-                //else {
-                    CachedData cd = new CachedData();
-                    cd.setTurnColor(moveTransition.getToBoard().getTurn().getColor());
-                    cd.setDepth(depth);
-                    currentValue = color == Color.White ?
-                            min(moveTransition.getToBoard(), depth - 1, highestSeenValue, lowestSeenValue) :
-                            max(moveTransition.getToBoard(), depth - 1, highestSeenValue, lowestSeenValue);
-                    cd.setScore(currentValue);
-                    transpositionTable.put(boardIndex, cd);
-
-                //}
+                currentValue = -1* alphaBetaTT(moveTransition.getToBoard(), depth - 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
                 // if white and we found bigger
-                if (color == Color.White && currentValue > highestSeenValue) {
-                    highestSeenValue = currentValue;
-                    bestMove = move;
-                    // if black and we found bigger
-                } else if (color == Color.Black && currentValue < lowestSeenValue) {
-                    lowestSeenValue = currentValue;
+                if (currentValue > bestValue) {
+                    bestValue = currentValue;
                     bestMove = move;
                 }
             }
         }
-        CachedData cd = new CachedData();
-        cd.setTurnColor(board.getTurn().getColor());
-        cd.setDepth(depth);
-        if (board.getTurn().getColor() == Color.White) {
-            cd.setScore(highestSeenValue);
-        } else {
-            cd.setScore(lowestSeenValue);
-        }
-        transpositionTable.put(HashCode(board), cd);
         return bestMove;
     }
 
@@ -99,118 +64,6 @@ public class Minimax {
         SortMoves sortMoves = new SortMoves();
         // sort the moves by order
         return Ordering.from(sortMoves).immutableSortedCopy(legalMoves);
-    }
-
-    /**
-     * this function finds the best move for the max player
-     * @param board the board we are in
-     * @param depth the tree depth left
-     * @param highest the highest value we have seen
-     * @param lowest the lowest value we have seen
-     * @return the highest move evaluation for the max player
-     */
-    public static double max(final Board board,
-                   final int depth,
-                   final double highest,
-                   final double lowest) {
-
-        CachedData cd = new CachedData();
-        // depth end of the depth search or game came to result
-        if (depth == 0 ||  board.gameResult() != Result.NOT_FINISHED) {
-            // if the game is draw-return 0;
-            if(board.gameResult() == Result.DRAW)
-                return 0;
-            // return the position evaluation
-            return PositionEvaluation.evaluate(board);
-        }
-        double currentHighest = highest;
-        // sort the moves
-        List<Move> SortedMoves = sortMoves(board.getTurn().getLegalMoves());
-        // for every move
-        for (final Move move : SortedMoves) {
-            // make the move
-            final MoveTransition moveTransition = board.getTurn().makeMove(move);
-            // if the move legal
-            if (moveTransition.getMoveStatus() == Move.MoveStatus.DONE) {
-                long boardIndex = HashCode(moveTransition.getToBoard());
-                CachedData key = transpositionTable.get(boardIndex);
-                //if(key != null && key.getDepth() >= depth)
-                //{
-                //    currentHighest = Math.max(currentHighest, key.getScore());
-                //}
-                //else {
-                cd = new CachedData();
-                cd.setTurnColor(moveTransition.getToBoard().getTurn().getColor());
-                cd.setDepth(depth);
-                currentHighest = Math.max(currentHighest, min(moveTransition.getToBoard(),
-                        calculateQuiescenceDepth(moveTransition.getToBoard(), depth), currentHighest, lowest));
-                cd.setScore(currentHighest);
-                //}
-                if (currentHighest >= lowest) {
-                    cd.setScore(lowest);
-                    return lowest;
-                }
-                transpositionTable.put(boardIndex, cd);
-            }
-        }
-        return currentHighest;
-    }
-
-    /**
-     * this function finds the best move for the min player
-     * @param board the board we are in
-     * @param depth the tree depth left
-     * @param highest the highest value we have seen
-     * @param lowest the lowest value we have seen
-     * @return the minimum move evaluation for the min player
-     */
-    public static double min(final Board board,
-                   final int depth,
-                   final double highest,
-                   final double lowest) {
-        CachedData cd = new CachedData();
-        // depth end of the depth search or game came to result
-        if (depth == 0 ||  board.gameResult() != Result.NOT_FINISHED) {
-            if(board.gameResult() == Result.DRAW)
-                // if the game is draw-return 0;
-                return 0;
-            // return the position evaluation
-            return PositionEvaluation.evaluate(board);
-        }
-        double currentLowest = lowest;
-        // sort the moves
-        List<Move> SortedMoves = sortMoves(board.getTurn().getLegalMoves());
-        // for every move
-        for (final Move move : SortedMoves) {
-            // make the move
-            final MoveTransition moveTransition = board.getTurn().makeMove(move);
-            // if the move legal
-            if (moveTransition.getMoveStatus() == Move.MoveStatus.DONE) {
-                long boardIndex = HashCode(moveTransition.getToBoard());
-// some time passes
-                CachedData key = transpositionTable.get(boardIndex);
-
-                //if(key != null && key.getDepth() >= depth){
-                //    currentLowest = Math.min(currentLowest, key.getScore());
-                //}
-                //else {
-                cd = new CachedData();
-                cd.setTurnColor(moveTransition.getToBoard().getTurn().getColor());
-                cd.setDepth(depth);
-                currentLowest = Math.min(currentLowest, max(moveTransition.getToBoard(),
-                        calculateQuiescenceDepth(moveTransition.getToBoard(), depth), highest, currentLowest));
-                cd.setScore(currentLowest);
-                //}
-
-                if (currentLowest <= highest) {
-                    cd.setScore(lowest);
-                    return highest;
-                }
-                transpositionTable.put(boardIndex, cd);
-
-            }
-        }
-        return currentLowest;
     }
 
 
@@ -248,15 +101,85 @@ public class Minimax {
             // if the activity measure is bigger or equal to 2, add depth
             if(activityMeasure >= 2) {
                 quiescenceCount++;
-                return 3;
+                return 2;
             }
         }
         return depth - 1;
     }
 
+    /**
+     * this function generate a hash code key for a specific board to put or find in the transposition table
+     * @param board the board to get his key
+     * @return long of the key of the board for the transposition table
+     */
     private static long HashCode(Board board)
     {
         return Zobrist.getKeyForBoard(board);
+    }
+
+    /**
+     * this function implement the negaMax(minimax) white alpha-beta pruning and transposition table, and it returns an evaluation of the board with forward looking
+     * @param board the board to find the best move in
+     * @param depth the search depth in the tree
+     * @param alpha the biggest value we saw
+     * @param beta the lowest value we saw
+     * @return the evaluation of the board
+     */
+    public static double alphaBetaTT(Board board, int depth, double alpha, double beta)
+    {
+        double value;
+        CachedData tte = transpositionTable.get(HashCode(board));
+        if(tte != null && tte.getDepth() >= depth)
+        {
+            if(tte.getType() == EXACT_VALUE) // stored value is exact
+                return tte.getScore();
+            if(tte.getType() == LOWERBOUND && tte.getScore() > alpha)
+                alpha = tte.getScore(); // update lowerbound alpha if needed
+            else if(tte.getType() == UPPERBOUND && tte.getScore() < beta)
+                beta = tte.getScore(); // update upperbound beta if needed
+            if(alpha >= beta)
+                return tte.getScore(); // if lowerbound surpasses upperbound
+        }
+        if(depth == 0 || board.gameResult() != Result.NOT_FINISHED)
+        {
+            if(board.gameResult() == Result.DRAW)
+                return 0;
+            value = PositionEvaluation.evaluate(board);
+            if(value <= alpha) // a lowerbound value
+                transpositionTable.put(HashCode(board), new CachedData(depth, value, LOWERBOUND));
+                //StoreTTEntry(board.getHashKey(), value, LOWERBOUND, depth);
+            else if(value >= beta) // an upperbound value
+                transpositionTable.put(HashCode(board), new CachedData(depth, value, UPPERBOUND));
+                //StoreTTEntry(board.getHashKey(), value, UPPERBOUND, depth);
+            else // a true minimax value
+                transpositionTable.put(HashCode(board), new CachedData(depth, value, LOWERBOUND));
+            return value;
+        }
+        double best = Double.NEGATIVE_INFINITY;
+        for(Move move : sortMoves(board.getTurn().getLegalMoves()))
+        {
+            final MoveTransition moveTransition = board.getTurn().makeMove(move);
+            if (moveTransition.getMoveStatus() == Move.MoveStatus.DONE) {
+                value = -alphaBetaTT(moveTransition.getToBoard(), calculateQuiescenceDepth(moveTransition.getToBoard(), depth),
+                        -beta, -alpha);
+                if (value > best)
+                    best = value;
+                if (best > alpha)
+                    alpha = best;
+                if (best >= beta)
+                    break;
+            }
+
+        }
+        if(best <= alpha) // a lowerbound value
+            transpositionTable.put(HashCode(board), new CachedData(depth, best, LOWERBOUND));
+                    //board.getHashKey(), best, LOWERBOUND, depth);
+        else if(best >= beta) // an upperbound value
+            transpositionTable.put(HashCode(board), new CachedData(depth, best, UPPERBOUND));
+            //StoreTTEntry(board.getHashKey(), best, UPPERBOUND, depth);
+        else // a true minimax value
+            transpositionTable.put(HashCode(board), new CachedData(depth, best, EXACT_VALUE));
+        return best;
     }
 
 }
