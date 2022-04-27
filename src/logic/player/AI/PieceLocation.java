@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class PieceLocation {
 
-    private static final double EARLY_QUEEN_DEVELOPMENT_PUNISHMENT = -0.5;
+    private static final double EARLY_QUEEN_DEVELOPMENT_PUNISHMENT = -0.75;
     private static final double PIECE_SQUARE_TABLE_REDUCER = 0.8;
     /**
      * this function evaluate the pieces' location on the board
