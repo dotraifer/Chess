@@ -58,8 +58,11 @@ public class KingSafety {
                 closestPiece = move.getPieceMoved();
             }
         }
-        if(closestPiece != null)
-            return -1*(closestPiece.value / 200 * (10 - closestDistance));
+        if(closestPiece != null) {
+            if (closestDistance == 0)
+                closestDistance = 1;
+            return -1 * (closestPiece.value / 200 * (10 - closestDistance));
+        }
         return 0;
     }
 

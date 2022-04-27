@@ -5,12 +5,17 @@ import logic.Move;
 import logic.Move.MoveStatus;
 import logic.MoveTransition;
 import logic.Pieces.Piece;
+import logic.player.AI.Material;
 import logic.player.AI.Minimax;
+import logic.player.AI.PawnStruct;
 import logic.player.AI.PositionEvaluation;
+import logic.player.Player;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -18,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 import static javax.swing.SwingUtilities.invokeLater;
 import static javax.swing.SwingUtilities.isLeftMouseButton;
@@ -117,7 +123,7 @@ public class GameScreen {
         }
     }
 
-    /**
+        /**
      * this class represent the board panel
      */
     public class BoardPanel extends JPanel {
@@ -125,6 +131,7 @@ public class GameScreen {
         List<TilePanel> Tiles;
 
         BoardPanel(){
+
             super(new GridLayout(8, 8));
             this.Tiles = new ArrayList<>();
             // make a list of 64 tiles
@@ -217,7 +224,9 @@ public class GameScreen {
                                 if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                                     // if the move legal, make it
                                     board = moveTransition.getToBoard();
+                                    //boardPanel.drawBoard(board);
                                     if(board.getTurn().isAi) {
+                                        boardPanel.drawBoard(board);
                                         // if it's the AI turn, make an AI move
                                         AiMove();
                                     }
@@ -232,7 +241,7 @@ public class GameScreen {
                             @Override
                             public void run() {
                                 boardPanel.drawBoard(board);
-                                if(board.gameResult() != Result.NOT_FINISHED) {
+                                if (board.gameResult() != Result.NOT_FINISHED) {
                                     boardPanel.gameOver(board.gameResult());
                                 }
                             }
@@ -248,6 +257,7 @@ public class GameScreen {
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
+
                 }
 
                 @Override

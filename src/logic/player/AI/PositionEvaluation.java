@@ -12,6 +12,8 @@ import java.util.List;
  * this class contains static methods for evaluating a full position of a player
  */
 public class PositionEvaluation {
+    private static final int OPENING_MATERIAL_SUM = 60;
+    private static final int MIDGAME_MATERIAL_SUM = 28;
     private static final double MOBILITY_VALUE_OPENING = 1;
     private static final double MOBILITY_VALUE_MIDGAME = 0.8;
     private static final double MOBILITY_VALUE_ENDING = 0.4;
@@ -28,7 +30,7 @@ public class PositionEvaluation {
     {
         GameStage gameStage = calculateGameStage(board);
         // the score of the white - the score of the black
-        return (score(board, board.getWhitePlayer(), gameStage) - score(board, board.getBlackPlayer(), gameStage));
+        return (score(board, board.getWhitePlayer(), gameStage) - score(board, board.getBlackPlayer(), gameStage)) + Material.material(board.getWhitePieces(), board.getBlackPieces());
     }
 
     /**
@@ -38,13 +40,11 @@ public class PositionEvaluation {
      */
     private static GameStage calculateGameStage(Board board) {
         double materialLeft = calcMaterial(board);
-        if(materialLeft > 60)
+        if(materialLeft > OPENING_MATERIAL_SUM)
             return GameStage.OPENING;
-        else if(materialLeft <= 60 && materialLeft > 28)
+        else if(materialLeft <= OPENING_MATERIAL_SUM && materialLeft > MIDGAME_MATERIAL_SUM)
             return GameStage.MIDGAME;
-        else if(materialLeft <= 28)
-            return GameStage.ENDING;
-        return GameStage.OPENING;
+        return GameStage.ENDING;
     }
 
     /**
@@ -75,9 +75,10 @@ public class PositionEvaluation {
     public static double score(Board board, Player player, GameStage gameStage)
     {
         List<Piece> allActivePieces = player.getActivePieces();
+        List<Piece> enemyActivePieces = player.getRival().getActivePieces();
         return switch (gameStage) {
             // if opening game stage
-            case OPENING -> Material.material(allActivePieces) +
+            case OPENING ->
                     Mobility.mobility(player) * MOBILITY_VALUE_OPENING+
                     PawnStruct.pawnStruct(player, allActivePieces) +
                     checkmate(player) + attacks(player) +
@@ -87,7 +88,7 @@ public class PositionEvaluation {
                     PieceLocation.pieceLocation(allActivePieces, gameStage)
             ;
             // if midgame game stage
-            case MIDGAME -> Material.material(allActivePieces) +
+            case MIDGAME ->
                     Mobility.mobility(player) * MOBILITY_VALUE_MIDGAME+
                     PawnStruct.pawnStruct(player, allActivePieces) +
                     CenterControl.centerControl(player, board) +
@@ -98,7 +99,7 @@ public class PositionEvaluation {
 
             ;
             // if ending game stage
-            case ENDING -> Material.material(allActivePieces) +
+            case ENDING ->
                     Mobility.mobility(player) * MOBILITY_VALUE_ENDING +
                     PawnStruct.pawnStruct(player, allActivePieces) +
                     checkmate(player) + attacks(player) +
@@ -148,7 +149,7 @@ public class PositionEvaluation {
         List<Piece> BallActivePieces = board.getBlackPieces();
         return
                 "\ngame stage" + calculateGameStage(board) + "\n" +
-                ("White:\n material: " + Material.material(WallActivePieces) + " \nmobility:" +
+                ("White:\n material: " /** + Material.material(WallActivePieces)*/ + " \nmobility:" +
         Mobility.mobility(board.getWhitePlayer()) * MOBILITY_VALUE_OPENING+"\n pawns"+
                 PawnStruct.pawnStruct(board.getWhitePlayer(), WallActivePieces) +"\nchackmate:"+
                 checkmate(board.getWhitePlayer())) + "\n attack: " + attacks(board.getWhitePlayer()) +"\ncenter:"+
@@ -158,7 +159,7 @@ public class PositionEvaluation {
                         "saftey: " + KingSafety.calculateKingSafety(board.getWhitePlayer(), board, calculateGameStage(board)) + "\n"+
                         "PL:" + PieceLocation.pieceLocation(WallActivePieces, calculateGameStage(board)) +
 
-                        "black +: \n material" + Material.material(BallActivePieces) + "\nmobility:" +
+                        "black +: \n material" /** + Material.material(BallActivePieces)*/ + "\nmobility:" +
                         Mobility.mobility(board.getBlackPlayer()) * MOBILITY_VALUE_OPENING+"\n pawns"+
                         PawnStruct.pawnStruct(board.getBlackPlayer(), BallActivePieces) +"\n checkmate"+
                         checkmate(board.getBlackPlayer()) +"\n attack:" + attacks(board.getBlackPlayer()) +"\ncenter:"+

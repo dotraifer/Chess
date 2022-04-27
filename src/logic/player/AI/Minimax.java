@@ -50,13 +50,13 @@ public class Minimax {
                     return move;
                 long boardIndex = HashCode(moveTransition.getToBoard());
                 CachedData key = transpositionTable.get(boardIndex);
-                if(key != null && key.getDepth() >= depth)
-                {
-                    currentValue = color == Color.White ? Math.max(key.getScore(), currentValue) :
-                    Math.min(key.getScore(), currentValue);
-                }
+                //if(key != null && key.getDepth() >= depth)
+                //{
+                //    currentValue = color == Color.White ? Math.max(key.getScore(), currentValue) :
+                //    Math.min(key.getScore(), currentValue);
+                //}
                 // if white turn, call min, else call max
-                else {
+                //else {
                     CachedData cd = new CachedData();
                     cd.setTurnColor(moveTransition.getToBoard().getTurn().getColor());
                     cd.setDepth(depth);
@@ -66,7 +66,7 @@ public class Minimax {
                     cd.setScore(currentValue);
                     transpositionTable.put(boardIndex, cd);
 
-                }
+                //}
                 // if white and we found bigger
                 if (color == Color.White && currentValue > highestSeenValue) {
                     highestSeenValue = currentValue;
@@ -134,18 +134,18 @@ public class Minimax {
             if (moveTransition.getMoveStatus() == Move.MoveStatus.DONE) {
                 long boardIndex = HashCode(moveTransition.getToBoard());
                 CachedData key = transpositionTable.get(boardIndex);
-                if(key != null && key.getDepth() >= depth)
-                {
-                    currentHighest = Math.max(currentHighest, key.getScore());
-                }
-                else {
-                    cd = new CachedData();
-                    cd.setTurnColor(moveTransition.getToBoard().getTurn().getColor());
-                    cd.setDepth(depth);
-                    currentHighest = Math.max(currentHighest, min(moveTransition.getToBoard(),
-                            calculateQuiescenceDepth(moveTransition.getToBoard(), depth), currentHighest, lowest));
-                    cd.setScore(currentHighest);
-                }
+                //if(key != null && key.getDepth() >= depth)
+                //{
+                //    currentHighest = Math.max(currentHighest, key.getScore());
+                //}
+                //else {
+                cd = new CachedData();
+                cd.setTurnColor(moveTransition.getToBoard().getTurn().getColor());
+                cd.setDepth(depth);
+                currentHighest = Math.max(currentHighest, min(moveTransition.getToBoard(),
+                        calculateQuiescenceDepth(moveTransition.getToBoard(), depth), currentHighest, lowest));
+                cd.setScore(currentHighest);
+                //}
                 if (currentHighest >= lowest) {
                     cd.setScore(lowest);
                     return lowest;
@@ -190,17 +190,17 @@ public class Minimax {
 // some time passes
                 CachedData key = transpositionTable.get(boardIndex);
 
-                if(key != null && key.getDepth() >= depth){
-                    currentLowest = Math.min(currentLowest, key.getScore());
-                }
-                else {
-                    cd = new CachedData();
-                    cd.setTurnColor(moveTransition.getToBoard().getTurn().getColor());
-                    cd.setDepth(depth);
-                    currentLowest = Math.min(currentLowest, max(moveTransition.getToBoard(),
-                            calculateQuiescenceDepth(moveTransition.getToBoard(), depth), highest, currentLowest));
-                    cd.setScore(currentLowest);
-                }
+                //if(key != null && key.getDepth() >= depth){
+                //    currentLowest = Math.min(currentLowest, key.getScore());
+                //}
+                //else {
+                cd = new CachedData();
+                cd.setTurnColor(moveTransition.getToBoard().getTurn().getColor());
+                cd.setDepth(depth);
+                currentLowest = Math.min(currentLowest, max(moveTransition.getToBoard(),
+                        calculateQuiescenceDepth(moveTransition.getToBoard(), depth), highest, currentLowest));
+                cd.setScore(currentLowest);
+                //}
 
                 if (currentLowest <= highest) {
                     cd.setScore(lowest);
