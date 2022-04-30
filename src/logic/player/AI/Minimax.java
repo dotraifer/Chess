@@ -19,7 +19,28 @@ public class Minimax {
     private static int quiescenceCount = 0;
     private static final int MAX_QUIESCENCE = 5000 * 5;
     private static Map<Long, CachedData> transpositionTable = new HashMap<>();
+    private static long start = 0;
+    private static final long maxTime = 30000;
+    private static boolean timeout;
 
+
+    public static Move IterativeDeepening(Board board)
+    {
+        Move bestMove;
+        timeout = false;
+        Move move = null;
+        start = System.currentTimeMillis();
+        for(int d = 1;;d+=2)
+        {
+            bestMove = move;
+            move = MiniMaxAB(board, d);
+            if(timeout) {
+                System.out.println("depth : " + (d - 1));
+                break;
+            }
+        }
+        return bestMove;
+    }
     /**
      * this function uses Minimax with Alpha-Beta to find the best move for a player in the given board
      * @param board the board we want to return the best move for
@@ -29,22 +50,22 @@ public class Minimax {
      */
     public static Move MiniMaxAB(final Board board, int depth) {
         final Player turn = board.getTurn();
-        final Color color = turn.getColor();
         Move bestMove = null;
         double bestValue = Double.NEGATIVE_INFINITY;
         double currentValue;
-        quiescenceCount = 0;
         // sort the moves
         List<Move> SortedMoves = sortMoves(turn.getLegalMoves());
         // for every possible move
+        long start = System.currentTimeMillis();
         for (final Move move : SortedMoves) {
+            quiescenceCount = 0;
             final MoveTransition moveTransition = board.getTurn().makeMove(move);
             if (moveTransition.getMoveStatus() == Move.MoveStatus.DONE) {
                 // if the move is checkmate-return him
                 if(moveTransition.getToBoard().getTurn().isInCheckMate())
                     return move;
                 // if white turn, call min, else call max
-                currentValue = -1* alphaBetaTT(moveTransition.getToBoard(), depth - 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+                currentValue = -1* alphaBetaTT(moveTransition.getToBoard(), calculateQuiescenceDepth(moveTransition.getToBoard(), depth), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
                 // if white and we found bigger
                 if (currentValue > bestValue) {
                     bestValue = currentValue;
@@ -52,6 +73,8 @@ public class Minimax {
                 }
             }
         }
+        long end = System.currentTimeMillis();
+        System.out.println((end - start) / 1000f);
         return bestMove;
     }
 
@@ -127,6 +150,10 @@ public class Minimax {
      */
     public static double alphaBetaTT(Board board, int depth, double alpha, double beta)
     {
+        //if(System.currentTimeMillis() - start > maxTime) {
+        //    timeout = true;
+        //    return alpha;
+       // }
         double value;
         CachedData tte = transpositionTable.get(HashCode(board));
         if(tte != null && tte.getDepth() >= depth)
@@ -144,7 +171,10 @@ public class Minimax {
         {
             if(board.gameResult() == Result.DRAW)
                 return 0;
-            value = PositionEvaluation.evaluate(board);
+            if(depth != 0)
+                return PositionEvaluation.evaluate(board);
+            quiescenceCount = 0;
+            value = Quiesce(board, alpha, beta);
             if(value <= alpha) // a lowerbound value
                 transpositionTable.put(HashCode(board), new CachedData(depth, value, LOWERBOUND));
                 //StoreTTEntry(board.getHashKey(), value, LOWERBOUND, depth);
@@ -160,7 +190,7 @@ public class Minimax {
         {
             final MoveTransition moveTransition = board.getTurn().makeMove(move);
             if (moveTransition.getMoveStatus() == Move.MoveStatus.DONE) {
-                value = -alphaBetaTT(moveTransition.getToBoard(), calculateQuiescenceDepth(moveTransition.getToBoard(), depth),
+                value = -alphaBetaTT(moveTransition.getToBoard(), depth - 1,
                         -beta, -alpha);
                 if (value > best)
                     best = value;
@@ -180,6 +210,31 @@ public class Minimax {
         else // a true minimax value
             transpositionTable.put(HashCode(board), new CachedData(depth, best, EXACT_VALUE));
         return best;
+    }
+
+    private static double Quiesce(Board board, double alpha, double beta ) {
+        double stand_pat = PositionEvaluation.evaluate(board);
+        if( stand_pat >= beta )
+            return beta;
+        if( alpha < stand_pat )
+            alpha = stand_pat;
+
+        for(Move move : sortMoves(board.getTurn().getLegalMoves()))  {
+            if(move.isAttack() || move.isPawnPromotion())
+            {
+                final MoveTransition moveTransition = board.getTurn().makeMove(move);
+                if (moveTransition.getMoveStatus() == Move.MoveStatus.DONE)
+                {
+                    double score = -Quiesce( moveTransition.getToBoard(), -beta, -alpha );
+
+                    if( score >= beta )
+                        return beta;
+                    if( score > alpha )
+                        alpha = score;
+                }
+            }
+        }
+        return alpha;
     }
 
 }

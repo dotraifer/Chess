@@ -12,11 +12,11 @@ import java.util.List;
  * this class contains static methods for evaluating a Pawn structure of a player
  */
 public class PawnStruct {
-    private static final double DOUBLE_PAWN_PUNISHMENT = -0.2;
-    private static final double ISOLATED_PAWN_PUNISHMENT = -0.03;
+    private static final double DOUBLE_PAWN_PUNISHMENT = -0.35;
     private static final double PAWN_ISLAND_PUNISHMENT = -0.1;
-    private static final double BACKWARD_PAWN_PUNISHMENT = -0.12;
-    private static final double OPEN_FILE_BACKWARD_PAWN_PUNISHMENT = -0.07;
+    private static final double BACKWARD_PAWN_PUNISHMENT = -0.15;
+    private static final double ISOLATED_PAWN_PUNISHMENT = BACKWARD_PAWN_PUNISHMENT-0.03;
+    private static final double OPEN_FILE_BACKWARD_PAWN_PUNISHMENT = -0.08;
 
     /**
      * this function evaluate the player pawn struct, according to pawns stack and isolated pawns

@@ -11,8 +11,9 @@ import java.util.List;
  */
 public class PieceLocation {
 
-    private static final double EARLY_QUEEN_DEVELOPMENT_PUNISHMENT = -0.75;
     private static final double PIECE_SQUARE_TABLE_REDUCER = 0.8;
+
+    private static final double EARLY_QUEEN_DEVELOPMENT_PUNISHMENT = -0.75 / PIECE_SQUARE_TABLE_REDUCER ;
     /**
      * this function evaluate the pieces' location on the board
      * @param allActivePieces all the player's active pieces
@@ -24,8 +25,11 @@ public class PieceLocation {
         double locationBonus = 0;
         for(Piece piece : allActivePieces) {
             locationBonus += piece.locationBonus(gameStage);
+            if(piece.getClass() == Queen.class)
+                locationBonus += earlyQueenDevelopment(allActivePieces, gameStage, piece);
+
         }
-        return locationBonus * PIECE_SQUARE_TABLE_REDUCER + earlyQueenDevelopment(allActivePieces, gameStage);
+        return locationBonus * PIECE_SQUARE_TABLE_REDUCER;
     }
 
     /**
@@ -34,9 +38,8 @@ public class PieceLocation {
      * @param gameStage the game stage we are currently in
      * @return evaluation to queen early development
      */
-    private static double earlyQueenDevelopment(List<Piece> allActivePieces, GameStage gameStage)
+    private static double earlyQueenDevelopment(List<Piece> allActivePieces, GameStage gameStage, Piece queen)
     {
-        Piece queen = findQueen(allActivePieces);
         if(queen != null && gameStage == GameStage.OPENING)
         {
             int loc = queen.getPosition();

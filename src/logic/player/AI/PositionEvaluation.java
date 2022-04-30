@@ -33,6 +33,7 @@ public class PositionEvaluation {
         if(board.getTurn().getColor() == Color.White)
             return (score(board, board.getWhitePlayer(), gameStage) - score(board, board.getBlackPlayer(), gameStage)) + Material.material(board.getWhitePieces(), board.getBlackPieces());
         return (score(board, board.getWhitePlayer(), gameStage) - score(board, board.getBlackPlayer(), gameStage)) + Material.material(board.getBlackPieces(), board.getWhitePieces());
+
     }
 
     /**
