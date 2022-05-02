@@ -32,7 +32,7 @@ public class PositionEvaluation {
         // the score of the white - the score of the black
         if(board.getTurn().getColor() == Color.White)
             return (score(board, board.getWhitePlayer(), gameStage) - score(board, board.getBlackPlayer(), gameStage)) + Material.material(board.getWhitePieces(), board.getBlackPieces());
-        return (score(board, board.getWhitePlayer(), gameStage) - score(board, board.getBlackPlayer(), gameStage)) + Material.material(board.getBlackPieces(), board.getWhitePieces());
+        return -((score(board, board.getWhitePlayer(), gameStage) - score(board, board.getBlackPlayer(), gameStage)) + Material.material(board.getWhitePieces(), board.getBlackPieces()));
 
     }
 
@@ -152,7 +152,7 @@ public class PositionEvaluation {
         List<Piece> BallActivePieces = board.getBlackPieces();
         return
                 "\ngame stage" + calculateGameStage(board) + "\n" +
-                ("White:\n material: " /** + Material.material(WallActivePieces)*/ + " \nmobility:" +
+                ("White:\n material: "  + Material.material(WallActivePieces, BallActivePieces) + " \nmobility:" +
         Mobility.mobility(board.getWhitePlayer()) * MOBILITY_VALUE_OPENING+"\n pawns"+
                 PawnStruct.pawnStruct(board.getWhitePlayer(), WallActivePieces) +"\nchackmate:"+
                 checkmate(board.getWhitePlayer())) + "\n attack: " + attacks(board.getWhitePlayer()) +"\ncenter:"+
@@ -162,7 +162,7 @@ public class PositionEvaluation {
                         "saftey: " + KingSafety.calculateKingSafety(board.getWhitePlayer(), board, calculateGameStage(board)) + "\n"+
                         "PL:" + PieceLocation.pieceLocation(WallActivePieces, calculateGameStage(board)) +
 
-                        "black +: \n material" /** + Material.material(BallActivePieces)*/ + "\nmobility:" +
+                        "black +: \n material" + Material.material(BallActivePieces, WallActivePieces) + "\nmobility:" +
                         Mobility.mobility(board.getBlackPlayer()) * MOBILITY_VALUE_OPENING+"\n pawns"+
                         PawnStruct.pawnStruct(board.getBlackPlayer(), BallActivePieces) +"\n checkmate"+
                         checkmate(board.getBlackPlayer()) +"\n attack:" + attacks(board.getBlackPlayer()) +"\ncenter:"+

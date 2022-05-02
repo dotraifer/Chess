@@ -280,8 +280,9 @@ public class GameScreen {
          */
         public void AiMove()
         {
+            System.out.println(PositionEvaluation.evaluationDetails(board));
             MoveTransition moveTransition;
-            moveTransition = board.getTurn().makeMove(Minimax.MiniMaxAB(board, 5));
+            moveTransition = board.getTurn().makeMove(Minimax.IterativeDeepening(board));
             if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                 board = moveTransition.getToBoard();
                 computerMove = moveTransition.getTransitionMove();

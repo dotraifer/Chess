@@ -20,17 +20,22 @@ public class Minimax {
     private static final int MAX_QUIESCENCE = 5000 * 5;
     private static Map<Long, CachedData> transpositionTable = new HashMap<>();
     private static long start = 0;
-    private static final long maxTime = 30000;
+    private static final long maxTime = 6000;
     private static boolean timeout;
 
 
+    /**
+     * using the iterative deepening idea to go to the max calculating depth in the given time
+     * @param board the board we're evaluating using the iterative deepening
+     * @return the best Move
+     */
     public static Move IterativeDeepening(Board board)
     {
         Move bestMove;
         timeout = false;
         Move move = null;
         start = System.currentTimeMillis();
-        for(int d = 1;;d+=2)
+        for(int d = 1;;d++)
         {
             bestMove = move;
             move = MiniMaxAB(board, d);
@@ -58,14 +63,13 @@ public class Minimax {
         // for every possible move
         long start = System.currentTimeMillis();
         for (final Move move : SortedMoves) {
-            quiescenceCount = 0;
             final MoveTransition moveTransition = board.getTurn().makeMove(move);
             if (moveTransition.getMoveStatus() == Move.MoveStatus.DONE) {
                 // if the move is checkmate-return him
                 if(moveTransition.getToBoard().getTurn().isInCheckMate())
                     return move;
                 // if white turn, call min, else call max
-                currentValue = -1* alphaBetaTT(moveTransition.getToBoard(), calculateQuiescenceDepth(moveTransition.getToBoard(), depth), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+                currentValue = -1* alphaBetaTT(moveTransition.getToBoard(),depth - 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
                 // if white and we found bigger
                 if (currentValue > bestValue) {
                     bestValue = currentValue;
@@ -107,24 +111,17 @@ public class Minimax {
         if(depth == 1 && quiescenceCount < MAX_QUIESCENCE) {
             int activityMeasure = 0;
             if (toBoard.getTurn().isInCheck()) {
-                activityMeasure += 1;
+                activityMeasure += 2;
             }
 
             if(toBoard.getTransitionMove().isPawnPromotion())
                 activityMeasure += 2;
             if(toBoard.getTransitionMove().isAttack())
                 activityMeasure += 2;
-            if(toBoard.getTransitionMove().isPawnThreat())
-                activityMeasure += 1;
-            for(final Move move: toBoard.lastNMoves(3)) {
-                if(move.isAttack()) {
-                    activityMeasure += 1;
-                }
-            }
             // if the activity measure is bigger or equal to 2, add depth
             if(activityMeasure >= 2) {
                 quiescenceCount++;
-                return 2;
+                return 1;
             }
         }
         return depth - 1;
@@ -150,10 +147,10 @@ public class Minimax {
      */
     public static double alphaBetaTT(Board board, int depth, double alpha, double beta)
     {
-        //if(System.currentTimeMillis() - start > maxTime) {
-        //    timeout = true;
-        //    return alpha;
-       // }
+        if(System.currentTimeMillis() - start > maxTime) {
+            timeout = true;
+            return alpha;
+        }
         double value;
         CachedData tte = transpositionTable.get(HashCode(board));
         if(tte != null && tte.getDepth() >= depth)
@@ -212,6 +209,13 @@ public class Minimax {
         return best;
     }
 
+    /**
+     * calculate the none quite moves when we got to the end of the depth
+     * @param board the board we are in
+     * @param alpha the alpha index
+     * @param beta the beta index
+     * @return the evaluation for the board after going through all the none quite moves
+     */
     private static double Quiesce(Board board, double alpha, double beta ) {
         double stand_pat = PositionEvaluation.evaluate(board);
         if( stand_pat >= beta )
