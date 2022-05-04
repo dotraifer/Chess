@@ -18,6 +18,7 @@ public class PositionEvaluation {
     private static final double MOBILITY_VALUE_MIDGAME = 0.8;
     private static final double MOBILITY_VALUE_ENDING = 0.4;
     private static final double ATTACK_MULTIPLIER = 0.01;
+    public static final double MATE = 10000;
 
     /**
      * evaluate the given board, by subtracting the white player evaluation with the black player evaluation
@@ -120,7 +121,7 @@ public class PositionEvaluation {
      * @return true if the rival on checkmate, false otherwise
      */
     private static double checkmate(Player player) {
-        return (player.getRival().isInCheckMate() ?  10000 :  0);
+        return (player.getRival().isInCheckMate() ?  MATE :  0);
     }
 
     /**
