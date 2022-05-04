@@ -9,7 +9,12 @@ import java.util.Random;
 
 public class Zobrist {
     private static final long[][] ZobristTable = initTable();
-    
+
+    /**
+     * get the index in the array for the piece
+     * @param piece the piece to get her index
+     * @return the piece index
+     */
     private static int indexOf(Piece piece)
     {
         if (piece.getClass() == Pawn.class && piece.getColor() == Color.White)
@@ -40,7 +45,10 @@ public class Zobrist {
             return -1;
     }
 
-    // Initializes the table
+    /**
+     * initializing the array for the troops codes
+     * @return the array of codes
+     */
     private static long[][] initTable()
     {
         Random rand = new Random();
@@ -53,14 +61,14 @@ public class Zobrist {
     }
     static Random random = new Random();
     public static final long whiteKingMoved = random.nextLong();
-    public static final long whiteQueenSideRookMoved = random.nextLong();;
-    public static final long whiteKingSideRookMoved = random.nextLong();;
-    public static final long blackKingMoved = random.nextLong();;
-    public static final long blackQueenSideRookMoved = random.nextLong();;
-    public static final long blackKingSideRookMoved = random.nextLong();;
+    public static final long whiteQueenSideRookMoved = random.nextLong();
+    public static final long whiteKingSideRookMoved = random.nextLong();
+    public static final long blackKingMoved = random.nextLong();
+    public static final long blackQueenSideRookMoved = random.nextLong();
+    public static final long blackKingSideRookMoved = random.nextLong();
     public static final long[] passantColumn =
             {0x70cc73d90bc26e24L, 0xe21a6b35df0c3ad7L, 0x3a93d8b2806962L, 0x1c99ded33cb890a1L, 0xcf3145de0add4289L, 0xd0e4427a5514fb72L, 0x77c621cc9fb3a483L, 0x67a34dac4356550bL,};
-    public static final long whiteMove = random.nextLong();;
+    public static final long whiteMove = random.nextLong();
 
     public static long getKeyForBoard(Board board) {
         long key = 0;
@@ -84,7 +92,7 @@ public class Zobrist {
             key ^= blackQueenSideRookMoved;
 
         //if (b.enPassantLoc != -1)
-        //    key ^= passantColumn[BBUtils.getLocCol(b.enPassantLoc)];
+        //     key ^= passantColumn[BBUtils.getLocCol(b.enPassantLoc)];
 
         if (board.getTurn().getColor() == Color.White)
             key ^= whiteMove;
@@ -92,6 +100,13 @@ public class Zobrist {
         return key;
     }
 
+    /**
+     * find if the piece did her first move or not
+     * @param board the board we are in
+     * @param pieceCoordinate the piece place
+     * @param pieceClass the piece Class(pawn, rook, bishop and more.)
+     * @return true if the piece is on her first move, false if not
+     */
     private static boolean findCoordinatePieceFirstMove(Board board, int pieceCoordinate, String pieceClass)
     {
         Piece piece = board.getPieceAtCoordinate(pieceCoordinate);

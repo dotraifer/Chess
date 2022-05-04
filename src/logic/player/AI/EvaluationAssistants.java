@@ -2,6 +2,7 @@ package logic.player.AI;
 
 public class EvaluationAssistants {
     public static int size = 64;
+
     public static final int[][] BOARD_COORDINATES = boardInit();
 
     public static int[][] boardInit()

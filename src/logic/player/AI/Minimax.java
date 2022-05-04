@@ -20,7 +20,7 @@ public class Minimax {
     private static final int MAX_QUIESCENCE = 5000 * 5;
     private static Map<Long, CachedData> transpositionTable = new HashMap<>();
     private static long start = 0;
-    private static final long maxTime = 6000;
+    private static final long maxTime = 10000;
     private static boolean timeout;
 
 
@@ -56,7 +56,7 @@ public class Minimax {
     public static Move MiniMaxAB(final Board board, int depth) {
         final Player turn = board.getTurn();
         Move bestMove = null;
-        double bestValue = Double.NEGATIVE_INFINITY;
+        double bestValue = -PositionEvaluation.MATE-1;
         double currentValue;
         // sort the moves
         List<Move> SortedMoves = sortMoves(turn.getLegalMoves());
@@ -69,7 +69,7 @@ public class Minimax {
                 if(moveTransition.getToBoard().getTurn().isInCheckMate())
                     return move;
                 // if white turn, call min, else call max
-                currentValue = -1* alphaBetaTT(moveTransition.getToBoard(),depth - 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+                currentValue = -1* alphaBetaTT(moveTransition.getToBoard(),depth - 1, -PositionEvaluation.MATE, PositionEvaluation.MATE);
                 // if white and we found bigger
                 if (currentValue > bestValue) {
                     bestValue = currentValue;
@@ -171,18 +171,25 @@ public class Minimax {
             if(depth != 0)
                 return PositionEvaluation.evaluate(board);
             quiescenceCount = 0;
-            value = Quiesce(board, alpha, beta);
-            if(value <= alpha) // a lowerbound value
-                transpositionTable.put(HashCode(board), new CachedData(depth, value, LOWERBOUND));
-                //StoreTTEntry(board.getHashKey(), value, LOWERBOUND, depth);
-            else if(value >= beta) // an upperbound value
-                transpositionTable.put(HashCode(board), new CachedData(depth, value, UPPERBOUND));
-                //StoreTTEntry(board.getHashKey(), value, UPPERBOUND, depth);
-            else // a true minimax value
-                transpositionTable.put(HashCode(board), new CachedData(depth, value, LOWERBOUND));
+            value = Quiescence(board, alpha, beta);
+            if(board.getTurn().getColor() == Color.White)
+            {
+                if(value <= alpha)
+                    transpositionTable.put(HashCode(board), new CachedData(depth, value, UPPERBOUND));
+                else
+                    transpositionTable.put(HashCode(board), new CachedData(depth, value, EXACT_VALUE));
+
+            }
+            else
+            {
+                if(value > alpha)
+                    transpositionTable.put(HashCode(board), new CachedData(depth, value, LOWERBOUND));
+                else
+                    transpositionTable.put(HashCode(board), new CachedData(depth, value, EXACT_VALUE));
+            }
             return value;
         }
-        double best = Double.NEGATIVE_INFINITY;
+        double best = -PositionEvaluation.MATE-1;
         for(Move move : sortMoves(board.getTurn().getLegalMoves()))
         {
             final MoveTransition moveTransition = board.getTurn().makeMove(move);
@@ -198,14 +205,21 @@ public class Minimax {
             }
 
         }
-        if(best <= alpha) // a lowerbound value
-            transpositionTable.put(HashCode(board), new CachedData(depth, best, LOWERBOUND));
-                    //board.getHashKey(), best, LOWERBOUND, depth);
-        else if(best >= beta) // an upperbound value
-            transpositionTable.put(HashCode(board), new CachedData(depth, best, UPPERBOUND));
-            //StoreTTEntry(board.getHashKey(), best, UPPERBOUND, depth);
-        else // a true minimax value
-            transpositionTable.put(HashCode(board), new CachedData(depth, best, EXACT_VALUE));
+        if(board.getTurn().getColor() == Color.White)
+        {
+            if(best <= alpha)
+                transpositionTable.put(HashCode(board), new CachedData(depth, best, UPPERBOUND));
+            else
+                transpositionTable.put(HashCode(board), new CachedData(depth, best, EXACT_VALUE));
+
+        }
+        else
+        {
+            if(best > alpha)
+                transpositionTable.put(HashCode(board), new CachedData(depth, best, LOWERBOUND));
+            else
+                transpositionTable.put(HashCode(board), new CachedData(depth, best, EXACT_VALUE));
+        }
         return best;
     }
 
@@ -216,10 +230,11 @@ public class Minimax {
      * @param beta the beta index
      * @return the evaluation for the board after going through all the none quite moves
      */
-    private static double Quiesce(Board board, double alpha, double beta ) {
+    private static double Quiescence(Board board, double alpha, double beta ) {
         double stand_pat = PositionEvaluation.evaluate(board);
         if( stand_pat >= beta )
-            return beta;
+            return stand_pat;
+
         if( alpha < stand_pat )
             alpha = stand_pat;
 
@@ -229,10 +244,10 @@ public class Minimax {
                 final MoveTransition moveTransition = board.getTurn().makeMove(move);
                 if (moveTransition.getMoveStatus() == Move.MoveStatus.DONE)
                 {
-                    double score = -Quiesce( moveTransition.getToBoard(), -beta, -alpha );
+                    double score = -Quiescence( moveTransition.getToBoard(), -beta, -alpha );
 
                     if( score >= beta )
-                        return beta;
+                        return score;
                     if( score > alpha )
                         alpha = score;
                 }
