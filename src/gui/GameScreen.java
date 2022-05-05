@@ -188,6 +188,8 @@ public class GameScreen {
             System.out.println("calculating...\n");
             aiMove();
             boardPanel.drawBoard(board);
+            if(board.gameResult() != Result.NOT_FINISHED)
+                boardPanel.gameOver(board.gameResult());
             return null;
         }
 
@@ -201,8 +203,6 @@ public class GameScreen {
             if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
                 board = moveTransition.getToBoard();
                 computerMove = moveTransition.getTransitionMove();
-                if(board.gameResult() != Result.NOT_FINISHED)
-                    boardPanel.gameOver(board.gameResult());
             }
         }
     }
