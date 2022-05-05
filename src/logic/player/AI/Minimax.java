@@ -17,7 +17,7 @@ import static logic.player.AI.CachedData.Type.*;
  */
 public class Minimax {
     private static int quiescenceCount = 0;
-    private static final int MAX_QUIESCENCE = 5000 * 5;
+    private static final int MAX_QUIESCENCE = 5000;
     private static Map<Long, CachedData> transpositionTable = new HashMap<>();
     private static long start = 0;
     private static final long maxTime = 10000;
@@ -40,7 +40,7 @@ public class Minimax {
             bestMove = move;
             move = MiniMaxAB(board, d);
             if(timeout) {
-                System.out.println("depth : " + (d - 1));
+                System.out.println("calculated with depth of " + (d - 1) + "\n");
                 break;
             }
         }
@@ -78,7 +78,7 @@ public class Minimax {
             }
         }
         long end = System.currentTimeMillis();
-        System.out.println((end - start) / 1000f);
+        //System.out.println((end - start) / 1000f);
         return bestMove;
     }
 
@@ -111,17 +111,8 @@ public class Minimax {
         if(depth == 1 && quiescenceCount < MAX_QUIESCENCE) {
             int activityMeasure = 0;
             if (toBoard.getTurn().isInCheck()) {
-                activityMeasure += 2;
-            }
-
-            if(toBoard.getTransitionMove().isPawnPromotion())
-                activityMeasure += 2;
-            if(toBoard.getTransitionMove().isAttack())
-                activityMeasure += 2;
-            // if the activity measure is bigger or equal to 2, add depth
-            if(activityMeasure >= 2) {
                 quiescenceCount++;
-                return 1;
+                return 2;
             }
         }
         return depth - 1;

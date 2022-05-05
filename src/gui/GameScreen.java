@@ -5,17 +5,11 @@ import logic.Move;
 import logic.Move.MoveStatus;
 import logic.MoveTransition;
 import logic.Pieces.Piece;
-import logic.player.AI.Material;
 import logic.player.AI.Minimax;
-import logic.player.AI.PawnStruct;
-import logic.player.AI.PositionEvaluation;
-import logic.player.Player;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -23,11 +17,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 
-import static javax.swing.SwingUtilities.invokeLater;
 import static javax.swing.SwingUtilities.isLeftMouseButton;
-import static logic.player.AI.PositionEvaluation.evaluate;
 
 /**
  * this function is responsible for all our gui
@@ -45,6 +36,8 @@ public class GameScreen {
     private final Color greenTileColor = Color.decode("#00FF00");
     private final Color redTileColor = Color.decode("#FF0000");
     private final Color blueTileColor = Color.decode("#0000FF");
+    private final Color lightGreenTileColor = Color.decode("#ADFF2F");
+    private final Color darkGreenTileColor = Color.decode("#9ACD32");
 
     private static int sourceTile = -1;
     private static int destTile = -1;
@@ -52,6 +45,8 @@ public class GameScreen {
 
     private static boolean isWhiteAi;
     private static boolean isBlackAi;
+
+    private Move computerMove;
 
     /**
      * our game screen definition
@@ -185,12 +180,38 @@ public class GameScreen {
         }
     }
 
+    public class AiMove extends SwingWorker
+    {
+
+        @Override
+        protected Object doInBackground() throws Exception {
+            System.out.println("calculating...\n");
+            aiMove();
+            boardPanel.drawBoard(board);
+            return null;
+        }
+
+        /**
+         * this function make an AI move for the current player
+         */
+        public void aiMove()
+        {
+            MoveTransition moveTransition;
+            moveTransition = board.getTurn().makeMove(Minimax.IterativeDeepening(board));
+            if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
+                board = moveTransition.getToBoard();
+                computerMove = moveTransition.getTransitionMove();
+                if(board.gameResult() != Result.NOT_FINISHED)
+                    boardPanel.gameOver(board.gameResult());
+            }
+        }
+    }
+
     /**
      * this class represent a single tile/box panel on the board
      */
     public class TilePanel extends JPanel {
         private final int tileCoordinate;
-        private Move computerMove;
 
         TilePanel(BoardPanel boardPanel, int tileCoordinate){
             super(new GridBagLayout());
@@ -199,12 +220,12 @@ public class GameScreen {
             putTileColor();
             putTilePiece(board);
             if(board.getTurn().isAi)
-                AiMove();
+                new AiMove().execute();
             addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     MoveTransition moveTransition = null;
-                    if(isLeftMouseButton(e))
+                    if(isLeftMouseButton(e) && !board.getTurn().isAi)
                     {
                         if(sourceTile == -1) {
                             // first click
@@ -222,13 +243,14 @@ public class GameScreen {
                                 Move move = Move.MoveFactory.createMove(board, pieceMoved.getPosition(), destTile);
                                 moveTransition = board.getTurn().makeMove(move);
                                 if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
+                                    computerMove = moveTransition.getTransitionMove();
                                     // if the move legal, make it
                                     board = moveTransition.getToBoard();
                                     //boardPanel.drawBoard(board);
                                     if(board.getTurn().isAi) {
                                         boardPanel.drawBoard(board);
                                         // if it's the AI turn, make an AI move
-                                        AiMove();
+                                        new AiMove().execute();
                                     }
                                 }
                             }
@@ -276,23 +298,6 @@ public class GameScreen {
         }
 
         /**
-         * this function make an AI move for the current player
-         */
-        public void AiMove()
-        {
-            System.out.println(PositionEvaluation.evaluationDetails(board));
-            MoveTransition moveTransition;
-            moveTransition = board.getTurn().makeMove(Minimax.IterativeDeepening(board));
-            if (moveTransition.getMoveStatus() == MoveStatus.DONE) {
-                board = moveTransition.getToBoard();
-                computerMove = moveTransition.getTransitionMove();
-                if(board.gameResult() != Result.NOT_FINISHED)
-                    boardPanel.gameOver(board.gameResult());
-            }
-            System.out.println(PositionEvaluation.evaluationDetails(board));
-        }
-
-        /**
          * put the piece on the tile
          * @param board the board we put his tiles
          */
@@ -334,6 +339,7 @@ public class GameScreen {
             putTileColor();
             putTilePiece(board);
             drawPossibleMoves(board);
+            highlightLastMove();
             validate();
             repaint();
         }
@@ -359,6 +365,17 @@ public class GameScreen {
 
                     }
                 }
+            }
+        }
+        private void highlightLastMove() {
+            if(computerMove != null) {
+                if(this.tileCoordinate == computerMove.getPieceMoved().getPosition()) {
+                    setBackground(darkGreenTileColor);
+                }
+                else if(this.tileCoordinate == computerMove.getCoordinateMovedTo()){
+                    setBackground(lightGreenTileColor);
+                }
+
             }
         }
     }
