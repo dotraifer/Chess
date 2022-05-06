@@ -64,6 +64,10 @@ public class GameScreen {
         this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
 
         this.gameFrame.setVisible(true);
+
+        if(board.getTurn().isAi) {
+            new AiMove().execute();
+        }
     }
 
     /**
@@ -73,7 +77,13 @@ public class GameScreen {
     {
         chooseAiOrNotPopUp();
         this.board = new Board(Board.createNewBoard(isWhiteAi, isBlackAi));
+        computerMove = null;
+        boardPanel.drawBoard(board);
         this.gameFrame.setVisible(true);
+        System.out.println("\n\n~NEW GAME~\n\n");
+        if(board.getTurn().isAi) {
+            new AiMove().execute();
+        }
     }
 
     /**
@@ -186,6 +196,7 @@ public class GameScreen {
         @Override
         protected Object doInBackground() throws Exception {
             System.out.println("calculating...\n");
+            //boardPanel.drawBoard(board);
             aiMove();
             boardPanel.drawBoard(board);
             if(board.gameResult() != Result.NOT_FINISHED)
@@ -219,8 +230,6 @@ public class GameScreen {
             setPreferredSize(TILE_DIMENSION);
             putTileColor();
             putTilePiece(board);
-            if(board.getTurn().isAi)
-                new AiMove().execute();
             addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
@@ -248,7 +257,6 @@ public class GameScreen {
                                     board = moveTransition.getToBoard();
                                     //boardPanel.drawBoard(board);
                                     if(board.getTurn().isAi) {
-                                        boardPanel.drawBoard(board);
                                         // if it's the AI turn, make an AI move
                                         new AiMove().execute();
                                     }
