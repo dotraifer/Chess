@@ -31,6 +31,9 @@ public class Minimax {
      */
     public static Move IterativeDeepening(Board board)
     {
+        // init tt
+        if(board.getMovesWithoutEat() == 0)
+           transpositionTable.clear();
         Move bestMove;
         timeout = false;
         Move move = null;
@@ -92,6 +95,7 @@ public class Minimax {
         // sort the moves by order
         return Ordering.from(sortMoves).immutableSortedCopy(legalMoves);
     }
+
 
 
     private static String calculateTimeTaken(final long start, final long end) {
@@ -162,6 +166,7 @@ public class Minimax {
             if(depth != 0)
                 return PositionEvaluation.evaluate(board);
             quiescenceCount = 0;
+            long start = System.currentTimeMillis();
             value = Quiescence(board, alpha, beta);
             if(board.getTurn().getColor() == Color.White)
             {
@@ -223,13 +228,14 @@ public class Minimax {
      */
     private static double Quiescence(Board board, double alpha, double beta ) {
         double stand_pat = PositionEvaluation.evaluate(board);
-        if( stand_pat >= beta )
+        alpha = Math.max(alpha, stand_pat);
+
+        if(alpha >= beta)
+        {
             return stand_pat;
-
-        if( alpha < stand_pat )
-            alpha = stand_pat;
-
-        for(Move move : sortMoves(board.getTurn().getLegalMoves()))  {
+        }
+        List<Move> sortedMoves = sortMoves(board.getTurn().getLegalMoves());
+        for(Move move : sortedMoves)  {
             if(move.isAttack() || move.isPawnPromotion())
             {
                 final MoveTransition moveTransition = board.getTurn().makeMove(move);
@@ -237,14 +243,16 @@ public class Minimax {
                 {
                     double score = -Quiescence( moveTransition.getToBoard(), -beta, -alpha );
 
-                    if( score >= beta )
-                        return score;
-                    if( score > alpha )
-                        alpha = score;
+                    stand_pat = Math.max(stand_pat, score);
+
+                    alpha = Math.max(alpha, stand_pat);
+
+                    if(alpha >= beta)
+                        break;
                 }
             }
         }
-        return alpha;
+        return stand_pat;
     }
 
 }

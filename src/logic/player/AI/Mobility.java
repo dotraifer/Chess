@@ -1,8 +1,11 @@
 package logic.player.AI;
 
+import logic.Board;
 import logic.Color;
 import logic.Move;
+import logic.MoveTransition;
 import logic.Pieces.Bishop;
+import logic.Pieces.King;
 import logic.Pieces.Knight;
 import logic.Pieces.Rook;
 import logic.player.Player;
@@ -18,12 +21,13 @@ public class Mobility {
     private final static double BISHOP_BACKWARD_MOVES_MULTIPLIER = 0.009;
     private final static double KNIGHT_FORWARD_MOVES_MULTIPLIER = 0.012;
     private final static double KNIGHT_BACKWARD_MOVES_MULTIPLIER = 0.005;
+    private final static double DETENTION_PUNISHMENT_MULTIPLIER = 0.1;
     /**
      * this function evaluate player mobility
      * @param player the player we calculate his mobility
      * @return evaluation of the player's mobility
      */
-    public static double mobility(Player player) {
+    public static double mobility(Player player, Board board) {
         double mobilityValue = 0;
         for(Move move : player.getLegalMoves()) {
             // according to the piece
@@ -35,6 +39,7 @@ public class Mobility {
                 mobilityValue += calcKnightMoves(move, player);
             } else
                 mobilityValue += 0.001;
+            // detention can be implemented
         }
         return mobilityValue;
     }

@@ -6,6 +6,7 @@ import logic.Move.MoveStatus;
 import logic.MoveTransition;
 import logic.Pieces.Piece;
 import logic.player.AI.Minimax;
+import logic.player.AI.PositionEvaluation;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -195,6 +196,7 @@ public class GameScreen {
 
         @Override
         protected Object doInBackground() throws Exception {
+            System.out.println(PositionEvaluation.evaluationDetails(board));
             System.out.println("calculating...\n");
             //boardPanel.drawBoard(board);
             aiMove();

@@ -83,7 +83,7 @@ public class PositionEvaluation {
         return switch (gameStage) {
             // if opening game stage
             case OPENING ->
-                    Mobility.mobility(player) * MOBILITY_VALUE_OPENING+
+                    Mobility.mobility(player, board) * MOBILITY_VALUE_OPENING+
                     PawnStruct.pawnStruct(player, allActivePieces) +
                     checkmate(player) + attacks(player) +
                     RookStruct.rookStruct(board, allActivePieces)+
@@ -93,7 +93,7 @@ public class PositionEvaluation {
             ;
             // if midgame game stage
             case MIDGAME ->
-                    Mobility.mobility(player) * MOBILITY_VALUE_MIDGAME+
+                    Mobility.mobility(player, board) * MOBILITY_VALUE_MIDGAME+
                     PawnStruct.pawnStruct(player, allActivePieces) +
                     CenterControl.centerControl(player, board) +
                     checkmate(player) + attacks(player) +
@@ -104,10 +104,9 @@ public class PositionEvaluation {
             ;
             // if ending game stage
             case ENDING ->
-                    Mobility.mobility(player) * MOBILITY_VALUE_ENDING +
+                    Mobility.mobility(player, board) * MOBILITY_VALUE_ENDING +
                     PawnStruct.pawnStruct(player, allActivePieces) +
                     checkmate(player) + attacks(player) +
-                    CenterControl.centerControl(player, board) +
                     RookStruct.rookStruct(board, allActivePieces)+
                     KingSafety.calculateKingSafety(player, board, gameStage) +
                     PieceLocation.pieceLocation(allActivePieces, gameStage)
@@ -154,7 +153,7 @@ public class PositionEvaluation {
         return
                 "\ngame stage" + calculateGameStage(board) + "\n" +
                 ("White:\n material: "  + Material.material(WallActivePieces, BallActivePieces) + " \nmobility:" +
-        Mobility.mobility(board.getWhitePlayer()) * MOBILITY_VALUE_OPENING+"\n pawns"+
+        Mobility.mobility(board.getWhitePlayer() ,board) * MOBILITY_VALUE_OPENING+"\n pawns"+
                 PawnStruct.pawnStruct(board.getWhitePlayer(), WallActivePieces) +"\nchackmate:"+
                 checkmate(board.getWhitePlayer())) + "\n attack: " + attacks(board.getWhitePlayer()) +"\ncenter:"+
                 CenterControl.centerControl(board.getWhitePlayer(), board)+"\nrooks:"+
@@ -164,7 +163,7 @@ public class PositionEvaluation {
                         "PL:" + PieceLocation.pieceLocation(WallActivePieces, calculateGameStage(board)) +
 
                         "black +: \n material" + Material.material(BallActivePieces, WallActivePieces) + "\nmobility:" +
-                        Mobility.mobility(board.getBlackPlayer()) * MOBILITY_VALUE_OPENING+"\n pawns"+
+                        Mobility.mobility(board.getBlackPlayer(),board) * MOBILITY_VALUE_OPENING+"\n pawns"+
                         PawnStruct.pawnStruct(board.getBlackPlayer(), BallActivePieces) +"\n checkmate"+
                         checkmate(board.getBlackPlayer()) +"\n attack:" + attacks(board.getBlackPlayer()) +"\ncenter:"+
                 CenterControl.centerControl(board.getBlackPlayer(), board)+"\nrooks:"+
