@@ -1,5 +1,6 @@
 package logic.player.AI;
 
+import gui.Result;
 import logic.Board;
 import logic.Color;
 import logic.Move;
@@ -27,10 +28,15 @@ public class PositionEvaluation {
      * @return the evaluation of the board
      * @see #score(Board, Player, GameStage)
      */
-    public static double evaluate(Board board)
+    public static double evaluate(Board board, int distanceFromRoot)
     {
         GameStage gameStage = calculateGameStage(board);
         // the score of the white - the score of the black
+        if(board.gameResult() == Result.DRAW)
+            return 0;
+        if(board.getTurn().isInCheckMate()) {
+            return -PositionEvaluation.MATE + distanceFromRoot;
+        }
         if(board.getTurn().getColor() == Color.White)
             return (score(board, board.getWhitePlayer(), gameStage) - score(board, board.getBlackPlayer(), gameStage)) + Material.material(board.getWhitePieces(), board.getBlackPieces());
         return -((score(board, board.getWhitePlayer(), gameStage) - score(board, board.getBlackPlayer(), gameStage)) + Material.material(board.getWhitePieces(), board.getBlackPieces()));
@@ -173,7 +179,7 @@ public class PositionEvaluation {
                         "casled" + board.getBlackPlayer().isHasCastled() +
                         "PL:" + PieceLocation.pieceLocation(BallActivePieces, calculateGameStage(board)) +
 
-                        "Final Score = " + evaluate(board);
+                        "Final Score = " + evaluate(board, 0);
 
     }
 

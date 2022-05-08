@@ -20,8 +20,9 @@ public class Minimax {
     private static final int MAX_QUIESCENCE = 5000;
     private static Map<Long, CachedData> transpositionTable = new HashMap<>();
     private static long start = 0;
-    private static final long maxTime = 10000;
+    private static final long maxTime = 20000;
     private static boolean timeout;
+    private static final double BIGGER_IS_MATE = PositionEvaluation.MATE- 1000;
 
 
     /**
@@ -72,7 +73,7 @@ public class Minimax {
                 if(moveTransition.getToBoard().getTurn().isInCheckMate())
                     return move;
                 // if white turn, call min, else call max
-                currentValue = -1* alphaBetaTT(moveTransition.getToBoard(),depth - 1, -PositionEvaluation.MATE, PositionEvaluation.MATE);
+                currentValue = -1* alphaBetaTT(moveTransition.getToBoard(),depth - 1, -PositionEvaluation.MATE, PositionEvaluation.MATE, 0);
                 // if white and we found bigger
                 if (currentValue > bestValue) {
                     bestValue = currentValue;
@@ -140,7 +141,7 @@ public class Minimax {
      * @param beta the lowest value we saw
      * @return the evaluation of the board
      */
-    public static double alphaBetaTT(Board board, int depth, double alpha, double beta)
+    public static double alphaBetaTT(Board board, int depth, double alpha, double beta, int distanceFromRoot)
     {
         if(System.currentTimeMillis() - start > maxTime) {
             timeout = true;
@@ -148,6 +149,10 @@ public class Minimax {
         }
         double value;
         CachedData tte = transpositionTable.get(HashCode(board));
+        if(board.gameResult() != Result.NOT_FINISHED)
+        {
+            return PositionEvaluation.evaluate(board, distanceFromRoot);
+        }
         if(tte != null && tte.getDepth() >= depth)
         {
             if(tte.getType() == EXACT_VALUE) // stored value is exact
@@ -159,15 +164,11 @@ public class Minimax {
             if(alpha >= beta)
                 return tte.getScore(); // if lowerbound surpasses upperbound
         }
-        if(depth == 0 || board.gameResult() != Result.NOT_FINISHED)
+        if(depth == 0)
         {
-            if(board.gameResult() == Result.DRAW)
-                return 0;
-            if(depth != 0)
-                return PositionEvaluation.evaluate(board);
             quiescenceCount = 0;
             long start = System.currentTimeMillis();
-            value = Quiescence(board, alpha, beta);
+            value = Quiescence(board, alpha, beta, distanceFromRoot);
             if(board.getTurn().getColor() == Color.White)
             {
                 if(value <= alpha)
@@ -191,7 +192,7 @@ public class Minimax {
             final MoveTransition moveTransition = board.getTurn().makeMove(move);
             if (moveTransition.getMoveStatus() == Move.MoveStatus.DONE) {
                 value = -alphaBetaTT(moveTransition.getToBoard(), depth - 1,
-                        -beta, -alpha);
+                        -beta, -alpha, distanceFromRoot + 1);
                 if (value > best)
                     best = value;
                 if (best > alpha)
@@ -201,7 +202,7 @@ public class Minimax {
             }
 
         }
-        if(board.getTurn().getColor() == Color.White)
+        if(board.getTurn().getColor() == Color.White && best < BIGGER_IS_MATE && best > -BIGGER_IS_MATE)
         {
             if(best <= alpha)
                 transpositionTable.put(HashCode(board), new CachedData(depth, best, UPPERBOUND));
@@ -209,7 +210,7 @@ public class Minimax {
                 transpositionTable.put(HashCode(board), new CachedData(depth, best, EXACT_VALUE));
 
         }
-        else
+        else if(best < BIGGER_IS_MATE && best > -BIGGER_IS_MATE)
         {
             if(best > alpha)
                 transpositionTable.put(HashCode(board), new CachedData(depth, best, LOWERBOUND));
@@ -226,8 +227,9 @@ public class Minimax {
      * @param beta the beta index
      * @return the evaluation for the board after going through all the none quite moves
      */
-    private static double Quiescence(Board board, double alpha, double beta ) {
-        double stand_pat = PositionEvaluation.evaluate(board);
+    private static double Quiescence(Board board, double alpha, double beta , int distanceFromRoot) {
+
+        double stand_pat = PositionEvaluation.evaluate(board, distanceFromRoot);
         alpha = Math.max(alpha, stand_pat);
 
         if(alpha >= beta)
@@ -241,7 +243,7 @@ public class Minimax {
                 final MoveTransition moveTransition = board.getTurn().makeMove(move);
                 if (moveTransition.getMoveStatus() == Move.MoveStatus.DONE)
                 {
-                    double score = -Quiescence( moveTransition.getToBoard(), -beta, -alpha );
+                    double score = -Quiescence( moveTransition.getToBoard(), -beta, -alpha, distanceFromRoot + 1 );
 
                     stand_pat = Math.max(stand_pat, score);
 
