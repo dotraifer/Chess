@@ -22,6 +22,7 @@ public class Minimax {
     private static long start = 0;
     private static final long maxTime = 20000;
     private static boolean timeout;
+    // bigger then this value is surely mate
     private static final double BIGGER_IS_MATE = PositionEvaluation.MATE- 1000;
 
 
@@ -32,7 +33,7 @@ public class Minimax {
      */
     public static Move IterativeDeepening(Board board)
     {
-        // init tt
+        // init tt when eating or pawn move
         if(board.getMovesWithoutEat() == 0)
            transpositionTable.clear();
         Move bestMove;
@@ -41,13 +42,17 @@ public class Minimax {
         start = System.currentTimeMillis();
         for(int d = 1;;d++)
         {
+            // put in the best move the last minimax result
             bestMove = move;
+            // put in move the minimax with the current board
             move = MiniMaxAB(board, d);
+            // if timeout
             if(timeout) {
                 System.out.println("calculated with depth of " + (d - 1) + "\n");
                 break;
             }
         }
+        // return the move from the one before the last minimax call(the move from the highest depth that didn't cause timeout)
         return bestMove;
     }
     /**
@@ -72,9 +77,9 @@ public class Minimax {
                 // if the move is checkmate-return him
                 if(moveTransition.getToBoard().getTurn().isInCheckMate())
                     return move;
-                // if white turn, call min, else call max
+                // call the negaMax recursion
                 currentValue = -1* alphaBetaTT(moveTransition.getToBoard(),depth - 1, -PositionEvaluation.MATE, PositionEvaluation.MATE, 0);
-                // if white and we found bigger
+                // if we found bigger value
                 if (currentValue > bestValue) {
                     bestValue = currentValue;
                     bestMove = move;
@@ -139,20 +144,26 @@ public class Minimax {
      * @param depth the search depth in the tree
      * @param alpha the biggest value we saw
      * @param beta the lowest value we saw
+     * @param distanceFromRoot the distance of the current position from the root position
+     * @see <a href="https://en.wikipedia.org/wiki/Talk:Negamax"></a>
      * @return the evaluation of the board
      */
     public static double alphaBetaTT(Board board, int depth, double alpha, double beta, int distanceFromRoot)
     {
+        // if we run out of time
         if(System.currentTimeMillis() - start > maxTime) {
             timeout = true;
             return alpha;
         }
         double value;
+        // get the tt
         CachedData tte = transpositionTable.get(HashCode(board));
+        // if the board is end position
         if(board.gameResult() != Result.NOT_FINISHED)
         {
             return PositionEvaluation.evaluate(board, distanceFromRoot);
         }
+        // if the tt found and his calculation depth bigger then the current
         if(tte != null && tte.getDepth() >= depth)
         {
             if(tte.getType() == EXACT_VALUE) // stored value is exact
@@ -164,13 +175,15 @@ public class Minimax {
             if(alpha >= beta)
                 return tte.getScore(); // if lowerbound surpasses upperbound
         }
+        // if the depth is finished
         if(depth == 0)
         {
             quiescenceCount = 0;
-            long start = System.currentTimeMillis();
+            // evaluate the quiescence
             value = Quiescence(board, alpha, beta, distanceFromRoot);
             if(board.getTurn().getColor() == Color.White)
             {
+                // if lower equal than the alpha score
                 if(value <= alpha)
                     transpositionTable.put(HashCode(board), new CachedData(depth, value, UPPERBOUND));
                 else
@@ -179,6 +192,7 @@ public class Minimax {
             }
             else
             {
+                // if bigger equal then the biggest score
                 if(value > alpha)
                     transpositionTable.put(HashCode(board), new CachedData(depth, value, LOWERBOUND));
                 else
@@ -187,29 +201,36 @@ public class Minimax {
             return value;
         }
         double best = -PositionEvaluation.MATE-1;
+        // for every move
         for(Move move : sortMoves(board.getTurn().getLegalMoves()))
         {
+            // make the move
             final MoveTransition moveTransition = board.getTurn().makeMove(move);
             if (moveTransition.getMoveStatus() == Move.MoveStatus.DONE) {
+                // call the recursion
                 value = -alphaBetaTT(moveTransition.getToBoard(), depth - 1,
                         -beta, -alpha, distanceFromRoot + 1);
                 if (value > best)
                     best = value;
                 if (best > alpha)
                     alpha = best;
+                // cut-off
                 if (best >= beta)
                     break;
             }
 
         }
+        // if white, and the score ss not for mate(we don't store mates positions)
         if(board.getTurn().getColor() == Color.White && best < BIGGER_IS_MATE && best > -BIGGER_IS_MATE)
         {
+            // if lower than the biggest score
             if(best <= alpha)
                 transpositionTable.put(HashCode(board), new CachedData(depth, best, UPPERBOUND));
             else
                 transpositionTable.put(HashCode(board), new CachedData(depth, best, EXACT_VALUE));
 
         }
+        // if black, and the score ss not for mate(we don't store mates positions)
         else if(best < BIGGER_IS_MATE && best > -BIGGER_IS_MATE)
         {
             if(best > alpha)
@@ -225,17 +246,19 @@ public class Minimax {
      * @param board the board we are in
      * @param alpha the alpha index
      * @param beta the beta index
+     * @param distanceFromRoot the distance of the current position from the root position
      * @return the evaluation for the board after going through all the none quite moves
      */
     private static double Quiescence(Board board, double alpha, double beta , int distanceFromRoot) {
-
+        // evaluate the position
         double stand_pat = PositionEvaluation.evaluate(board, distanceFromRoot);
+        // alpha is max
         alpha = Math.max(alpha, stand_pat);
-
         if(alpha >= beta)
         {
             return stand_pat;
         }
+        // sort the moves
         List<Move> sortedMoves = sortMoves(board.getTurn().getLegalMoves());
         for(Move move : sortedMoves)  {
             if(move.isAttack() || move.isPawnPromotion())
@@ -243,12 +266,13 @@ public class Minimax {
                 final MoveTransition moveTransition = board.getTurn().makeMove(move);
                 if (moveTransition.getMoveStatus() == Move.MoveStatus.DONE)
                 {
+                    // call the recursion again
                     double score = -Quiescence( moveTransition.getToBoard(), -beta, -alpha, distanceFromRoot + 1 );
 
                     stand_pat = Math.max(stand_pat, score);
 
                     alpha = Math.max(alpha, stand_pat);
-
+                    // cut-off
                     if(alpha >= beta)
                         break;
                 }

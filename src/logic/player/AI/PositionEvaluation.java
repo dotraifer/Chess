@@ -19,12 +19,14 @@ public class PositionEvaluation {
     private static final double MOBILITY_VALUE_MIDGAME = 0.8;
     private static final double MOBILITY_VALUE_ENDING = 0.4;
     private static final double ATTACK_MULTIPLIER = 0.01;
+    // Mate value
     public static final double MATE = 10000;
 
     /**
      * evaluate the given board, by subtracting the white player evaluation with the black player evaluation
      * the biggest it will return-the better for white, the smallest-better for black
      * @param board the board we evaluate
+     * @param distanceFromRoot the distance of the evaluated position from the root position
      * @return the evaluation of the board
      * @see #score(Board, Player, GameStage)
      */
